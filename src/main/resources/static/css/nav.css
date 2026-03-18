@@ -1,0 +1,171 @@
+/* ============================================================
+   nav.css — 導航欄樣式 文薈 WenHui
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap');
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 48px;
+    border-bottom: 1px solid var(--border2);
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+}
+
+.logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+}
+
+.logo-icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+}
+
+.logo-text-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.logo-main {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    line-height: 1;
+}
+
+.logo-main span {
+    color: var(--blue2);
+}
+
+.logo-sub {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-en {
+    font-size: 13px;
+    color: var(--ink4);
+    letter-spacing: 0.18em;
+    font-weight: 400;
+}
+
+.logo-slogan {
+    font-size: 12px;
+    color: var(--blue2);
+    letter-spacing: 0.08em;
+    border-left: 1.5px solid var(--blue3);
+    padding-left: 10px;
+}
+
+/* --- 方案 A：高級微漸層標籤 --- */
+.nav-links {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+}
+
+.nav-links a {
+    font-size: 15px;
+    color: var(--ink3);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+
+    /* 漸層背景：從極淺灰到純白 */
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    padding: 7px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.05); /* 極淡邊框 */
+
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 500; /* 稍微加粗一點點更有質感 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+/* 懸停效果：顏色變幻 + 影子加深 */
+.nav-links a:hover,
+.nav-links a.active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--blue2) 0%, var(--blue) 100%);
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(36, 86, 164, 0.25);
+}
+
+/* 煙火飄香：專屬暖色漸層 */
+.nav-links a.nav-warm {
+    color: var(--warm2);
+    background: linear-gradient(135deg, #fff9f5 0%, #fff1eb 100%);
+    border-color: rgba(230, 126, 34, 0.1);
+}
+
+.nav-links a.nav-warm:hover {
+    color: #fff;
+    background: linear-gradient(135deg, #ff9a44 0%, #fc6076 100%);
+    box-shadow: 0 4px 12px rgba(252, 96, 118, 0.25);
+}
+
+.nav-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.lang-btn {
+    font-size: 13px;
+    padding: 7px 16px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--ink3);
+    cursor: pointer;
+    font-family: 'Noto Sans TC', sans-serif;
+    transition: all 0.2s;
+}
+
+.lang-btn:hover {
+    border-color: var(--blue2);
+    color: var(--blue2);
+}
+
+.btn-login {
+    font-size: 14px;
+    padding: 8px 20px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--ink2);
+    cursor: pointer;
+    font-family: 'Noto Sans TC', sans-serif;
+    transition: all 0.2s;
+}
+
+.btn-login:hover {
+    background: var(--paper2);
+}
+
+.btn-write {
+    font-size: 14px;
+    padding: 8px 20px;
+    border: 1px solid var(--blue);
+    background: var(--blue);
+    color: #fff;
+    cursor: pointer;
+    font-family: 'Noto Sans TC', sans-serif;
+    transition: opacity 0.2s;
+}
+
+.btn-write:hover {
+    opacity: 0.85;
+}
