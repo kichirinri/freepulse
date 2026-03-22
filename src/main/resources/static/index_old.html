@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文薈 WenHui — 文武薈萃 · 人文匯聚</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/article.css">
+  <link rel="stylesheet" href="css/sidebar.css">
+</head>
+<body>
+
+<!-- 導航欄 -->
+<nav id="navbar">
+  <div class="logo-wrap">
+    <svg class="logo-icon" viewBox="0 0 44 44" fill="none">
+      <circle cx="22" cy="34" r="3.5" fill="#2456a4"/>
+      <path d="M15 27 C15 27 18 22 22 22 C26 22 29 27 29 27" stroke="#2456a4" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M9 21 C9 21 14 13 22 13 C30 13 35 21 35 21" stroke="#2456a4" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.5"/>
+      <path d="M4 15 C4 15 11 5 22 5 C33 5 40 15 40 15" stroke="#2456a4" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.2"/>
+    </svg>
+    <div class="logo-text-wrap">
+      <div class="logo-main">文<span>薈</span></div>
+      <div class="logo-sub">
+        <span class="logo-en">WenHui</span>
+        <span class="logo-slogan">文武薈萃 · 人文匯聚</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-links">
+    <a onclick="filterCategory('時事評論')">時事評論</a>
+    <a onclick="filterCategory('哲學思想')">哲學思想</a>
+    <a onclick="filterCategory('歷史鏡鑑')">歷史鏡鑑</a>
+    <a onclick="filterCategory('詩詞歌賦')">詩詞歌賦</a>
+    <a onclick="filterCategory('深度文章')">深度文章</a>
+    <a onclick="filterCategory('煙火飄香')" class="nav-warm">🔥 煙火飄香</a>
+    <a onclick="showAuthors()">作家專欄</a>
+  </div>
+
+  <div class="nav-right">
+    <button class="lang-btn" onclick="toggleLang()">繁體</button>
+    <button class="btn-login" onclick="showLogin()">登入</button>
+    <button class="btn-write" onclick="showWrite()">✦ 投稿</button>
+  </div>
+</nav>
+
+<!-- 主體 -->
+<div class="main">
+
+  <!-- 文章列表 -->
+  <div class="feed">
+    <div class="feed-tabs">
+      <div class="tab active" onclick="switchTab(this,'latest')">全部</div>
+      <div class="tab" onclick="switchTab(this,'serious')">嚴肅創作</div>
+      <div class="tab tab-warm" onclick="switchTab(this,'yanhu')">煙火飄香</div>
+      <div class="tab" onclick="switchTab(this,'hot')">熱門</div>
+    </div>
+    <div id="article-list">
+      <div class="loading">載入中...</div>
+    </div>
+  </div>
+
+  <!-- 側邊欄 -->
+  <div class="sidebar">
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">熱門文章</div>
+      <div id="hot-list">
+        <div class="loading">載入中...</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title warm-st">🔥 煙火飄香 · 近期</div>
+      <div class="yanhu-recent" id="yanhu-recent">
+        <div class="loading">載入中...</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">話題標籤</div>
+      <div class="tag-cloud">
+        <span class="tag" onclick="filterCategory('時事評論')"># 時事</span>
+        <span class="tag" onclick="filterCategory('哲學思想')"># 哲學</span>
+        <span class="tag" onclick="filterCategory('歷史鏡鑑')"># 歷史</span>
+        <span class="tag" onclick="filterCategory('詩詞歌賦')"># 詩詞</span>
+        <span class="tag-warm" onclick="filterCategory('煙火飄香')"># 生活</span>
+        <span class="tag-warm" onclick="filterCategory('煙火飄香')"># 感情</span>
+        <span class="tag-gray" onclick="filterCategory('深度文章')"># 深度</span>
+        <span class="tag-gray"># 海外華人</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">關於文薈</div>
+      <p class="about-text">文薈，文武薈萃之地。嚴肅思想與煙火生活，在這裡共存。為海外華人提供有溫度的創作平台。</p>
+      <div class="about-info">
+        🌐 服務器：美國 · 德國<br>
+        🔒 言論自由，不受管控<br>
+        🚫 人身攻擊IP永久封禁
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 投稿彈窗 -->
+<div id="write-modal" class="modal" style="display:none;">
+  <div class="modal-box">
+    <div class="modal-title">✦ 投稿文章</div>
+    <div class="fr">
+      <label class="lbl">分類</label>
+      <select id="w-category" class="inp">
+        <option>時事評論</option>
+        <option>哲學思想</option>
+        <option>歷史鏡鑑</option>
+        <option>詩詞歌賦</option>
+        <option>深度文章</option>
+        <option>煙火飄香</option>
+      </select>
+    </div>
+    <div class="fr"><label class="lbl">標題</label><input id="w-title" class="inp" placeholder="文章標題"></div>
+    <div class="fr"><label class="lbl">作者名</label><input id="w-author" class="inp" placeholder="筆名或真名"></div>
+    <div class="fr"><label class="lbl">旅居地點</label><input id="w-location" class="inp" placeholder="例：旅居日本"></div>
+    <div class="fr"><label class="lbl">內容</label><textarea id="w-content" class="inp" rows="10" placeholder="在此書寫您的文章..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="hideWrite()">取消</button>
+      <button class="btn-submit" onclick="submitArticle()">發表文章</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/article.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
