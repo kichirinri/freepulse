@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scribe WenHui</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"></noscript><link rel="stylesheet" href="css/wenhui.css">
+</head>
+<body>
+
+<!-- TOP STRIP -->
+<div class="top-strip">
+  <span>2026年3月22日 · 星期日</span>
+  <span class="top-strip-center">文武薈萃 · 人文傳承 · 全球發聲</span>
+  <div class="top-strip-right">
+    <span>繁體</span><span>簡體</span><span>English</span>
+  </div>
+</div>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <a class="masthead-logo" href="#">Scribe <span>writing go</span></a>
+  <div class="masthead-sub">全球華人 · 共同的聲音之地</div>
+  <div id="stateUser" style="display:none;align-items:center;gap:12px;position:absolute;top:50%;right:40px;transform:translateY(-50%);">
+    <button class="nav-btn-fill" onclick="window.location.href='write.html'">發文</button>
+    <div class="nav-divider"></div>
+    <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu()" style="width:52px;height:52px;font-size:22px;">文</div>
+
+  </div>
+</div>
+
+<!-- GLOBE HERO -->
+<section class="globe-section">
+  <canvas id="globeCanvas"></canvas>
+  <div class="globe-copy">
+    <span class="globe-label">全球即時 · Live</span>
+    <div class="globe-headline">讓世界每個角落的個體<br><em>能發出屬於自己的聲音</em></div>
+    <div class="globe-stats">
+      <div class="globe-stat"><div class="globe-stat-n">23萬</div><div class="globe-stat-l">今日活躍</div></div>
+      <div class="globe-stat"><div class="globe-stat-n">47國</div><div class="globe-stat-l">覆蓋地區</div></div>
+      <div class="globe-stat"><div class="globe-stat-n">12萬</div><div class="globe-stat-l">累計文章</div></div>
+    </div>
+    <button class="globe-cta" onclick="openLoginModal()">立即加入Scribe</button>
+  </div>
+</section>
+
+<!-- NAV BAR -->
+<nav class="nav-bar">
+  <div class="nav-logo-mini">Scribe</div>
+  <div class="nav-search">
+    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <span>搜尋</span>
+  </div>
+  <div class="nav-topics">
+    <div class="nav-topic active">熱門</div>
+    <div class="nav-topic">時事</div>
+    <div class="nav-topic">同城</div>
+    <div class="nav-topic">哲學</div>
+    <div class="nav-topic">歷史</div>
+    <div class="nav-topic">財經</div>
+    <div class="nav-topic">娛樂</div>
+    <div class="nav-topic">海外</div>
+    <div class="nav-topic" style="position:relative;">
+      本站通知
+      <span style="position:absolute;top:8px;right:2px;width:6px;height:6px;background:#c0392b;border-radius:50%;"></span>
+    </div>
+    <div class="nav-topic fire">煙火飄香</div>
+    <div class="nav-topic">嚴肅創作</div>
+  </div>
+  <div class="nav-right" id="navRight">
+    <div id="stateGuest" style="display:flex;align-items:center;gap:12px;">
+      <button class="nav-btn" onclick="openLoginModal()">登入</button>
+      <div class="nav-divider"></div>
+      <button class="nav-btn-fill" onclick="openLoginModal()">發文</button>
+    </div>
+
+    </div>
+
+</nav>
+
+<!-- TOPIC STRIP -->
+<div class="topic-strip">
+  <div class="topic-strip-bar">
+    <div class="ts-label">頻道</div>
+    <div class="ts-tags" id="tsTags">
+      <div class="ts-tag">榜單</div>
+      <div class="ts-tag">作家</div>
+      <div class="ts-tag">情感</div>
+      <div class="ts-tag">詩詞</div>
+      <div class="ts-tag">週末</div>
+      <div class="ts-tag">美食</div>
+      <div class="ts-tag">影視</div>
+      <div class="ts-tag">社會</div>
+      <div class="ts-tag">深度</div>
+      <div class="ts-tag">讀書</div>
+      <div class="ts-tag">科技</div>
+      <div class="ts-tag">旅遊</div>
+      <div class="ts-tag">攝影</div>
+      <div class="ts-tag">音樂</div>
+      <div class="ts-tag">藝術</div>
+      <div class="ts-tag">法律</div>
+      <div class="ts-tag">健康</div>
+      <div class="ts-tag">移民</div>
+    </div>
+    <div class="ts-expand" id="tsExpandBtn" onclick="toggleTsPanel()">
+      全部頻道 <span class="arr">▼</span>
+    </div>
+  </div>
+  <div class="ts-panel" id="tsPanel">
+    <div class="ts-panel-row">
+      <div class="ts-panel-col" style="min-width:180px">
+        <div class="ts-panel-col-title">我的頻道</div>
+        <div class="ts-panel-tags">
+          <div class="ts-panel-tag on">🔥 熱門</div>
+          <div class="ts-panel-tag on">同城</div>
+          <div class="ts-panel-tag on">煙火飄香</div>
+          <div class="ts-panel-tag on">榜單</div>
+          <div class="ts-panel-tag on">哲學</div>
+          <div class="ts-panel-tag on">歷史</div>
+          <div class="ts-panel-tag on">移民</div>
+        </div>
+      </div>
+      <div class="ts-panel-col" style="min-width:220px">
+        <div class="ts-panel-col-title">時事 · 社會</div>
+        <div class="ts-panel-tags">
+          <div class="ts-panel-tag">即時</div><div class="ts-panel-tag">熱搜</div>
+          <div class="ts-panel-tag">國際</div><div class="ts-panel-tag">財經</div>
+          <div class="ts-panel-tag">股市</div><div class="ts-panel-tag">軍事</div>
+          <div class="ts-panel-tag">政務</div><div class="ts-panel-tag">法律</div>
+          <div class="ts-panel-tag">教育</div>
+        </div>
+      </div>
+      <div class="ts-panel-col" style="min-width:200px">
+        <div class="ts-panel-col-title">娛樂 · 影視</div>
+        <div class="ts-panel-tags">
+          <div class="ts-panel-tag">明星</div><div class="ts-panel-tag">電影</div>
+          <div class="ts-panel-tag">電視劇</div><div class="ts-panel-tag">短劇</div>
+          <div class="ts-panel-tag">綜藝</div><div class="ts-panel-tag">動漫</div>
+          <div class="ts-panel-tag">音樂</div>
+        </div>
+      </div>
+      <div class="ts-panel-col" style="min-width:220px">
+        <div class="ts-panel-col-title">生活 · 美食</div>
+        <div class="ts-panel-tags">
+          <div class="ts-panel-tag">美食</div><div class="ts-panel-tag">美妝</div>
+          <div class="ts-panel-tag">時尚</div><div class="ts-panel-tag">家居</div>
+          <div class="ts-panel-tag">健康</div><div class="ts-panel-tag">旅遊</div>
+          <div class="ts-panel-tag">攝影</div><div class="ts-panel-tag">婚戀</div>
+          <div class="ts-panel-tag">育兒</div>
+        </div>
+      </div>
+      <div class="ts-panel-col" style="min-width:200px">
+        <div class="ts-panel-col-title">知識 · 深度</div>
+        <div class="ts-panel-tags">
+          <div class="ts-panel-tag">深度</div><div class="ts-panel-tag">讀書</div>
+          <div class="ts-panel-tag">科技</div><div class="ts-panel-tag">科普</div>
+          <div class="ts-panel-tag">藝術</div><div class="ts-panel-tag">設計</div>
+          <div class="ts-panel-tag">詩詞</div><div class="ts-panel-tag">嚴肅創作</div>
+        </div>
+      </div>
+    </div>
+    <div class="ts-panel-footer">
+      <span>登入後可自定義頻道順序與推薦偏好</span>
+      <button class="ts-panel-footer-btn">＋ 管理頻道</button>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER BAND -->
+<div class="register-band">
+  <div>
+    <div class="register-band-title">愛表達 Scribe</div>
+    <div class="register-band-text">免費註冊 · 無廣告 · 不受管控 · 言論自由</div>
+  </div>
+  <div class="register-band-actions">
+    <button class="btn-reg-wh" onclick="openLoginModal()">免費註冊</button>
+    <button class="btn-reg-out" onclick="openLoginModal()">已有帳號？登入</button>
+  </div>
+</div>
+
+<!-- MAIN PAGE -->
+<div class="page">
+  <!-- GRID A -->
+  <div class="grid-a">
+    <div class="grid-a-lead">
+      <span class="sec-label red">今日頭條</span>
+      <div class="art-lead">
+        <div class="art-thumb" style="background:linear-gradient(160deg,#1a1a2e,#16213e,#0f3460)">🌏</div>
+        <div class="art-caption">圖：全球華人正通過Scribe跨越時區、跨越國界地交流</div>
+        <br>
+        <span class="art-kicker">時事 · 海外</span>
+        <div class="art-title">日元創三十年新低，旅日華人與留學生的生存現狀全面調查</div>
+        <div class="art-dek">從東京到大阪，我們採訪了二十位在日華人，記錄他們如何在匯率衝擊下調整生活、重新思考去留，以及那些不輕易說出口的疲憊與堅守。</div>
+        <div class="art-byline"><span>蘇行道 · 東京</span><span>·</span><span>3月22日</span><span>·</span><span>👍 22.4K</span></div>
+      </div>
+    </div>
+    <div class="grid-a-stack">
+      <span class="sec-label">最多閱讀</span>
+      <div class="art-mid">
+        <span class="sec-label fire" style="font-size:9px;margin-bottom:4px;">煙火飄香</span>
+        <div class="art-title">炸醬麵的味道，是我唯一能帶走的故鄉</div>
+        <div class="art-dek">離開北京八年，每次在海外自己煮炸醬麵，那股味道一出來，眼眶就濕了。</div>
+        <div class="art-meta"><span>林曉雨 · 大阪</span><span>·</span><span>7.4K 讚</span></div>
+      </div>
+      <div class="art-mid">
+        <span class="sec-label" style="font-size:9px;margin-bottom:4px;">哲學思想</span>
+        <div class="art-title">人生從不等你準備好，所以請帶著恐懼前行</div>
+        <div class="art-dek">真正的成長，從來都發生在你還沒準備好的那一刻。</div>
+        <div class="art-meta"><span>蘇行道 · 東京</span><span>·</span><span>18.2K 讚</span></div>
+      </div>
+      <div class="art-mid">
+        <span class="sec-label" style="font-size:9px;margin-bottom:4px;">歷史鏡鑑</span>
+        <div class="art-title">司馬遷的沉默：一個史官的尊嚴與屈辱</div>
+        <div class="art-dek">宮刑之後，司馬遷沒有死。這個選擇比死更難。</div>
+        <div class="art-meta"><span>陳望山 · 倫敦</span><span>·</span><span>4.9K 讚</span></div>
+      </div>
+      <div class="art-mid">
+        <div class="art-title">在澳洲待了五年，我終於明白「融入」是個謊言</div>
+        <div class="art-dek">不是說澳洲不好。只是某天早上醒來，我意識到自己只是在這裡「生活」。</div>
+        <div class="art-meta"><span>張以言 · 悉尼</span><span>·</span><span>3.1K 讚</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRID B -->
+  <div class="grid-b">
+    <div>
+      <span class="sec-label">深度文章</span>
+      <div class="art-sm"><div class="art-sm-num">1</div><div class="art-sm-body"><div class="art-title">台積電赴美建廠兩年，那些被迫遷移的工程師現在怎樣了</div><div class="art-meta"><span>財經</span><span>·</span><span>謝如初</span><span>·</span><span>台北</span></div></div></div>
+      <div class="art-sm"><div class="art-sm-num">2</div><div class="art-sm-body"><div class="art-title">ChatGPT問世三年後：我們的思維正在被悄悄改變</div><div class="art-meta"><span>科技</span><span>·</span><span>吳子言</span><span>·</span><span>東京</span></div></div></div>
+      <div class="art-sm"><div class="art-sm-num">3</div><div class="art-sm-body"><div class="art-title">論語中最被誤解的一句話，學者爭論了兩千年</div><div class="art-meta"><span>哲學</span><span>·</span><span>葉長青</span><span>·</span><span>香港</span></div></div></div>
+      <div class="art-sm"><div class="art-sm-num">4</div><div class="art-sm-body"><div class="art-title">海外子女的中文教育困境：語言能傳承，文化呢？</div><div class="art-meta"><span>教育</span><span>·</span><span>錢幕白</span><span>·</span><span>柏林</span></div></div></div>
+      <div class="art-sm"><div class="art-sm-num">5</div><div class="art-sm-body"><div class="art-title">加拿大楓葉卡政策大變：2026年哪些人受影響</div><div class="art-meta"><span>移民</span><span>·</span><span>方子羽</span><span>·</span><span>溫哥華</span></div></div></div>
+    </div>
+    <div>
+      <span class="sec-label fire">🔥 煙火飄香</span>
+      <div class="art-sm"><div class="art-sm-num">1</div><div class="art-sm-body"><div class="art-title">在京都的最後一個冬夜，我學會了告別</div><div class="art-meta"><span>梁映秋</span><span>·</span><span>京都</span><span>·</span><span>9.8K 讚</span></div></div></div>
+      <div class="art-sm"><div class="art-sm-num">2</div><div class="art-sm-body"><div class="art-title">有時候我會想，如果有一天我消失了，還有人記得嗎</div><div class="art-meta"><span>朱以安</span><span>·</span><span>悉尼</span><span>·</span><span>6.2K 讚</span></div></div></div>
+      <div class="art-sm"><div class="art-sm-num">3</div><div class="art-sm-body"><div class="art-title">媽媽的廚房永遠亮著一盞燈，即使她已不在了</div><div class="art-meta"><span>林曉雨</span><span>·</span><span>大阪</span><span>·</span><span>5.1K 讚</span></div></div></div>
+      <div class="art-sm"><div class="art-sm-num">4</div><div class="art-sm-body"><div class="art-title">他鄉遇故知，卻說不出一句完整的廣東話</div><div class="art-meta"><span>陳宇晴</span><span>·</span><span>倫敦</span><span>·</span><span>3.7K 讚</span></div></div></div>
+      <div class="art-sm"><div class="art-sm-num">5</div><div class="art-sm-body"><div class="art-title">春節零下三十度的哈爾濱，和零下二度的我的心</div><div class="art-meta"><span>王玉婷</span><span>·</span><span>多倫多</span><span>·</span><span>2.9K 讚</span></div></div></div>
+    </div>
+    <div>
+      <span class="sec-label">嚴肅創作</span>
+      <div class="art-sm"><div class="art-sm-num">1</div><div class="art-sm-body"><div class="art-title">無題·其一：願你走出半生，歸來仍是少年</div><div class="art-meta"><span>詩詞</span><span>·</span><span>方子羽</span><span>·</span><span>台北</span></div></div></div>
+      <div class="art-sm"><div class="art-sm-num">2</div><div class="art-sm-body"><div class="art-title">《長夜》短篇小說：她在咖啡館等了三個小時</div><div class="art-meta"><span>小說</span><span>·</span><span>謝流光</span><span>·</span><span>紐約</span></div></div></div>
+      <div class="art-sm"><div class="art-sm-num">3</div><div class="art-sm-body"><div class="art-title">散文：我與父親之間，隔著一個太平洋</div><div class="art-meta"><span>散文</span><span>·</span><span>周安然</span><span>·</span><span>溫哥華</span></div></div></div>
+      <div class="art-sm"><div class="art-sm-num">4</div><div class="art-sm-body"><div class="art-title">評論：《繁花》的滬語之美，無法被普通話翻譯</div><div class="art-meta"><span>文化評論</span><span>·</span><span>石磊</span><span>·</span><span>上海</span></div></div></div>
+      <div class="art-sm"><div class="art-sm-num">5</div><div class="art-sm-body"><div class="art-title">隨筆：三十歲，終於學會了如何與孤獨共處</div><div class="art-meta"><span>隨筆</span><span>·</span><span>任靜雯</span><span>·</span><span>巴黎</span></div></div></div>
+    </div>
+  </div>
+
+  <!-- GRID C -->
+  <div class="grid-c">
+    <div class="grid-c-main">
+      <div class="divider-label"><span class="divider-label-text">為你推薦</span></div>
+      <div class="art-text">
+        <div class="art-text-top">
+          <div class="art-text-avatar" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">蘇</div>
+          <span class="art-text-author">蘇行道</span><span class="art-text-pub">· 哲思漫筆</span>
+          <span class="art-text-loc"><svg width="9" height="9" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>東京</span>
+        </div>
+        <div class="art-title">人生從不等你準備好，所以請帶著恐懼前行</div>
+        <div class="art-dek">我們總以為，等自己準備充分了，才能邁出那一步。但真正的成長，從來都發生在你還沒準備好的那一刻。</div>
+        <div class="art-text-footer"><span class="art-text-cat">哲學思想</span><span class="art-text-date">3月15日 · 8分鐘閱讀</span><div class="art-text-stats"><span class="art-text-stat">👍 22K</span><span class="art-text-stat">🔖</span></div></div>
+      </div>
+      <div class="art-text">
+        <div class="art-text-top">
+          <div class="art-text-avatar" style="background:linear-gradient(135deg,#fa709a,#fee140)">林</div>
+          <span class="art-text-author">林曉雨</span><span class="art-text-pub">· 煙火日記</span>
+          <span class="art-text-loc"><svg width="9" height="9" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>大阪</span>
+        </div>
+        <div class="art-title">炸醬麵的味道，是我唯一能帶走的故鄉</div>
+        <div class="art-dek">離開北京八年，每次在海外自己煮炸醬麵，那股味道一出來，眼眶就濕了。不是思念，是某種無法言說的東西，鑽進了胃裡，再也出不來。</div>
+        <div class="art-text-footer"><span class="art-text-cat fire">煙火飄香</span><span class="art-text-date">3月12日 · 5分鐘閱讀</span><div class="art-text-stats"><span class="art-text-stat">👍 7.4K</span><span class="art-text-stat">🔖</span></div></div>
+      </div>
+      <div class="art-text">
+        <div class="art-text-top">
+          <div class="art-text-avatar" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb)">陳</div>
+          <span class="art-text-author">陳望山</span><span class="art-text-pub">· 史鑑今用</span>
+          <span class="art-text-loc"><svg width="9" height="9" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>倫敦</span>
+        </div>
+        <div class="art-title">司馬遷的沉默：一個史官的尊嚴與屈辱</div>
+        <div class="art-dek">宮刑之後，司馬遷沒有死，這個選擇比死更難。他把所有的屈辱、憤怒、悲痛，全部化為筆墨，成就了「史家之絕唱，無韻之離騷」。</div>
+        <div class="art-text-footer"><span class="art-text-cat">歷史鏡鑑</span><span class="art-text-date">3月8日 · 12分鐘閱讀</span><div class="art-text-stats"><span class="art-text-stat">👍 4.9K</span><span class="art-text-stat">🔖</span></div></div>
+      </div>
+      <div class="art-text">
+        <div class="art-text-top">
+          <div class="art-text-avatar" style="background:linear-gradient(135deg,#30cfd0,#667eea)">張</div>
+          <span class="art-text-author">張以言</span><span class="art-text-pub">· 移民手記</span>
+          <span class="art-text-loc"><svg width="9" height="9" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>悉尼</span>
+        </div>
+        <div class="art-title">在澳洲待了五年，我終於明白「融入」是個謊言</div>
+        <div class="art-dek">不是說澳洲不好，也不是說沒有嘗試。只是某天早上醒來，突然意識到——我只是在這裡「生活」，而不是真正「活著」。</div>
+        <div class="art-text-footer"><span class="art-text-cat">海外</span><span class="art-text-date">3月1日 · 10分鐘閱讀</span><div class="art-text-stats"><span class="art-text-stat">👍 3.1K</span><span class="art-text-stat">🔖</span></div></div>
+      </div>
+    </div>
+    <div class="grid-c-side">
+      <div class="side-section">
+        <hr class="side-rule">
+        <div class="side-title">Scribe熱搜榜</div>
+        <div class="hot-list-item"><div class="hot-list-num r1">1</div><div><div class="hot-list-text">日元匯率跌破158大關</div><div class="hot-list-heat">38.2萬熱度</div></div></div>
+        <div class="hot-list-item"><div class="hot-list-num r2">2</div><div><div class="hot-list-text">海外子女中文教育困境</div><div class="hot-list-heat">24.1萬</div></div></div>
+        <div class="hot-list-item"><div class="hot-list-num r3">3</div><div><div class="hot-list-text">澳洲移民新政策解讀</div><div class="hot-list-heat">19.7萬</div></div></div>
+        <div class="hot-list-item"><div class="hot-list-num">4</div><div><div class="hot-list-text">春節在海外過年攻略</div><div class="hot-list-heat">15.0萬</div></div></div>
+        <div class="hot-list-item"><div class="hot-list-num">5</div><div><div class="hot-list-text">英國簽證費用上調30%</div><div class="hot-list-heat">12.3萬</div></div></div>
+        <div class="hot-list-item"><div class="hot-list-num">6</div><div><div class="hot-list-text">DeepSeek海外使用攻略</div><div class="hot-list-heat">9.8萬</div></div></div>
+        <div class="hot-list-item"><div class="hot-list-num">7</div><div><div class="hot-list-text">加拿大楓葉卡政策大變</div><div class="hot-list-heat">8.2萬</div></div></div>
+      </div>
+      <div class="side-section">
+        <hr class="side-rule">
+        <div class="side-title">全球同城</div>
+        <div class="world-items">
+          <div class="world-item"><span class="world-item-flag">🇯🇵</span><span class="world-item-name">東京 · 大阪</span><div class="world-item-dot"></div><span class="world-item-count">2.1萬</span></div>
+          <div class="world-item"><span class="world-item-flag">🇺🇸</span><span class="world-item-name">紐約 · 洛杉磯</span><div class="world-item-dot"></div><span class="world-item-count">1.8萬</span></div>
+          <div class="world-item"><span class="world-item-flag">🇬🇧</span><span class="world-item-name">倫敦 · 曼徹斯特</span><div class="world-item-dot"></div><span class="world-item-count">9.4千</span></div>
+          <div class="world-item"><span class="world-item-flag">🇦🇺</span><span class="world-item-name">悉尼 · 墨爾本</span><div class="world-item-dot"></div><span class="world-item-count">6.7千</span></div>
+          <div class="world-item"><span class="world-item-flag">🇨🇦</span><span class="world-item-name">溫哥華 · 多倫多</span><div class="world-item-dot"></div><span class="world-item-count">5.2千</span></div>
+          <div class="world-item"><span class="world-item-flag">🇸🇬</span><span class="world-item-name">新加坡</span><div class="world-item-dot"></div><span class="world-item-count">4.1千</span></div>
+          <div class="world-item"><span class="world-item-flag">🇩🇪</span><span class="world-item-name">柏林 · 法蘭克福</span><div class="world-item-dot"></div><span class="world-item-count">2.8千</span></div>
+        </div>
+      </div>
+      <div class="side-section">
+        <hr class="side-rule">
+        <div class="side-title">關於Scribe</div>
+        <div class="about-box">
+          <p>Scribe，全球華人聚首之地。嚴肅思想與煙火生活，百態話題，在這裡共存。</p>
+          <div class="about-badge"><span>🌐</span><span>服務節點：海外</span></div>
+          <div class="about-badge"><span>🔓</span><span>開放討論</span></div>
+          <div class="about-badge"><span>🚫</span><span>違規內容將限制使用</span></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-logo">Scribe</div>
+  <div class="footer-links">
+    <span class="footer-link">服務條款</span>
+    <span class="footer-link">隱私政策</span>
+    <span class="footer-link">投稿規範</span>
+    <span class="footer-link">聯繫我們</span>
+    <span class="footer-link">關於Scribe</span>
+  </div>
+  <div class="footer-copy">© 2026 WenHui · Scribe</div>
+</div>
+
+<div class="user-menu-overlay" id="userMenuOverlay" onclick="toggleUserMenu()"></div>
+<!-- 用户菜单弹窗 -->
+<div class="user-menu" id="userMenu">
+  <div class="user-menu-name" id="userMenuName">用戶</div>
+  <div class="user-menu-email" id="userMenuEmail"></div>
+  <hr style="border:none;border-top:1px solid #e8e4df;margin:8px 0;">
+  <div class="user-menu-item" onclick="window.location.href='myarticles.html'">我的文章</div>
+  <div class="user-menu-item">已讚文章</div>
+  <div class="user-menu-item">帳號設定</div>
+  <hr style="border:none;border-top:1px solid #e8e4df;margin:8px 0;">
+  <div class="user-menu-item logout" onclick="doLogout()">登出</div>
+</div>
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal" onclick="closeOnOverlay(event,'loginModal')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeLoginModal()">×</button>
+    <div class="modal-logo">Scribe</div>
+    <div class="modal-tagline">全球華人 · 共同的聲音之地</div>
+    <div class="modal-tabs">
+      <div class="modal-tab active" id="tabLogin" onclick="switchTab('login')">郵件登入</div>
+      <div class="modal-tab" id="tabPhone" onclick="switchTab('phone')">手機登入</div>
+    </div>
+    <div class="modal-form" id="formLogin">
+      <div class="form-field"><label class="form-label">電子郵件</label><input class="form-input" id="loginEmail" type="email" placeholder="your@email.com"></div>
+      <div class="form-field"><label class="form-label">密碼</label><input class="form-input" id="loginPwd" type="password" placeholder="••••••••"></div>
+      <div class="form-error" id="loginError"></div>
+      <button class="btn-submit" id="btnLogin" onclick="doLogin()">登入Scribe</button>
+      <div class="method-switch"><div class="method-switch-line"></div><button class="method-switch-btn" onclick="switchTab('phone')">改用手機號登入</button><div class="method-switch-line"></div></div>
+      <div class="modal-footer-note">忘記密碼？<span style="color:var(--ink);text-decoration:underline;cursor:pointer;" onclick="switchTab('phone')">用手機號重設</span></div>
+    </div>
+    <div class="modal-form hidden" id="formPhone">
+      <div class="form-field">
+        <label class="form-label">手機號碼</label>
+        <div class="phone-row">
+          <select class="phone-prefix" id="phonePrefix">
+            <option value="+81">🇯🇵 +81</option><option value="+1">🇺🇸 +1</option>
+            <option value="+44">🇬🇧 +44</option><option value="+61">🇦🇺 +61</option>
+            <option value="+1-CA">🇨🇦 +1</option><option value="+65">🇸🇬 +65</option>
+            <option value="+49">🇩🇪 +49</option><option value="+33">🇫🇷 +33</option>
+            <option value="+86">🇨🇳 +86</option><option value="+886">🇹🇼 +886</option>
+            <option value="+852">🇭🇰 +852</option>
+          </select>
+          <input class="form-input" id="phoneNum" type="tel" placeholder="手機號碼" style="flex:1;">
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-label">驗證碼</label>
+        <div class="code-row">
+          <input class="form-input" id="phoneCode" type="text" placeholder="6位驗證碼" maxlength="6">
+          <button class="btn-send-code" id="btnSendCode" onclick="sendCode()">發送驗證碼</button>
+        </div>
+        <div style="font-size:11px;color:var(--ink4);margin-top:4px;">演示模式：驗證碼固定為 <strong>888888</strong></div>
+      </div>
+      <div class="form-error" id="phoneError"></div>
+      <button class="btn-submit" id="btnPhoneLogin" onclick="doPhoneLogin()">登入 / 自動註冊</button>
+      <div class="method-switch"><div class="method-switch-line"></div><button class="method-switch-btn" onclick="switchTab('login')">改用郵件密碼登入</button><div class="method-switch-line"></div></div>
+      <div class="modal-footer-note">首次使用手機號將自動建立帳號</div>
+    </div>
+  </div>
+</div>
+
+<!-- WELCOME NOTICE MODAL -->
+<div class="notice-overlay" id="noticeModal">
+  <div class="notice-box">
+    <div class="notice-header">
+      <div class="notice-header-top">
+        <span class="notice-header-logo">Scribe</span>
+        <span class="notice-header-tag">致每一位新成員</span>
+      </div>
+      <div class="notice-header-title">歡迎來到Scribe<br>在這裡，你的聲音屬於你自己</div>
+      <div class="notice-header-sub">加入前，請用兩分鐘了解Scribe的核心理念</div>
+    </div>
+    <div class="notice-body">
+      <div class="notice-item">
+        <div class="notice-item-icon">👍</div>
+        <div class="notice-item-content">
+          <div class="notice-item-title">只有點讚，沒有評論</div>
+          <div class="notice-item-desc">Scribe的所有文章只開放點讚功能，不設評論區。我們相信，每個人的思考與感悟應當保持獨立，不被他人的言論左右。讀完一篇文章，你的第一感受，才是最真實的你。</div>
+        </div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-item-icon">🌍</div>
+        <div class="notice-item-content">
+          <div class="notice-item-title">自由發表，以法律為底線</div>
+          <div class="notice-item-desc">我們支持言論自由，Scribe。但自由不是無邊界的——請在遵守所在地法律法規的前提下發文，任何煽動仇恨、違法的內容將被即時移除。</div>
+        </div>
+      </div>
+      <div class="notice-item">
+        <div class="notice-item-icon">🤝</div>
+        <div class="notice-item-content">
+          <div class="notice-item-title">世界公民，懂得尊重他人</div>
+          <div class="notice-item-desc">Scribe<br>匯聚了來自47個國家和地區的華人。請以世界公民的胸懷，尊重與你不同的聲音。人身攻擊將永久封禁帳號。</div>
+        </div>
+      </div>
+    </div>
+    <div class="notice-footer">
+      <label class="notice-agree">
+        <input type="checkbox" id="noticeCheck" onchange="toggleNoticeBtn()">
+        <span class="notice-agree-text">我已閱讀並理解以上內容，承諾遵守Scribe社區規範，以負責任的態度在Scribe發聲。</span>
+      </label>
+      <button class="btn-notice-confirm" id="btnNoticeConfirm" disabled onclick="confirmNotice()">我明白了，開始探索Scribe →</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/wenhui.js"></script>
+</body>
+</html>
