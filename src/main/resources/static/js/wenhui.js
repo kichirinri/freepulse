@@ -421,79 +421,76 @@ document.addEventListener('keydown', function(e) {
  *  首页动态加载用户发表的文章
  * ================================================================ */
 (function loadUserArticles() {
-  const articles = JSON.parse(localStorage.getItem('wh_articles') || '[]');
-  if (!articles.length) return;
+  fetch('http://localhost:8080/api/articles')
+      .then(res => res.json())
+      .then(articles => {
+        if (!articles.length) return;
 
-  const page = document.querySelector('.page');
-  if (!page) return;
+        const page = document.querySelector('.page');
+        if (!page) return;
 
-  const section = document.createElement('div');
-  section.id = 'userFeedSection';
-  section.innerHTML = `
-    <div class="divider-label" style="margin:32px 0 20px;">
-      <span class="divider-label-text">最新發表</span>
-    </div>
-    <div class="grid-c">
-      <div class="grid-c-main" id="userFeed"></div>
-      <div class="grid-c-side" id="userFeedSide"></div>
-    </div>
-  `;
-  page.appendChild(section);
-
-  const feed = section.querySelector('#userFeed');
-  const side = section.querySelector('#userFeedSide');
-
-  /* 主列 — 最新10篇 */
-  articles.slice(0, 10).forEach(a => {
-    const date = new Date(a.publishedAt);
-    const dateStr = (date.getMonth()+1) + '月' + date.getDate() + '日';
-    const words = (a.body||'').replace(/\s/g,'').length;
-    const mins = Math.max(1, Math.round(words / 300));
-    const excerpt = (a.body||'').slice(0, 100);
-    const isFire = a.cat === '煙火飄香';
-    const initial = (a.author||'文')[0].toUpperCase();
-
-    const el = document.createElement('div');
-    el.className = 'art-text';
-    el.style.cursor = 'pointer';
-    el.innerHTML = `
-      <div class="art-text-top">
-        <div class="art-text-avatar" style="background:linear-gradient(135deg,#667eea,#764ba2)">${initial}</div>
-        <span class="art-text-author">${a.author || '文薈用戶'}</span>
-        <span class="art-text-pub">· ${a.cat}</span>
-        <span class="art-text-loc" style="margin-left:auto;font-size:11px;color:var(--ink4);">${dateStr}</span>
-      </div>
-      <div style="font-family:var(--serif);font-size:20px;font-weight:700;line-height:1.35;color:var(--ink);margin-bottom:8px;transition:color 0.15s;">${a.title}</div>
-      <div style="font-size:14px;color:var(--ink3);line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px;">${excerpt}…</div>
-      <div class="art-text-footer">
-        <span class="art-text-cat ${isFire ? 'fire' : ''}">${a.cat}</span>
-        <span class="art-text-date">${mins} 分鐘閱讀</span>
-        <div class="art-text-stats"><span class="art-text-stat">👍 ${a.likes||0}</span></div>
-      </div>
-    `;
-    el.addEventListener('mouseenter', () => el.querySelector('[style*="font-family:var(--serif)"]').style.color = 'var(--accent)');
-    el.addEventListener('mouseleave', () => el.querySelector('[style*="font-family:var(--serif)"]').style.color = 'var(--ink)');
-    el.onclick = () => window.location.href = 'article.html?id=' + a.id;
-    feed.appendChild(el);
-  });
-
-  /* 侧栏 — 热门排行（按点赞排序） */
-  const sorted = [...articles].sort((a,b) => (b.likes||0) - (a.likes||0)).slice(0, 5);
-  let sideHTML = `
-    <hr class="side-rule">
-    <div class="side-title">用戶熱門文章</div>
-  `;
-  sorted.forEach((a, i) => {
-    const r = i===0 ? 'r1' : i===1 ? 'r2' : i===2 ? 'r3' : '';
-    sideHTML += `
-      <div class="hot-list-item" style="cursor:pointer;" onclick="window.location.href='article.html?id=${a.id}'">
-        <div class="hot-list-num ${r}">${i+1}</div>
-        <div>
-          <div class="hot-list-text">${a.title}</div>
-          <div class="hot-list-heat">👍 ${a.likes||0} · ${a.cat}</div>
+        const section = document.createElement('div');
+        section.id = 'userFeedSection';
+        section.innerHTML = `
+        <div class="divider-label" style="margin:32px 0 20px;">
+          <span class="divider-label-text">最新發表</span>
         </div>
-      </div>
-    `;
-  });
-  side.innerHTML = sideHTML;
+        <div class="grid-c">
+          <div class="grid-c-main" id="userFeed"></div>
+          <div class="grid-c-side" id="userFeedSide"></div>
+        </div>
+      `;
+        page.appendChild(section);
+
+        const feed = section.querySelector('#userFeed');
+        const side = section.querySelector('#userFeedSide');
+
+        articles.slice(0, 10).forEach(a => {
+          const date = new Date(a.createdDate);
+          const dateStr = (date.getMonth()+1) + '月' + date.getDate() + '日';
+          const words = (a.content||'').replace(/\s/g,'').length;
+          const mins = Math.max(1, Math.round(words/300));
+          const excerpt = (a.content||'').slice(0, 100);
+          const isFire = a.category === '煙火飄香';
+          const initial = (a.authorName||'文')[0].toUpperCase();
+
+          const el = document.createElement('div');
+          el.className = 'art-text';
+          el.style.cursor = 'pointer';
+          el.innerHTML = `
+          <div class="art-text-top">
+            <div class="art-text-avatar" style="background:linear-gradient(135deg,#667eea,#764ba2)">${initial}</div>
+            <span class="art-text-author">${a.authorName || '用戶'}</span>
+            <span class="art-text-pub">· ${a.category}</span>
+            <span class="art-text-loc" style="margin-left:auto;font-size:13px;color:var(--ink4);">${dateStr}</span>
+          </div>
+          <div style="font-family:var(--serif);font-size:20px;font-weight:700;line-height:1.35;color:var(--ink);margin-bottom:8px;">${a.title}</div>
+          <div style="font-size:15px;color:var(--ink3);line-height:1.65;margin-bottom:12px;">${excerpt}…</div>
+          <div class="art-text-footer">
+            <span class="art-text-cat ${isFire?'fire':''}">${a.category}</span>
+            <span class="art-text-date">${mins} 分鐘閱讀</span>
+            <div class="art-text-stats"><span class="art-text-stat">👍 ${a.likes||0}</span></div>
+          </div>
+        `;
+          el.onclick = () => window.location.href = 'article.html?id=' + a.id;
+          feed.appendChild(el);
+        });
+
+        const sorted = [...articles].sort((a,b) => (b.likes||0) - (a.likes||0)).slice(0, 5);
+        let sideHTML = `<hr class="side-rule"><div class="side-title">最新文章</div>`;
+        sorted.forEach((a, i) => {
+          const r = i===0?'r1':i===1?'r2':i===2?'r3':'';
+          sideHTML += `
+          <div class="hot-list-item" style="cursor:pointer;" onclick="window.location.href='article.html?id=${a.id}'">
+            <div class="hot-list-num ${r}">${i+1}</div>
+            <div>
+              <div class="hot-list-text">${a.title}</div>
+              <div class="hot-list-heat">👍 ${a.likes||0} · ${a.category}</div>
+            </div>
+          </div>
+        `;
+        });
+        side.innerHTML = sideHTML;
+      })
+      .catch(err => console.log('載入文章失敗', err));
 })();

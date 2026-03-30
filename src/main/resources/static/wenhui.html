@@ -6,25 +6,26 @@
 <title>Scribe WenHui</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"></noscript><link rel="stylesheet" href="css/wenhui.css">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="css/wenhui.css?v=5">
 </head>
 <body>
 
-<!-- TOP STRIP -->
-<div class="top-strip">
-  <span>2026年3月22日 · 星期日</span>
-  <span class="top-strip-center">文武薈萃 · 人文傳承 · 全球發聲</span>
-  <div class="top-strip-right">
-    <span>繁體</span><span>簡體</span><span>English</span>
-  </div>
-</div>
+
+
 
 <!-- MASTHEAD -->
 <div class="masthead">
+  <!-- TOP STRIP -->
+  <div class="top-strip">
+    <span>2026年3月22日 · 星期日</span>
+    <div class="top-strip-right">
+      <span>繁體</span><span>簡體</span><span>English</span>
+    </div>
+  </div>
   <a class="masthead-logo" href="#">Scribe <span>writing go</span></a>
-  <div class="masthead-sub">全球華人 · 共同的聲音之地</div>
-  <div id="stateUser" style="display:none;align-items:center;gap:12px;position:absolute;top:50%;right:40px;transform:translateY(-50%);">
-    <button class="nav-btn-fill" onclick="window.location.href='write.html'">發文</button>
+   <div id="stateUser" style="display:none;align-items:center;gap:12px;position:absolute;top:50%;right:40px;transform:translateY(-50%);">
+     <button class="nav-btn-fill" onclick="localStorage.removeItem('wh_draft');window.location.href='write.html'">發文</button>
     <div class="nav-divider"></div>
     <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu()" style="width:52px;height:52px;font-size:22px;">文</div>
 
@@ -36,7 +37,7 @@
   <canvas id="globeCanvas"></canvas>
   <div class="globe-copy">
     <span class="globe-label">全球即時 · Live</span>
-    <div class="globe-headline">讓世界每個角落的個體<br><em>能發出屬於自己的聲音</em></div>
+    <div class="globe-headline">讓世界每個角落的你<br><em>發出屬於自己的聲音</em></div>
     <div class="globe-stats">
       <div class="globe-stat"><div class="globe-stat-n">23萬</div><div class="globe-stat-l">今日活躍</div></div>
       <div class="globe-stat"><div class="globe-stat-n">47國</div><div class="globe-stat-l">覆蓋地區</div></div>
@@ -172,7 +173,7 @@
 <div class="register-band">
   <div>
     <div class="register-band-title">愛表達 Scribe</div>
-    <div class="register-band-text">免費註冊 · 無廣告 · 不受管控 · 言論自由</div>
+    <div class="register-band-text"></div>
   </div>
   <div class="register-band-actions">
     <button class="btn-reg-wh" onclick="openLoginModal()">免費註冊</button>

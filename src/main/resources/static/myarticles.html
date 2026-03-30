@@ -197,88 +197,89 @@ a { text-decoration:none; color:inherit; }
 <div class="toast" id="toast"></div>
 
 <script>
-const currentUser = JSON.parse(sessionStorage.getItem('wh_user') || 'null');
+  const currentUser = JSON.parse(sessionStorage.getItem('wh_user') || 'null');
 
-if (!currentUser) {
-  document.getElementById('noLogin').classList.add('show');
-} else {
-  document.getElementById('mainPage').style.display = 'block';
-  document.getElementById('pageSubText').textContent = currentUser.name + ' 的創作空間';
-  loadArticles();
-}
-
-let allMyArticles = [];
-let deleteTargetId = null;
-
-function loadArticles() {
-  const all = JSON.parse(localStorage.getItem('wh_articles') || '[]');
-  allMyArticles = all.filter(a => a.email === currentUser.email || a.author === currentUser.name);
-
-  /* 统计 */
-  const totalLikes = allMyArticles.reduce((s, a) => s + (a.likes || 0), 0);
-  const totalWords = allMyArticles.reduce((s, a) => s + (a.body || '').replace(/\s/g,'').length, 0);
-  document.getElementById('statTotal').textContent = allMyArticles.length;
-  document.getElementById('statLikes').textContent = totalLikes;
-  document.getElementById('statWords').textContent = totalWords > 9999 ?
-    (totalWords/10000).toFixed(1) + '萬' : totalWords;
-
-   /* 动态生成分类Tab */
-const tabs = document.getElementById('filterTabs');
-const cats = [...new Set(allMyArticles.map(a => a.cat))];
-// 清除旧Tab（保留「全部」）
-tabs.innerHTML = '<div class="filter-tab active" onclick="filterArticles(\'all\', this)">全部</div>';
-cats.forEach(cat => {
-  const tab = document.createElement('div');
-  tab.className = 'filter-tab';
-  tab.textContent = cat;
-  tab.onclick = function() { filterArticles(cat, this); };
-  tabs.appendChild(tab);
-});
-
-  renderList(allMyArticles);
-}
-
-function filterArticles(cat, tabEl) {
-  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-  tabEl.classList.add('active');
-  if (cat === 'all') {
-    renderList(allMyArticles);
-  } else if (cat === 'other') {
-    const mainCats = ['社會','煙火飄香','哲學','歷史'];
-    renderList(allMyArticles.filter(a => !mainCats.includes(a.cat)));
+  if (!currentUser) {
+    document.getElementById('noLogin').classList.add('show');
   } else {
-    renderList(allMyArticles.filter(a => a.cat === cat));
+    document.getElementById('mainPage').style.display = 'block';
+    document.getElementById('pageSubText').textContent = currentUser.name + ' 的創作空間';
+    loadArticles();
   }
-}
 
-function renderList(articles) {
-  const list = document.getElementById('articleList');
-  const empty = document.getElementById('emptyState');
-  list.innerHTML = '';
+  let allMyArticles = [];
+  let deleteTargetId = null;
 
-  if (!articles.length) {
-    empty.classList.add('show');
-    return;
+  function loadArticles() {
+    fetch('http://localhost:8080/api/articles/my/' + encodeURIComponent(currentUser.email))
+            .then(res => res.json())
+            .then(all => {
+              allMyArticles = all;
+
+              /* 统计 */
+              const totalLikes = allMyArticles.reduce((s, a) => s + (a.likes || 0), 0);
+              const totalWords = allMyArticles.reduce((s, a) => s + (a.content || '').replace(/\s/g,'').length, 0);
+              document.getElementById('statTotal').textContent = allMyArticles.length;
+              document.getElementById('statLikes').textContent = totalLikes;
+              document.getElementById('statWords').textContent = totalWords > 9999 ?
+                      (totalWords/10000).toFixed(1) + '萬' : totalWords;
+
+              /* 动态分类Tab */
+              const tabs = document.getElementById('filterTabs');
+              const cats = [...new Set(allMyArticles.map(a => a.category))];
+              tabs.innerHTML = '<div class="filter-tab active" onclick="filterArticles(\'all\', this)">全部</div>';
+              cats.forEach(cat => {
+                const tab = document.createElement('div');
+                tab.className = 'filter-tab';
+                tab.textContent = cat;
+                tab.onclick = function() { filterArticles(cat, this); };
+                tabs.appendChild(tab);
+              });
+
+              renderList(allMyArticles);
+            })
+            .catch(err => {
+              console.log('載入失敗', err);
+              showToast('載入文章失敗，請確認服務器運行中');
+            });
   }
-  empty.classList.remove('show');
 
-  articles.forEach(a => {
-    const date = new Date(a.publishedAt);
-    const dateStr = date.getFullYear() + '年' + (date.getMonth()+1) + '月' + date.getDate() + '日';
-    const words = (a.body || '').replace(/\s/g,'').length;
-    const excerpt = (a.body || '').slice(0, 80);
-    const isFire = a.cat === '煙火飄香';
+  function filterArticles(cat, tabEl) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+    if (cat === 'all') {
+      renderList(allMyArticles);
+    } else {
+      renderList(allMyArticles.filter(a => a.category === cat));
+    }
+  }
 
-    const row = document.createElement('div');
-    row.className = 'article-row';
-    row.innerHTML = `
-      <div class="article-row-cover">
-        <img src="${a.cover || ''}" class="${a.cover ? 'show' : ''}">
-        ${!a.cover ? '📄' : ''}
-      </div>
+  function renderList(articles) {
+    const list = document.getElementById('articleList');
+    const empty = document.getElementById('emptyState');
+    list.innerHTML = '';
+
+    if (!articles.length) {
+      empty.classList.add('show');
+      return;
+    }
+    empty.classList.remove('show');
+
+    articles.forEach(a => {
+      const date = new Date(a.createdDate);
+      const dateStr = date.getFullYear() + '年' + (date.getMonth()+1) + '月' + date.getDate() + '日';
+      const words = (a.content || '').replace(/\s/g,'').length;
+      const excerpt = (a.content || '').slice(0, 80);
+      const isFire = a.category === '煙火飄香';
+      const tags = a.tags ? a.tags.split(',').filter(t => t.trim()) : [];
+
+      const row = document.createElement('div');
+      row.className = 'article-row';
+      row.innerHTML = `
+      <div class="article-row-cover">📄</div>
       <div class="article-row-body">
         <div class="article-row-meta">
-          <span class="article-row-cat ${isFire ? 'fire' : ''}">${a.cat}</span>
+          <span class="article-row-cat ${isFire ? 'fire' : ''}">${a.category}</span>
           <span class="article-row-date">${dateStr}</span>
         </div>
         <div class="article-row-title">${a.title}</div>
@@ -286,7 +287,7 @@ function renderList(articles) {
         <div class="article-row-stats">
           <span>👍 ${a.likes || 0}</span>
           <span>${words} 字</span>
-          ${(a.tags||[]).map(t => `<span>#${t}</span>`).join('')}
+          ${tags.map(t => `<span>#${t.trim()}</span>`).join('')}
         </div>
       </div>
       <div class="article-row-actions" onclick="event.stopPropagation()">
@@ -294,45 +295,45 @@ function renderList(articles) {
         <button class="btn-article-action delete" onclick="openDelete(${a.id}, '${a.title.replace(/'/g,"\\'")}')">刪除</button>
       </div>
     `;
-    row.addEventListener('click', () => viewArticle(a.id));
-    list.appendChild(row);
-  });
-}
+      row.addEventListener('click', () => viewArticle(a.id));
+      list.appendChild(row);
+    });
+  }
 
-function viewArticle(id) {
-  window.location.href = 'article.html?id=' + id;
-}
+  function viewArticle(id) {
+    window.location.href = 'article.html?id=' + id;
+  }
 
-/* 删除 */
-function openDelete(id, title) {
-  deleteTargetId = id;
-  document.getElementById('deleteTargetTitle').textContent = title;
-  document.getElementById('deleteOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeDelete() {
-  document.getElementById('deleteOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-  deleteTargetId = null;
-}
-function closeDeleteOnOverlay(e) {
-  if (e.target.id === 'deleteOverlay') closeDelete();
-}
-function confirmDelete() {
-  const all = JSON.parse(localStorage.getItem('wh_articles') || '[]');
-  const idx = all.findIndex(a => a.id === deleteTargetId);
-  if (idx !== -1) { all.splice(idx, 1); localStorage.setItem('wh_articles', JSON.stringify(all)); }
-  closeDelete();
-  showToast('文章已刪除 ✓');
-  loadArticles();
-}
+  function openDelete(id, title) {
+    deleteTargetId = id;
+    document.getElementById('deleteTargetTitle').textContent = title;
+    document.getElementById('deleteOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDelete() {
+    document.getElementById('deleteOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    deleteTargetId = null;
+  }
+  function closeDeleteOnOverlay(e) {
+    if (e.target.id === 'deleteOverlay') closeDelete();
+  }
+  function confirmDelete() {
+    fetch('http://localhost:8080/api/articles/' + deleteTargetId, { method: 'DELETE' })
+            .then(() => {
+              closeDelete();
+              showToast('文章已刪除 ✓');
+              loadArticles();
+            })
+            .catch(() => showToast('刪除失敗，請重試'));
+  }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
 </script>
 </body>
 </html>

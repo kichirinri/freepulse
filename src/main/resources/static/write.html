@@ -1,441 +1,22 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>發文 · Scribe writing go</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
-<style>
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>發文 · Scribe writing go</title>
+  <link rel="stylesheet" href="css/write.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
 
-:root {
-  --ink:      #111111;
-  --ink2:     #333333;
-  --ink3:     #666666;
-  --ink4:     #999999;
-  --rule:     #d0c9c0;
-  --rule-lt:  #e8e4df;
-  --bg:       #ffffff;
-  --bg2:      #f8f6f3;
-  --accent:   #c0392b;
-  --accent2:  #e8622a;
-  --serif:    'Playfair Display', 'Noto Serif TC', 'Songti SC', Georgia, serif;
-  --sans:     'Lato', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-  --serif-zh: 'Noto Serif TC', 'Songti SC', Georgia, serif;
-}
-
-html { font-size: 16px; }
-body { font-family: var(--sans); background: var(--bg); color: var(--ink); line-height: 1.6; min-height: 100vh; }
-button { cursor: pointer; font-family: var(--sans); }
-
-/* TOP BAR */
-.write-bar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(255,255,255,0.97);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--rule);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
-  height: 54px;
-}
-
-.write-bar-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.write-logo {
-  font-family: var(--serif);
-  font-size: 20px;
-  font-weight: 900;
-  letter-spacing: 3px;
-  color: var(--ink);
-  text-decoration: none;
-}
-
-.write-status {
-  font-size: 12px;
-  color: var(--ink4);
-  font-family: var(--sans);
-}
-
-.write-bar-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.btn-draft {
-  background: none;
-  border: 1px solid var(--rule);
-  color: var(--ink3);
-  padding: 7px 16px;
-  font-size: 12px;
-  letter-spacing: 1px;
-  font-weight: 700;
-  border-radius: 2px;
-  transition: all 0.15s;
-}
-.btn-draft:hover { border-color: var(--ink); color: var(--ink); }
-
-.btn-publish {
-  background: var(--ink);
-  color: white;
-  border: none;
-  padding: 8px 20px;
-  font-size: 12px;
-  letter-spacing: 1px;
-  font-weight: 700;
-  border-radius: 2px;
-  transition: background 0.15s;
-}
-.btn-publish:hover { background: var(--ink2); }
-
-.btn-back {
-  background: none;
-  border: none;
-  color: var(--ink4);
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 0;
-  transition: color 0.15s;
-}
-.btn-back:hover { color: var(--ink); }
-
-/* EDITOR LAYOUT */
-.write-container {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 48px 40px 120px;
-}
-
-/* COVER IMAGE */
-.cover-area {
-  margin-bottom: 32px;
-}
-
-.cover-preview {
-  width: 100%;
-  height: 320px;
-  background: var(--bg2);
-  border: 2px dashed var(--rule);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  border-radius: 2px;
-  position: relative;
-  overflow: hidden;
-}
-.cover-preview:hover { border-color: var(--ink3); background: #f0ede8; }
-.cover-preview.has-image { border: none; }
-
-.cover-preview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: none;
-}
-.cover-preview.has-image img { display: block; }
-.cover-preview.has-image .cover-placeholder { display: none; }
-
-.cover-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  color: var(--ink4);
-}
-.cover-placeholder svg { opacity: 0.4; }
-.cover-placeholder span { font-size: 13px; letter-spacing: 0.5px; }
-
-.cover-remove {
-  display: none;
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: rgba(0,0,0,0.6);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  font-size: 14px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-.cover-preview.has-image .cover-remove { display: flex; }
-
-#coverInput { display: none; }
-
-/* TITLE */
-.title-input {
-  width: 100%;
-  font-family: var(--serif);
-  font-size: 40px;
-  font-weight: 900;
-  line-height: 1.2;
-  color: var(--ink);
-  border: none;
-  outline: none;
-  background: none;
-  resize: none;
-  margin-bottom: 8px;
-  min-height: 60px;
-}
-.title-input::placeholder { color: var(--rule); }
-
-.title-divider {
-  border: none;
-  border-top: 1px solid var(--rule-lt);
-  margin: 16px 0 24px;
-}
-
-/* BODY EDITOR */
-.body-editor {
-  width: 100%;
-  font-family: var(--serif-zh);
-  font-size: 18px;
-  font-weight: 300;
-  line-height: 1.9;
-  color: var(--ink2);
-  border: none;
-  outline: none;
-  background: none;
-  resize: none;
-  min-height: 400px;
-}
-.body-editor::placeholder { color: var(--rule); }
-
-/* WORD COUNT */
-.word-count {
-  font-size: 12px;
-  color: var(--ink4);
-  text-align: right;
-  margin-top: 16px;
-  font-family: var(--sans);
-}
-
-/* PUBLISH PANEL */
-.publish-panel {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 500;
-  background: rgba(0,0,0,0.5);
-  align-items: center;
-  justify-content: center;
-}
-.publish-panel.open { display: flex; }
-
-.publish-box {
-  background: white;
-  width: 560px;
-  max-width: 94vw;
-  max-height: 90vh;
-  overflow-y: auto;
-  border-top: 3px solid var(--ink);
-  animation: slideUp 0.2s ease;
-}
-@keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-
-.publish-box-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 28px 16px;
-  border-bottom: 1px solid var(--rule-lt);
-}
-.publish-box-title {
-  font-family: var(--serif);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--ink);
-}
-.publish-close {
-  background: none;
-  border: none;
-  font-size: 22px;
-  color: var(--ink4);
-  cursor: pointer;
-  line-height: 1;
-}
-.publish-close:hover { color: var(--ink); }
-
-.publish-body { padding: 24px 28px 28px; display: flex; flex-direction: column; gap: 22px; }
-
-.pub-field { display: flex; flex-direction: column; gap: 8px; }
-.pub-label {
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  font-weight: 700;
-  color: var(--ink3);
-}
-
-/* CATEGORY SELECT */
-.category-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-}
-.cat-btn {
-  padding: 8px 6px;
-  font-size: 13px;
-  color: var(--ink2);
-  background: var(--bg2);
-  border: 1px solid var(--rule);
-  border-radius: 2px;
-  cursor: pointer;
-  transition: all 0.12s;
-  text-align: center;
-  font-family: var(--sans);
-}
-.cat-btn:hover { border-color: var(--ink3); color: var(--ink); }
-.cat-btn.selected { background: var(--ink); color: white; border-color: var(--ink); }
-.cat-btn.fire.selected { background: var(--accent2); border-color: var(--accent2); }
-
-/* TAGS INPUT */
-.tags-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 10px 12px;
-  border: 1px solid var(--rule);
-  min-height: 44px;
-  cursor: text;
-  transition: border-color 0.15s;
-}
-.tags-wrap:focus-within { border-color: var(--ink); }
-
-.tag-pill {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: var(--bg2);
-  border: 1px solid var(--rule);
-  border-radius: 2px;
-  padding: 2px 8px;
-  font-size: 12px;
-  color: var(--ink2);
-}
-.tag-pill button {
-  background: none;
-  border: none;
-  color: var(--ink4);
-  font-size: 14px;
-  line-height: 1;
-  padding: 0;
-  cursor: pointer;
-}
-.tag-pill button:hover { color: var(--accent); }
-
-.tag-input {
-  border: none;
-  outline: none;
-  font-size: 13px;
-  font-family: var(--sans);
-  color: var(--ink);
-  background: none;
-  min-width: 100px;
-  flex: 1;
-}
-.tag-input::placeholder { color: var(--ink4); }
-
-.tag-hint { font-size: 11px; color: var(--ink4); }
-
-/* PUBLISH SUMMARY */
-.pub-summary {
-  background: var(--bg2);
-  border: 1px solid var(--rule-lt);
-  padding: 14px 16px;
-  font-size: 13px;
-  color: var(--ink3);
-  line-height: 1.7;
-}
-.pub-summary strong { color: var(--ink2); }
-
-.pub-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 4px;
-}
-
-.btn-pub-cancel {
-  background: none;
-  border: 1px solid var(--rule);
-  color: var(--ink3);
-  padding: 10px 20px;
-  font-size: 13px;
-  font-weight: 700;
-  border-radius: 2px;
-  transition: all 0.15s;
-}
-.btn-pub-cancel:hover { border-color: var(--ink); color: var(--ink); }
-
-.btn-pub-confirm {
-  background: var(--ink);
-  color: white;
-  border: none;
-  padding: 10px 24px;
-  font-size: 13px;
-  font-weight: 700;
-  border-radius: 2px;
-  transition: background 0.15s;
-  letter-spacing: 0.5px;
-}
-.btn-pub-confirm:hover { background: var(--ink2); }
-
-/* SUCCESS TOAST */
-.toast {
-  display: none;
-  position: fixed;
-  bottom: 32px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--ink);
-  color: white;
-  padding: 12px 28px;
-  font-size: 14px;
-  font-family: var(--sans);
-  z-index: 9999;
-  animation: toastIn 0.25s ease;
-  white-space: nowrap;
-}
-.toast.show { display: block; }
-@keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(12px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
-
-/* DRAFT SAVED indicator */
-.draft-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: #f59e0b;
-  display: inline-block;
-  margin-right: 4px;
-}
-.draft-dot.saved { background: #4ade80; }
-</style>
 </head>
 <body>
 
 <!-- TOP BAR -->
 <div class="write-bar">
   <div class="write-bar-left">
-    <a class="write-logo" href="wenhui.html">writing go  </a>
-    <span class="write-status" id="writeStatus">
+    <a class="write-logo" href="wenhui.html">writing go</a>
+    <span class="write-status">
       <span class="draft-dot" id="draftDot"></span>
       <span id="statusText">尚未儲存</span>
     </span>
@@ -450,37 +31,106 @@ button { cursor: pointer; font-family: var(--sans); }
   </div>
 </div>
 
+<!-- FORMAT TOOLBAR (浮动，选中文字时显示) -->
+<div class="format-toolbar" id="formatToolbar">
+  <button class="fmt-btn" onclick="fmt('bold')"><b>B</b></button>
+  <button class="fmt-btn" onclick="fmt('italic')"><i>I</i></button>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onclick="fmt('formatBlock','h1')">H1</button>
+  <button class="fmt-btn" onclick="fmt('formatBlock','h2')">H2</button>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onclick="fmt('formatBlock','blockquote')">❝</button>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onclick="fmt('insertUnorderedList')">•</button>
+  <button class="fmt-btn" onclick="fmt('insertOrderedList')">1.</button>
+</div>
+
+
 <!-- EDITOR -->
 <div class="write-container">
+  <!-- 草稿提示 -->
+  <div id="draftBanner" style="display:none;background:#fffbf0;border-bottom:1px solid #f0e0a0;padding:10px 40px;font-size:13px;color:#888;display:flex;align-items:center;justify-content:center;gap:16px;">
+    <span>📝 檢測到上次未完成的草稿</span>
+    <button onclick="loadDraftConfirm()" style="background:var(--ink);color:white;border:none;padding:4px 14px;font-size:12px;border-radius:2px;cursor:pointer;">繼續編輯</button>
+    <button onclick="discardDraft()" style="background:none;border:1px solid #ccc;color:#888;padding:4px 14px;font-size:12px;border-radius:2px;cursor:pointer;">丟棄草稿</button>
+  </div>
 
   <!-- COVER IMAGE -->
   <div class="cover-area">
     <div class="cover-preview" id="coverPreview" onclick="document.getElementById('coverInput').click()">
       <div class="cover-placeholder">
-        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-          <rect x="3" y="3" width="18" height="18" rx="2"/>
-          <circle cx="8.5" cy="8.5" r="1.5"/>
-          <path d="m21 15-5-5L5 21"/>
-        </svg>
+        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
         <span>點擊上傳封面圖片</span>
         <span style="font-size:11px;color:var(--rule)">建議尺寸 1200 × 630</span>
       </div>
-      <img id="coverImg" src="" alt="封面">
+      <img id="coverImg" src="" alt="">
       <button class="cover-remove" onclick="removeCover(event)">×</button>
     </div>
     <input type="file" id="coverInput" accept="image/*" onchange="handleCover(event)">
+    <input type="file" id="inlineImgInput" accept="image/*" onchange="insertInlineImage(event)">
   </div>
 
   <!-- TITLE -->
-  <textarea class="title-input" id="titleInput" placeholder="文章標題…" rows="2" oninput="autoResize(this); updateStatus()"></textarea>
+  <textarea class="title-input" id="titleInput" placeholder="文章標題…" rows="2" oninput="autoResize(this);updateStatus()" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('bodyEditor').focus();}"></textarea>
 
-  <hr class="title-divider">
+  <!-- EDITOR WRAP -->
+  <div class="editor-wrap">
+    <!-- + 按钮 -->
+    <button class="plus-btn" id="plusBtn" onclick="toggleInlineTools()">+</button>
 
-  <!-- BODY -->
-  <textarea class="body-editor" id="bodyInput" placeholder="開始寫作，讓你的聲音傳遍世界每個角落…" oninput="autoResize(this); updateWordCount(); updateStatus()"></textarea>
+    <!-- 行内工具圆圈 -->
+    <div class="inline-tools" id="inlineTools">
+      <!-- 图片 -->
+      <button class="inline-tool-btn" title="插入圖片" onclick="triggerInlineImg()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+      </button>
+      <!-- 视频 -->
+      <button class="inline-tool-btn" title="插入視頻" onclick="openVideoDialog()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </button>
+      <!-- 分隔线 -->
+      <button class="inline-tool-btn" title="分隔線" onclick="insertHR()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/></svg>
+      </button>
+      <!-- H1 -->
+      <button class="inline-tool-btn" title="大標題" onclick="fmt('formatBlock','h1')" style="font-family:serif;font-weight:900;font-size:13px;">H1</button>
+      <!-- H2 -->
+      <button class="inline-tool-btn" title="小標題" onclick="fmt('formatBlock','h2')" style="font-family:serif;font-weight:700;font-size:12px;">H2</button>
+      <!-- 引用 -->
+      <button class="inline-tool-btn" title="引用" onclick="fmt('formatBlock','blockquote')" style="font-size:16px;">❝</button>
+    </div>
+
+    <!-- BODY EDITOR -->
+    <div class="body-editor" id="bodyEditor"
+         contenteditable="true"
+         data-placeholder="開始寫作…"
+         oninput="updateWordCount();updateStatus();updatePlusBtn()">
+    </div>
+  </div>
 
   <div class="word-count" id="wordCount">0 字</div>
+</div>
 
+<!-- IMAGE FLOAT TOOLBAR -->
+<div class="img-toolbar" id="imgToolbar">
+  <button class="img-tb-btn" onclick="setImgSize('100%')">全寬</button>
+  <button class="img-tb-btn" onclick="setImgSize('70%')">70%</button>
+  <button class="img-tb-btn" onclick="setImgSize('50%')">50%</button>
+  <button class="img-tb-btn" onclick="removeSelectedImg()">刪除</button>
+</div>
+
+<!-- VIDEO DIALOG -->
+<div class="video-overlay" id="videoOverlay" onclick="closeVideoOnOverlay(event)">
+  <div class="video-box">
+    <div class="video-box-title">插入視頻</div>
+    <div class="video-box-sub">支援 YouTube · Bilibili · 其他可嵌入連結</div>
+    <input class="video-input" id="videoInput" type="text" placeholder="貼上視頻連結，例如 https://www.youtube.com/watch?v=...">
+    <div class="video-error" id="videoError"></div>
+    <div class="video-actions">
+      <button class="btn-video-cancel" onclick="closeVideoDialog()">取消</button>
+      <button class="btn-video-insert" onclick="confirmInsertVideo()">插入</button>
+    </div>
+  </div>
 </div>
 
 <!-- PUBLISH PANEL -->
@@ -491,11 +141,9 @@ button { cursor: pointer; font-family: var(--sans); }
       <button class="publish-close" onclick="closePublishPanel()">×</button>
     </div>
     <div class="publish-body">
-
-      <!-- 选择分类 -->
       <div class="pub-field">
         <div class="pub-label">選擇分類 <span style="color:var(--accent);font-size:10px;">必選</span></div>
-        <div class="category-grid" id="categoryGrid">
+        <div class="category-grid">
           <div class="cat-btn" onclick="selectCat(this,'社會')">社會</div>
           <div class="cat-btn" onclick="selectCat(this,'時事')">時事</div>
           <div class="cat-btn" onclick="selectCat(this,'哲學')">哲學</div>
@@ -522,8 +170,6 @@ button { cursor: pointer; font-family: var(--sans); }
           <div class="cat-btn" onclick="selectCat(this,'軍事')">軍事</div>
         </div>
       </div>
-
-      <!-- 标签 -->
       <div class="pub-field">
         <div class="pub-label">標籤 Tags <span style="color:var(--ink4);font-weight:400;text-transform:none;letter-spacing:0;">（最多5個）</span></div>
         <div class="tags-wrap" id="tagsWrap" onclick="document.getElementById('tagInput').focus()">
@@ -531,252 +177,25 @@ button { cursor: pointer; font-family: var(--sans); }
         </div>
         <div class="tag-hint">按 Enter 新增標籤</div>
       </div>
-
-      <!-- 发布摘要 -->
       <div class="pub-field">
         <div class="pub-label">發佈預覽</div>
-        <div class="pub-summary" id="pubSummary">
+        <div class="pub-summary">
           <strong id="previewTitle">（請輸入標題）</strong><br>
-          分類：<span id="previewCat">未選擇</span> ·
-          字數：<span id="previewWords">0</span> 字
+          分類：<span id="previewCat">未選擇</span> · 字數：<span id="previewWords">0</span> 字
         </div>
       </div>
-
-      <!-- 错误提示 -->
-      <div id="pubError" style="font-size:12px;color:var(--accent);display:none;"></div>
-
+      <div id="pubError"></div>
       <div class="pub-actions">
         <button class="btn-pub-cancel" onclick="closePublishPanel()">取消</button>
         <button class="btn-pub-confirm" onclick="confirmPublish()">確認發佈 →</button>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- SUCCESS TOAST -->
 <div class="toast" id="toast"></div>
+<script src="js/write.js"></script>
 
-<script>
-/* ── 自动高度 ── */
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = el.scrollHeight + 'px';
-}
-window.addEventListener('load', () => {
-  autoResize(document.getElementById('titleInput'));
-  autoResize(document.getElementById('bodyInput'));
-});
-
-/* ── 字数统计 ── */
-function updateWordCount() {
-  const text = document.getElementById('bodyInput').value;
-  const count = text.replace(/\s/g, '').length;
-  document.getElementById('wordCount').textContent = count + ' 字';
-}
-
-/* ── 状态更新 ── */
-let saveTimer = null;
-function updateStatus() {
-  document.getElementById('draftDot').classList.remove('saved');
-  document.getElementById('statusText').textContent = '尚未儲存';
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(autoSave, 2000);
-}
-
-function autoSave() {
-  const data = getDraftData();
-  localStorage.setItem('wh_draft', JSON.stringify(data));
-  document.getElementById('draftDot').classList.add('saved');
-  document.getElementById('statusText').textContent = '已自動儲存';
-}
-
-/* ── 草稿数据 ── */
-function getDraftData() {
-  return {
-    title: document.getElementById('titleInput').value,
-    body:  document.getElementById('bodyInput').value,
-    cat:   selectedCat,
-    tags:  tags,
-    savedAt: new Date().toISOString()
-  };
-}
-
-/* ── 存草稿 ── */
-function saveDraft() {
-  autoSave();
-  showToast('草稿已儲存 ✓');
-}
-
-/* ── 加载草稿 ── */
-(function loadDraft() {
-  const d = JSON.parse(localStorage.getItem('wh_draft') || 'null');
-  if (!d) return;
-  if (d.title) {
-    const t = document.getElementById('titleInput');
-    t.value = d.title;
-    autoResize(t);
-  }
-  if (d.body) {
-    const b = document.getElementById('bodyInput');
-    b.value = d.body;
-    autoResize(b);
-    updateWordCount();
-  }
-  if (d.cat) {
-    selectedCat = d.cat;
-    document.querySelectorAll('.cat-btn').forEach(btn => {
-      if (btn.textContent.trim().replace('🔥 ','') === d.cat || btn.textContent.trim() === d.cat) {
-        btn.classList.add('selected');
-      }
-    });
-  }
-  if (d.tags && d.tags.length) {
-    tags = d.tags;
-    renderTags();
-  }
-  document.getElementById('draftDot').classList.add('saved');
-  document.getElementById('statusText').textContent = '已載入草稿';
-})();
-
-/* ── 封面图 ── */
-function handleCover(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    document.getElementById('coverImg').src = ev.target.result;
-    document.getElementById('coverPreview').classList.add('has-image');
-  };
-  reader.readAsDataURL(file);
-}
-
-function removeCover(e) {
-  e.stopPropagation();
-  document.getElementById('coverImg').src = '';
-  document.getElementById('coverPreview').classList.remove('has-image');
-  document.getElementById('coverInput').value = '';
-}
-
-/* ── 分类选择 ── */
-let selectedCat = '';
-function selectCat(el, cat) {
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedCat = cat;
-}
-
-/* ── Tags ── */
-let tags = [];
-const tagInput = document.getElementById('tagInput');
-
-tagInput.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    const val = this.value.trim();
-    if (val && tags.length < 5 && !tags.includes(val)) {
-      tags.push(val);
-      renderTags();
-      this.value = '';
-    }
-  }
-  if (e.key === 'Backspace' && !this.value && tags.length) {
-    tags.pop();
-    renderTags();
-  }
-});
-
-function renderTags() {
-  const wrap = document.getElementById('tagsWrap');
-  wrap.querySelectorAll('.tag-pill').forEach(p => p.remove());
-  tags.forEach((tag, i) => {
-    const pill = document.createElement('div');
-    pill.className = 'tag-pill';
-    pill.innerHTML = `<span>${tag}</span><button onclick="removeTag(${i})">×</button>`;
-    wrap.insertBefore(pill, tagInput);
-  });
-  tagInput.placeholder = tags.length >= 5 ? '' : '輸入標籤後按 Enter';
-}
-
-function removeTag(i) {
-  tags.splice(i, 1);
-  renderTags();
-}
-
-/* ── 发布面板 ── */
-function openPublishPanel() {
-  // 更新预览
-  const title = document.getElementById('titleInput').value.trim();
-  const words = document.getElementById('bodyInput').value.replace(/\s/g, '').length;
-  document.getElementById('previewTitle').textContent = title || '（請輸入標題）';
-  document.getElementById('previewCat').textContent = selectedCat || '未選擇';
-  document.getElementById('previewWords').textContent = words;
-  document.getElementById('pubError').style.display = 'none';
-  document.getElementById('publishPanel').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closePublishPanel() {
-  document.getElementById('publishPanel').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function closeOnOverlay(e) {
-  if (e.target.id === 'publishPanel') closePublishPanel();
-}
-
-/* ── 确认发布 ── */
-function confirmPublish() {
-  const title = document.getElementById('titleInput').value.trim();
-  const body  = document.getElementById('bodyInput').value.trim();
-  const errEl = document.getElementById('pubError');
-
-  if (!title) {
-    errEl.textContent = '請輸入文章標題';
-    errEl.style.display = 'block'; return;
-  }
-  if (!body || body.length < 20) {
-    errEl.textContent = '文章內容至少需要20個字';
-    errEl.style.display = 'block'; return;
-  }
-  if (!selectedCat) {
-    errEl.textContent = '請選擇文章分類';
-    errEl.style.display = 'block'; return;
-  }
-
-  // 保存文章到 localStorage
-  const articles = JSON.parse(localStorage.getItem('wh_articles') || '[]');
-  const user = JSON.parse(sessionStorage.getItem('wh_user') || '{}');
-  const article = {
-    id: Date.now(),
-    title,
-    body,
-    cat: selectedCat,
-    tags,
-    author: user.name || 'Scribe用戶',
-    email: user.email || '',
-    cover: document.getElementById('coverImg').src || '',
-    publishedAt: new Date().toISOString(),
-    likes: 0
-  };
-  articles.unshift(article);
-  localStorage.setItem('wh_articles', JSON.stringify(articles));
-
-  // 清除草稿
-  localStorage.removeItem('wh_draft');
-
-  closePublishPanel();
-  showToast('文章已發佈！即將返回首頁…');
-  setTimeout(() => { window.location.href = 'wenhui.html'; }, 2000);
-}
-
-/* ── Toast ── */
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
 </script>
 </body>
 </html>
