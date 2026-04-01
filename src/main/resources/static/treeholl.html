@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>樹洞 · Scribe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preload" as="style"
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap"
+          onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
+    <link rel="stylesheet" href="css/index.css?v=5">
+    <link rel="stylesheet" href="css/treeholl.css">
+</head>
+<body>
+
+<!-- NAV BAR -->
+<nav class="nav-bar">
+    <div class="nav-logo-mini" style="cursor:pointer;" onclick="window.location.href='index.html'">Scribe</div>
+    <div class="nav-topics">
+        <div class="nav-topic" onclick="window.location.href='index.html'">熱門</div>
+        <div class="nav-topic" onclick="window.location.href='category.html?cat=時事'">時事</div>
+        <div class="nav-topic" onclick="window.location.href='category.html?cat=文化'">文化</div>
+        <div class="nav-topic" onclick="window.location.href='category.html?cat=生活'">生活</div>
+        <div class="nav-topic" onclick="window.location.href='category.html?cat=海外'">海外</div>
+        <div class="nav-topic" onclick="window.location.href='category.html?cat=創作'">創作</div>
+        <div class="nav-topic treeholl active" onclick="window.location.href='treeholl.html'">🕳️ 樹洞</div>
+    </div>
+    <div class="nav-right">
+        <div id="stateGuest" style="display:flex;align-items:center;gap:12px;">
+            <button class="nav-btn" onclick="window.location.href='index.html'">登入</button>
+            <div class="nav-divider"></div>
+            <button class="nav-btn-fill" onclick="openWriteModal()">發文</button>
+        </div>
+        <div id="stateUser" style="display:none;align-items:center;gap:12px;">
+            <button class="nav-btn-fill" onclick="openWriteModal()">投入樹洞</button>
+            <div class="nav-divider"></div>
+            <div class="user-avatar" id="userAvatar" onclick="window.location.href='myarticles.html'">文</div>
+        </div>
+    </div>
+</nav>
+
+<!-- TREEHOLL HEADER -->
+<div class="treeholl-header">
+    <img class="treeholl-header-bg" src="mage/treeholl.jpg" alt="">
+
+    <div class="treeholl-header-inner">
+        <div class="th-back" onclick="window.location.href='index.html'" style="position:absolute;top:20px;left:40px;font-size:13px;color:rgba(255,255,255,0.4);cursor:pointer;">← 返回首頁</div>
+
+        <div class="th-sign-boards">
+            <div class="th-sign-board">
+                <div class="th-sign-title">🕳️ 樹 洞</div>
+            </div>
+            <div class="th-sign-board">
+
+            </div>
+            <div class="th-sign-board">
+                <div class="th-sign-rules">
+                    <span>👤 匿名</span>
+                    <span>🔒 無追蹤</span>
+                    <span>💬 只點讚</span>
+                    <span>⚖️ 違法移除</span>
+                </div>
+            </div>
+        </div>
+        <button class="th-cta" onclick="openWriteModal()">投入樹洞 →</button>
+    </div>
+</div>
+
+<!-- SUB BAR -->
+<div class="cat-sub-bar">
+    <div class="cat-sub-tag active">全部</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="cat-page">
+    <div class="cat-main" id="holeFeed">
+        <div class="cat-loading">載入中…</div>
+    </div>
+    <div class="cat-side" id="holeSide"></div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <div class="footer-logo">Scribe</div>
+    <div class="footer-links">
+        <span class="footer-link">服務條款</span>
+        <span class="footer-link">隱私政策</span>
+        <span class="footer-link">聯繫我們</span>
+    </div>
+    <div class="footer-copy">© 2026 WenHui · Scribe</div>
+</div>
+
+<!-- 确认弹窗 -->
+<div class="modal-overlay" id="writeModal" onclick="closeOnOverlay(event)">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeWriteModal()">×</button>
+        <div class="modal-logo">🕳️ 樹洞</div>
+        <div class="modal-tagline">投入前，請確認以下規則</div>
+        <div class="th-modal-rules">
+            <div class="th-modal-rule">✦ 發布後完全匿名，不儲存任何身份資訊</div>
+            <div class="th-modal-rule">✦ 無法修改、無法刪除，請謹慎後再投入</div>
+            <div class="th-modal-rule">✦ 禁止仇恨、歧視、違法內容，違者封禁</div>
+            <div class="th-modal-rule">✦ 樹洞是另一種面對自己的方式</div>
+        </div>
+        <button class="btn-submit" onclick="goWrite()">我明白了，開始寫 →</button>
+        <div class="modal-footer-note" style="margin-top:12px;">
+            <span style="color:var(--ink4);">需要先登入才能投入樹洞</span>
+        </div>
+    </div>
+</div>
+
+<script src="js/treeholl.js"></script>
+</body>
+</html>

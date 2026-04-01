@@ -1,0 +1,105 @@
+.cat-header {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+    border-bottom: 1px solid var(--rule);
+}
+.cat-header-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.cat-header-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6));
+}
+.cat-header-inner {
+    position: absolute;
+    inset: 0;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 28px;
+}
+.cat-back {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: color 0.15s;
+    font-family: var(--sans);
+}
+.cat-back:hover { color: white; }
+.cat-title {
+    font-family: var(--serif);
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: white;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.cat-desc {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    font-family: var(--sans);
+    letter-spacing: 1px;
+}
+.cat-sub-bar {
+    background: white;
+    border-bottom: 1px solid var(--rule);
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    position: sticky;
+    top: 52px;
+    z-index: 100;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.cat-sub-tag {
+    padding: 0 16px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink3);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    font-family: var(--sans);
+}
+.cat-sub-tag:hover { color: var(--ink); }
+.cat-sub-tag.active { color: var(--ink); border-bottom-color: var(--ink); }
+.cat-page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 36px 40px 60px;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 0;
+}
+.cat-main { border-right: 1px solid var(--rule); padding-right: 40px; }
+.cat-side { padding-left: 32px; }
+.cat-loading {
+    padding: 80px 0;
+    text-align: center;
+    color: var(--ink4);
+    font-size: 15px;
+}
+.cat-empty {
+    padding: 80px 0;
+    text-align: center;
+    color: var(--ink4);
+    font-size: 15px;
+    line-height: 1.8;
+}

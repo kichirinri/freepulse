@@ -187,8 +187,8 @@ function selectWm(choice) {
 function downloadPDF() {
     if (!article) return;
     closePdfDialog();
-    const url = 'http://localhost:8080/api/articles/' + article.id + '/pdf';
-    window.location.href = url;
+    const wm = wmChoice === 'yes' ? 'true' : 'false';
+    window.location.href = 'http://localhost:8080/api/articles/' + article.id + '/pdf?watermark=' + wm;
     showToast('PDF 下載中…');
 }
 
@@ -211,7 +211,7 @@ function confirmDelete() {
         .then(() => {
             closeDeleteDialog();
             showToast('文章已刪除，即將返回首頁…');
-            setTimeout(() => { window.location.href = 'wenhui.html'; }, 2000);
+            setTimeout(() => { window.location.href = 'index.html'; }, 2000);
         })
         .catch(() => showToast('刪除失敗，請重試'));
 }

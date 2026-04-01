@@ -4,6 +4,12 @@
  * ================================================================ */
 
 /* Topic panel toggle */
+function goCategory(cat) {
+  console.log('goCategory called:', cat);
+  window.location.href = 'category.html?cat=' + encodeURIComponent(cat);
+
+}
+
 function toggleTsPanel() {
   const p = document.getElementById('tsPanel');
   const b = document.getElementById('tsExpandBtn');
@@ -42,120 +48,26 @@ function trimTags() {
 (function(){ setTimeout(trimTags, 300); })();
 window.addEventListener('resize', trimTags);
 
-/* Globe */
-(function() {
-  const canvas = document.getElementById('globeCanvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, cx, cy, R, rot = 0;
+/* Banner Slider */
+let currentSlide = 0;
+let sliderTimer = null;
 
-  const cities = [
-    [35.68,139.69],[40.71,-74.00],[51.50,-0.12],[-33.86,151.20],
-    [43.65,-79.38],[1.35,103.82],[48.85,2.35],[52.52,13.40],
-    [34.05,-118.24],[-37.81,144.96],[49.28,-123.12],[22.28,114.16],
-    [25.04,121.56],[37.57,126.98],[28.61,77.20],[39.90,116.40],[31.23,121.47]
-  ];
-
-  function gen(a,b,c,d,n){ const r=[];for(let i=0;i<n;i++)r.push([a+Math.random()*(b-a),c+Math.random()*(d-c)]);return r; }
-  const land=[...gen(35,75,-170,-50,700),...gen(-55,12,-82,-32,400),...gen(35,70,-12,42,380),...gen(-38,36,-18,52,520),...gen(0,72,45,142,800),...gen(-44,-10,112,154,260)];
-
-  function proj(lat,lng,r){
-    const phi=lat*Math.PI/180, lam=lng*Math.PI/180+r;
-    const cp=Math.cos(phi);
-    return {x:cx+R*cp*Math.sin(lam), y:cy-R*Math.sin(phi), z:cp*Math.cos(lam)};
-  }
-
-  function resize(){
-    W=canvas.width=canvas.offsetWidth;
-    H=canvas.height=canvas.offsetHeight;
-    cx=W/2; cy=H/2; R=Math.min(W,H)*0.40;
-  }
-
-  function draw(t){
-    ctx.clearRect(0,0,W,H);
-    const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(W,H));
-    bg.addColorStop(0,'#0d1b2a'); bg.addColorStop(1,'#030810');
-    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
-
-    for(let s=0;s<150;s++){
-      ctx.fillStyle=`rgba(255,255,255,${0.2+0.4*Math.sin(t*.0008+s)})`;
-      ctx.fillRect((s*157+83)%W,(s*91+47)%H,1,1);
-    }
-
-    ctx.save();
-    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.clip();
-
-    const oc=ctx.createRadialGradient(cx-R*.3,cy-R*.3,0,cx,cy,R);
-    oc.addColorStop(0,'#1a3a5c'); oc.addColorStop(1,'#061525');
-    ctx.fillStyle=oc; ctx.fillRect(cx-R,cy-R,R*2,R*2);
-
-    for(let la=-75;la<=75;la+=15){
-      ctx.beginPath(); let f=true;
-      for(let lo=-180;lo<=180;lo+=4){
-        const p=proj(la,lo,rot);
-        if(p.z<0){f=true;continue;}
-        f?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y); f=false;
-      }
-      ctx.strokeStyle='rgba(80,140,220,0.07)'; ctx.lineWidth=.5; ctx.stroke();
-    }
-    for(let lo=-180;lo<=180;lo+=15){
-      ctx.beginPath(); let f=true;
-      for(let la=-85;la<=85;la+=4){
-        const p=proj(la,lo,rot);
-        if(p.z<0){f=true;continue;}
-        f?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y); f=false;
-      }
-      ctx.strokeStyle='rgba(80,140,220,0.05)'; ctx.lineWidth=.5; ctx.stroke();
-    }
-
-    land.forEach(([la,lo])=>{
-      const p=proj(la,lo,rot);
-      if(p.z<0) return;
-      ctx.fillStyle=`rgba(50,120,80,${.35*p.z+.1})`;
-      ctx.fillRect(p.x-1,p.y-1,2,2);
-    });
-
-    for(let i=0;i<cities.length;i++){
-      const a=proj(cities[i][0],cities[i][1],rot);
-      if(a.z<0) continue;
-      for(let j=i+1;j<cities.length;j+=2){
-        const b=proj(cities[j][0],cities[j][1],rot);
-        if(b.z<0) continue;
-        const prog=(t*.00025+i*.13+j*.07)%1;
-        const al=Math.sin(prog*Math.PI)*.2;
-        if(al<.01) continue;
-        const mx=(a.x+b.x)/2, my=(a.y+b.y)/2-R*.12;
-        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.quadraticCurveTo(mx,my,b.x,b.y);
-        ctx.strokeStyle=`rgba(160,210,255,${al})`; ctx.lineWidth=.7; ctx.stroke();
-        const px=(1-prog)*(1-prog)*a.x+2*(1-prog)*prog*mx+prog*prog*b.x;
-        const py=(1-prog)*(1-prog)*a.y+2*(1-prog)*prog*my+prog*prog*b.y;
-        ctx.beginPath(); ctx.arc(px,py,2,0,Math.PI*2);
-        ctx.fillStyle=`rgba(200,230,255,${al*3})`; ctx.fill();
-      }
-    }
-    ctx.restore();
-
-    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2);
-    ctx.strokeStyle='rgba(100,160,255,0.25)'; ctx.lineWidth=1; ctx.stroke();
-
-    cities.forEach(([la,lo])=>{
-      const p=proj(la,lo,rot);
-      if(p.z<.1) return;
-      ctx.beginPath(); ctx.arc(p.x,p.y,2.5,0,Math.PI*2);
-      ctx.fillStyle=`rgba(255,255,255,${p.z*.9})`; ctx.fill();
-      const pr=3+8*((t*.002+la)%1);
-      ctx.beginPath(); ctx.arc(p.x,p.y,pr,0,Math.PI*2);
-      ctx.strokeStyle=`rgba(255,255,255,${Math.max(0,(1-(t*.002+la)%1))*p.z*.4})`;
-      ctx.lineWidth=.8; ctx.stroke();
-    });
-
-    rot+=.0025;
-    requestAnimationFrame(draw);
-  }
-
-  window.addEventListener('resize', resize);
-  resize();
-  requestAnimationFrame(draw);
-})();
+function goSlide(n) {
+  const slides = document.querySelectorAll('.banner-slide');
+  const dots   = document.querySelectorAll('.banner-dot');
+  slides[currentSlide].classList.remove('active');
+  dots[currentSlide].classList.remove('active');
+  currentSlide = (n + slides.length) % slides.length;
+  slides[currentSlide].classList.add('active');
+  dots[currentSlide].classList.add('active');
+}
+function nextSlide() { goSlide(currentSlide + 1); resetTimer(); }
+function prevSlide() { goSlide(currentSlide - 1); resetTimer(); }
+function resetTimer() {
+  clearInterval(sliderTimer);
+  sliderTimer = setInterval(() => goSlide(currentSlide + 1), 5000);
+}
+resetTimer();
 
 /* ================================================================
  *  登入 / 註冊 / 歡迎提示
@@ -175,9 +87,7 @@ const DB = {
   }
 };
 
-/* 当前会话 */
-let currentUser = JSON.parse(sessionStorage.getItem('wh_user') || 'null');
-if (currentUser) renderLoggedIn(currentUser);
+
 
 /* Modal 开关 */
 function openLoginModal() {
@@ -197,14 +107,44 @@ function closeOnOverlay(e, id) {
 
 /* Tab 切换 */
 function switchTab(tab) {
-  ['login','phone','register'].forEach(t => {
-    const tabId  = t === 'login' ? 'tabLogin' : t === 'phone' ? 'tabPhone' : 'tabReg';
-    const formId = t === 'login' ? 'formLogin' : t === 'phone' ? 'formPhone' : 'formReg';
-    document.getElementById(tabId).classList.toggle('active', t === tab);
-    document.getElementById(formId).classList.toggle('hidden', t !== tab);
+  const tabMap = { login: 'tabLogin', register: 'tabReg' };
+  const formMap = { login: 'formLogin', register: 'formReg', forgot: 'formForgot' };
+
+  // 切换tab高亮（只处理有tab元素的）
+  Object.keys(tabMap).forEach(t => {
+    document.getElementById(tabMap[t]).classList.toggle('active', t === tab);
   });
+
+  // 切换表单显示
+  Object.keys(formMap).forEach(t => {
+    document.getElementById(formMap[t]).classList.toggle('hidden', t !== tab);
+  });
+
   clearForms();
-  if (tab === 'phone') resetCodeTimer();
+}
+
+function showForgotPwd() {
+  Object.keys({login:'tabLogin',register:'tabReg'}).forEach(t => {
+    document.getElementById(t==='login'?'tabLogin':'tabReg').classList.remove('active');
+  });
+  ['formLogin','formReg'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  document.getElementById('formForgot').classList.remove('hidden');
+  clearForms();
+}
+
+function doForgotPwd() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  const errEl = document.getElementById('forgotError');
+  const sucEl = document.getElementById('forgotSuccess');
+  const btn   = document.getElementById('btnForgot');
+  errEl.textContent = ''; sucEl.textContent = '';
+  if (!email) { errEl.textContent = '請輸入電子郵件'; return; }
+  if (!DB.get(email)) { errEl.textContent = '此郵件尚未註冊'; return; }
+  btn.disabled = true; btn.textContent = '發送中…';
+  setTimeout(() => {
+    sucEl.textContent = '重設連結已發送，請檢查郵箱（演示模式）';
+    btn.disabled = false; btn.textContent = '發送重設連結';
+  }, 800);
 }
 
 function clearForms() {
@@ -362,6 +302,10 @@ function renderLoggedIn(user) {
   }
 }
 
+/* 当前会话 */
+let currentUser = JSON.parse(sessionStorage.getItem('wh_user') || 'null');
+if (currentUser) renderLoggedIn(currentUser);
+
 /* 登出 */
 function doLogout() {
   sessionStorage.removeItem('wh_user');
@@ -418,79 +362,180 @@ document.addEventListener('keydown', function(e) {
 });
 
 /* ================================================================
- *  首页动态加载用户发表的文章
+ *  首页动态文章加载 + 分类过滤
  * ================================================================ */
+let allArticles = [];
+
 (function loadUserArticles() {
   fetch('http://localhost:8080/api/articles')
       .then(res => res.json())
       .then(articles => {
-        if (!articles.length) return;
-
-        const page = document.querySelector('.page');
-        if (!page) return;
-
-        const section = document.createElement('div');
-        section.id = 'userFeedSection';
-        section.innerHTML = `
-        <div class="divider-label" style="margin:32px 0 20px;">
-          <span class="divider-label-text">最新發表</span>
-        </div>
-        <div class="grid-c">
-          <div class="grid-c-main" id="userFeed"></div>
-          <div class="grid-c-side" id="userFeedSide"></div>
-        </div>
-      `;
-        page.appendChild(section);
-
-        const feed = section.querySelector('#userFeed');
-        const side = section.querySelector('#userFeedSide');
-
-        articles.slice(0, 10).forEach(a => {
-          const date = new Date(a.createdDate);
-          const dateStr = (date.getMonth()+1) + '月' + date.getDate() + '日';
-          const words = (a.content||'').replace(/\s/g,'').length;
-          const mins = Math.max(1, Math.round(words/300));
-          const excerpt = (a.content||'').slice(0, 100);
-          const isFire = a.category === '煙火飄香';
-          const initial = (a.authorName||'文')[0].toUpperCase();
-
-          const el = document.createElement('div');
-          el.className = 'art-text';
-          el.style.cursor = 'pointer';
-          el.innerHTML = `
-          <div class="art-text-top">
-            <div class="art-text-avatar" style="background:linear-gradient(135deg,#667eea,#764ba2)">${initial}</div>
-            <span class="art-text-author">${a.authorName || '用戶'}</span>
-            <span class="art-text-pub">· ${a.category}</span>
-            <span class="art-text-loc" style="margin-left:auto;font-size:13px;color:var(--ink4);">${dateStr}</span>
-          </div>
-          <div style="font-family:var(--serif);font-size:20px;font-weight:700;line-height:1.35;color:var(--ink);margin-bottom:8px;">${a.title}</div>
-          <div style="font-size:15px;color:var(--ink3);line-height:1.65;margin-bottom:12px;">${excerpt}…</div>
-          <div class="art-text-footer">
-            <span class="art-text-cat ${isFire?'fire':''}">${a.category}</span>
-            <span class="art-text-date">${mins} 分鐘閱讀</span>
-            <div class="art-text-stats"><span class="art-text-stat">👍 ${a.likes||0}</span></div>
-          </div>
-        `;
-          el.onclick = () => window.location.href = 'article.html?id=' + a.id;
-          feed.appendChild(el);
-        });
-
-        const sorted = [...articles].sort((a,b) => (b.likes||0) - (a.likes||0)).slice(0, 5);
-        let sideHTML = `<hr class="side-rule"><div class="side-title">最新文章</div>`;
-        sorted.forEach((a, i) => {
-          const r = i===0?'r1':i===1?'r2':i===2?'r3':'';
-          sideHTML += `
-          <div class="hot-list-item" style="cursor:pointer;" onclick="window.location.href='article.html?id=${a.id}'">
-            <div class="hot-list-num ${r}">${i+1}</div>
-            <div>
-              <div class="hot-list-text">${a.title}</div>
-              <div class="hot-list-heat">👍 ${a.likes||0} · ${a.category}</div>
-            </div>
-          </div>
-        `;
-        });
-        side.innerHTML = sideHTML;
+        allArticles = articles;
+        renderFeed(articles);
       })
       .catch(err => console.log('載入文章失敗', err));
 })();
+
+function renderFeed(articles) {
+  // 找到或创建动态区块
+  let section = document.getElementById('userFeedSection');
+  if (!section) {
+    section = document.createElement('div');
+    section.id = 'userFeedSection';
+    section.innerHTML = `
+      <div class="divider-label" style="margin:32px 0 20px;">
+        <span class="divider-label-text" id="feedLabel">最新發表</span>
+      </div>
+      <div class="grid-c">
+        <div class="grid-c-main" id="userFeed"></div>
+        <div class="grid-c-side" id="userFeedSide"></div>
+      </div>
+    `;
+    document.querySelector('.page').appendChild(section);
+  }
+
+  const feed = document.getElementById('userFeed');
+  const side = document.getElementById('userFeedSide');
+  feed.innerHTML = '';
+
+  if (!articles.length) {
+    feed.innerHTML = '<div style="padding:60px 0;text-align:center;color:var(--ink4);font-size:15px;">此分類暫無文章</div>';
+    side.innerHTML = '';
+    return;
+  }
+
+  articles.slice(0, 10).forEach(a => {
+    const date = new Date(a.createdDate);
+    const dateStr = (date.getMonth()+1) + '月' + date.getDate() + '日';
+    const words = (a.content||'').replace(/\s/g,'').length;
+    const mins = Math.max(1, Math.round(words/300));
+    const excerpt = (a.content||'').slice(0, 100);
+    const isFire = a.category === '煙火飄香';
+    const initial = (a.authorName||'文')[0].toUpperCase();
+
+    const el = document.createElement('div');
+    el.className = 'art-text';
+    el.style.cursor = 'pointer';
+    el.innerHTML = `
+      <div class="art-text-top">
+        <div class="art-text-avatar" style="background:linear-gradient(135deg,#667eea,#764ba2)">${initial}</div>
+        <span class="art-text-author">${a.authorName || '用戶'}</span>
+        <span class="art-text-pub">· ${a.category}</span>
+        <span class="art-text-loc" style="margin-left:auto;font-size:13px;color:var(--ink4);">${dateStr}</span>
+      </div>
+      <div class="art-title" style="font-family:var(--serif);font-size:20px;font-weight:700;line-height:1.35;color:var(--ink);margin-bottom:8px;transition:color 0.15s;"
+           onmouseover="this.style.color='#c0392b'" onmouseout="this.style.color='var(--ink)'">${a.title}</div>
+      <div style="font-size:15px;color:var(--ink3);line-height:1.65;margin-bottom:12px;">${excerpt}…</div>
+      <div class="art-text-footer">
+        <span class="art-text-cat ${isFire?'fire':''}">${a.category}</span>
+        <span class="art-text-date">${mins} 分鐘閱讀</span>
+        <div class="art-text-stats"><span class="art-text-stat">👍 ${a.likes||0}</span></div>
+      </div>
+    `;
+    el.onclick = () => window.location.href = 'article.html?id=' + a.id;
+    feed.appendChild(el);
+  });
+
+  // 侧栏热门
+  const sorted = [...articles].sort((a,b) => (b.likes||0) - (a.likes||0)).slice(0, 5);
+  let sideHTML = `<hr class="side-rule"><div class="side-title">熱門文章</div>`;
+  sorted.forEach((a, i) => {
+    const r = i===0?'r1':i===1?'r2':i===2?'r3':'';
+    sideHTML += `
+      <div class="hot-list-item" style="cursor:pointer;" onclick="window.location.href='article.html?id=${a.id}'">
+        <div class="hot-list-num ${r}">${i+1}</div>
+        <div>
+          <div class="hot-list-text">${a.title}</div>
+          <div class="hot-list-heat">👍 ${a.likes||0} · ${a.category}</div>
+        </div>
+      </div>
+    `;
+  });
+  side.innerHTML = sideHTML;
+}
+
+function filterByTopic(topic, el) {
+  // 更新导航active状态
+  document.querySelectorAll('.nav-topic').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  // 更新feed标签
+  const label = document.getElementById('feedLabel');
+  if (label) label.textContent = topic === '熱門' ? '最新發表' : topic;
+
+  if (topic === '熱門') {
+    const sorted = [...allArticles].sort((a, b) => (b.likes||0) - (a.likes||0));
+    if (label) label.textContent = '熱門文章';
+    renderFeed(sorted);
+    return;
+  }
+
+  // 按分类过滤
+  fetch(`http://localhost:8080/api/articles/category/${encodeURIComponent(topic)}`)
+      .then(res => res.json())
+      .then(articles => renderFeed(articles))
+      .catch(() => {
+        // 前端降级过滤
+        const filtered = allArticles.filter(a => a.category === topic);
+        renderFeed(filtered);
+      });
+}
+/* 搜索功能 */
+function toggleSearch() {
+  document.getElementById('searchOverlay').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('searchInput').focus(), 100);
+}
+
+function closeSearch() {
+  document.getElementById('searchOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchResultList').innerHTML = '';
+}
+
+function doSearch() {
+  const keyword = document.getElementById('searchInput').value.trim();
+  if (!keyword) return;
+
+  const list = document.getElementById('searchResultList');
+  list.innerHTML = '<div style="color:var(--ink4);font-size:14px;padding:20px 0;">搜尋中…</div>';
+
+  fetch('http://localhost:8080/api/articles/search?keyword=' + encodeURIComponent(keyword))
+      .then(res => res.json())
+      .then(articles => {
+        if (!articles.length) {
+          list.innerHTML = `<div style="text-align:center;padding:80px;color:var(--ink4);font-size:16px;">沒有找到「${keyword}」相關文章</div>`;
+          return;
+        }
+
+        list.innerHTML = `<div style="font-size:13px;color:var(--ink4);margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--rule);">找到 ${articles.length} 篇相關文章</div>`;
+
+        articles.forEach(a => {
+          const date = new Date(a.createdDate);
+          const dateStr = (date.getMonth()+1) + '月' + date.getDate() + '日';
+          const excerpt = (a.content || '').slice(0, 120);
+          const hl = s => s.replace(new RegExp(keyword, 'gi'), m => `<mark style="background:#fff3cd;padding:0 2px;">${m}</mark>`);
+
+          const el = document.createElement('div');
+          el.style.cssText = 'padding:24px 0;border-bottom:1px solid var(--rule-lt);cursor:pointer;';
+          el.innerHTML = `
+          <div style="font-size:12px;color:var(--ink4);margin-bottom:8px;">${a.category} · ${a.authorName} · ${dateStr}</div>
+          <div style="font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink);margin-bottom:8px;line-height:1.3;">${hl(a.title)}</div>
+          <div style="font-size:15px;color:var(--ink3);line-height:1.7;">${hl(excerpt)}…</div>
+          <div style="font-size:13px;color:var(--ink4);margin-top:10px;">👍 ${a.likes||0} · ${Math.max(1,Math.round((a.content||'').length/300))} 分鐘閱讀</div>
+        `;
+          el.onmouseenter = () => el.style.opacity = '0.7';
+          el.onmouseleave = () => el.style.opacity = '1';
+          el.onclick = () => { closeSearch(); window.location.href = 'article.html?id=' + a.id; };
+          list.appendChild(el);
+        });
+      })
+      .catch(() => {
+        list.innerHTML = '<div style="text-align:center;padding:80px;color:var(--ink4);">搜尋失敗，請確認服務器運行中</div>';
+      });
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeSearch();
+});

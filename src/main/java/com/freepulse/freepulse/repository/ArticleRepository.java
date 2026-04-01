@@ -21,5 +21,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findTop10ByOrderByLikesDesc();
 
     // 搜尋（標題或內容包含關鍵字）
-    List<Article> findByTitleContainingOrContentContaining(String title, String content);
+    List<Article> findByTitleContainingOrContentContainingOrAuthorNameContaining(String title, String content, String authorName);
 }

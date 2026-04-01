@@ -79,7 +79,7 @@ public class ArticleController {
                         null,                          // 用户密码（无需密码即可打开）
                         "scribe2026".getBytes(),       // 所有者密码
                         EncryptionConstants.ALLOW_PRINTING,  // 只允许打印
-                        EncryptionConstants.ENCRYPTION_AES_128
+                        EncryptionConstants.ENCRYPTION_AES_256
                 );
 
         PdfWriter writer = new PdfWriter(response.getOutputStream(), writerProps);
@@ -98,7 +98,7 @@ public class ArticleController {
 
                 canvas.saveState();
                 PdfExtGState gs = new PdfExtGState();
-                gs.setFillOpacity(0.06f);
+                gs.setFillOpacity(0.12f);
                 canvas.setExtGState(gs);
 
                 String wmText = "Scribe  " + article.getAuthorName() + "  版權所有";
@@ -111,7 +111,7 @@ public class ArticleController {
                     for (float x = -200; x < pageSize.getWidth() + 300; x += 180) {
                         canvas.beginText()
                                 .setFontAndSize(wmFont, 14)
-                                .setColor(new DeviceRgb(100, 100, 100), true)
+                                .setColor(new DeviceRgb(30, 60, 120), true)
                                 .setTextMatrix(cos, sin, -sin, cos, x, y)
                                 .showText(wmText)
                                 .endText();

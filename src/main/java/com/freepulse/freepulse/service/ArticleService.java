@@ -86,6 +86,6 @@ public class ArticleService {
 
     // 搜尋
     public List<Article> search(String keyword) {
-        return articleRepository.findByTitleContainingOrContentContaining(keyword, keyword);
+        return articleRepository.findByTitleContainingOrContentContainingOrAuthorNameContaining(keyword, keyword, keyword);
     }
 }

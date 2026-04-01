@@ -1,3 +1,24 @@
+
+let publishMode = 'normal'; // 'normal' | 'anon'
+
+function setMode(mode) {
+    publishMode = mode;
+    document.getElementById('modeNormal').classList.toggle('active', mode === 'normal');
+    document.getElementById('modeAnon').classList.toggle('active', mode === 'anon');
+
+    // 树洞模式隐藏分类选择
+    const catField = document.querySelector('.category-grid').closest('.pub-field');
+    if (mode === 'anon') {
+        catField.style.opacity = '0.4';
+        catField.style.pointerEvents = 'none';
+        selectedCat = '樹洞';
+    } else {
+        catField.style.opacity = '1';
+        catField.style.pointerEvents = 'auto';
+        selectedCat = '';
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+    }
+}
 (function() {
     const d = JSON.parse(localStorage.getItem('wh_draft') || 'null');
     if (!d || (!d.title && !d.bodyHTML && !d.body)) return;
@@ -73,7 +94,9 @@ function discardDraft() {
     document.getElementById('inlineTools').classList.remove('show');
 }
 
-    document.getElementById('bodyEditor').addEventListener('keyup', updatePlusBtn);
+    document.getElementById('bodyEditor').addEventListener('keyup', e => {
+        setTimeout(updatePlusBtn, 0);
+    });
     document.getElementById('bodyEditor').addEventListener('click', updatePlusBtn);
 
     /* ── 格式工具栏（选中文字时显示）── */
@@ -314,17 +337,18 @@ function discardDraft() {
     if (!bodyText || bodyText.length < 10) { errEl.textContent='文章內容至少需要10個字'; errEl.style.display='block'; return; }
     if (!selectedCat) { errEl.textContent='請選擇文章分類'; errEl.style.display='block'; return; }
 
-    const user = JSON.parse(sessionStorage.getItem('wh_user') || '{}');
+        const user = JSON.parse(sessionStorage.getItem('wh_user') || '{}');
+        const isAnon = publishMode === 'anon';
 
-    const article = {
-    title: title,
-    content: bodyText,
-    bodyHTML: bodyHTML,
-    category: selectedCat,
-    tags: tags.join(','),
-    authorName: user.name || '用戶',
-    authorEmail: user.email || ''
-};
+        const article = {
+            title: title,
+            content: bodyText,
+            bodyHTML: bodyHTML,
+            category: isAnon ? '樹洞' : selectedCat,
+            tags: tags.join(','),
+            authorName: isAnon ? '樹洞' : (user.name || '用戶'),
+            authorEmail: isAnon ? '' : (user.email || '')
+        };
 
     const btn = document.querySelector('.btn-pub-confirm');
     btn.disabled = true;
@@ -340,7 +364,7 @@ function discardDraft() {
     localStorage.removeItem('wh_draft');
     closePublishPanel();
         showToast('文章已發佈！即將返回首頁…');
-        setTimeout(() => { window.location.href = 'wenhui.html?refresh=' + Date.now(); }, 2000);
+        setTimeout(() => { window.location.href = 'index.html?refresh=' + Date.now(); }, 2000);
 })
     .catch(err => {
     errEl.textContent = '發佈失敗，請重試';

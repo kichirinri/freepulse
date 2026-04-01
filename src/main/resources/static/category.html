@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分類 · Scribe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preload" as="style"
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap"
+          onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
+    <link rel="stylesheet" href="css/index.css?v=5">
+    <link rel="stylesheet" href="css/category.css">
+</head>
+<body>
+
+<!-- NAV BAR -->
+<nav class="nav-bar">
+    <div class="nav-logo-mini" style="cursor:pointer;" onclick="window.location.href='index.html'">Scribe</div>
+    <div class="nav-topics">
+        <div class="nav-topic" onclick="window.location.href='index.html'">熱門</div>
+        <div class="nav-topic" onclick="goCategory('時事')">時事</div>
+        <div class="nav-topic" onclick="goCategory('文化')">文化</div>
+        <div class="nav-topic" onclick="goCategory('生活')">生活</div>
+        <div class="nav-topic" onclick="goCategory('海外')">海外</div>
+        <div class="nav-topic" onclick="goCategory('創作')">創作</div>
+        <div class="nav-topic treeholl" onclick="window.location.href='treeholl.html'">🕳️ 樹洞</div>
+    </div>
+    <div class="nav-right">
+        <div id="stateGuest" style="display:flex;align-items:center;gap:12px;">
+            <button class="nav-btn" onclick="window.location.href='index.html'">登入</button>
+            <div class="nav-divider"></div>
+            <button class="nav-btn-fill" onclick="window.location.href='index.html'">發文</button>
+        </div>
+        <div id="stateUser" style="display:none;align-items:center;gap:12px;">
+            <button class="nav-btn-fill" onclick="window.location.href='write.html'">發文</button>
+            <div class="nav-divider"></div>
+            <div class="user-avatar" id="userAvatar" onclick="window.location.href='myarticles.html'">文</div>
+        </div>
+    </div>
+</nav>
+
+<!-- CATEGORY HEADER -->
+<div class="cat-header">
+    <img class="cat-header-img" id="catHeaderImg" src="" alt="">
+    <div class="cat-header-overlay"></div>
+    <div class="cat-header-inner">
+        <div class="cat-back" onclick="window.location.href='index.html'">← 返回首頁</div>
+        <h1 class="cat-title" id="catTitle">分類</h1>
+        <div class="cat-desc" id="catDesc"></div>
+    </div>
+</div>
+
+<!-- SUB CATEGORY BAR -->
+<div class="cat-sub-bar" id="catSubBar"></div>
+
+<!-- MAIN CONTENT -->
+<div class="cat-page">
+    <div class="cat-main" id="catFeed">
+        <div class="cat-loading">載入中…</div>
+    </div>
+    <div class="cat-side" id="catSide"></div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <div class="footer-logo">Scribe</div>
+    <div class="footer-links">
+        <span class="footer-link">服務條款</span>
+        <span class="footer-link">隱私政策</span>
+        <span class="footer-link">聯繫我們</span>
+    </div>
+    <div class="footer-copy">© 2026 WenHui · Scribe</div>
+</div>
+
+<script src="js/category.js"></script>
+</body>
+</html>

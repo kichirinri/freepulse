@@ -15,14 +15,14 @@
 <!-- TOP BAR -->
 <div class="write-bar">
   <div class="write-bar-left">
-    <a class="write-logo" href="wenhui.html">writing go</a>
+    <a class="write-logo" href="index.html">writing go</a>
     <span class="write-status">
       <span class="draft-dot" id="draftDot"></span>
       <span id="statusText">尚未儲存</span>
     </span>
   </div>
   <div class="write-bar-right">
-    <button class="btn-back" onclick="window.location.href='wenhui.html'">
+    <button class="btn-back" onclick="window.location.href='index.html'">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
       返回
     </button>
@@ -103,7 +103,7 @@
     <!-- BODY EDITOR -->
     <div class="body-editor" id="bodyEditor"
          contenteditable="true"
-         data-placeholder="開始寫作…"
+         data-placeholder="開始寫作… 按 Enter 換行，點擊左側 ＋ 插入圖片或標題"
          oninput="updateWordCount();updateStatus();updatePlusBtn()">
     </div>
   </div>
@@ -141,6 +141,25 @@
       <button class="publish-close" onclick="closePublishPanel()">×</button>
     </div>
     <div class="publish-body">
+      <div class="pub-field">
+        <div class="pub-label">發文模式</div>
+        <div class="mode-switch">
+          <div class="mode-btn active" id="modeNormal" onclick="setMode('normal')">
+            <span class="mode-icon">✍️</span>
+            <div>
+              <div class="mode-title">署名發文</div>
+              <div class="mode-desc">顯示作者名稱，建立個人影響力</div>
+            </div>
+          </div>
+          <div class="mode-btn" id="modeAnon" onclick="setMode('anon')">
+            <span class="mode-icon">🕳️</span>
+            <div>
+              <div class="mode-title">投入樹洞</div>
+              <div class="mode-desc">完全匿名，說出真心話</div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="pub-field">
         <div class="pub-label">選擇分類 <span style="color:var(--accent);font-size:10px;">必選</span></div>
         <div class="category-grid">
