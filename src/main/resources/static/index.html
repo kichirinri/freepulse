@@ -20,7 +20,7 @@
     <!-- TOP STRIP -->
     <div class="top-strip">
         <div class="top-strip-right">
-            <span>繁體</span><span>簡體</span><span>English</span>
+            <span>繁體</span><span>簡體</span><span>日本語</span><span>English</span>
         </div>
     </div>
 </div>
@@ -88,8 +88,7 @@
     </div>
     <div class="nav-right" id="navRight">
         <div id="stateGuest" style="display:flex;align-items:center;gap:12px;">
-            <button class="nav-btn" onclick="openLoginModal()">登入</button>
-            <div class="nav-divider"></div>
+
             <button class="nav-btn-fill" onclick="openLoginModal()">發文</button>
         </div>
         <div id="stateUser" style="display:none;align-items:center;gap:12px;">
@@ -210,8 +209,7 @@
         <div class="register-band-text"></div>
     </div>
     <div class="register-band-actions">
-        <button class="btn-reg-wh" onclick="openLoginModal()">免費註冊</button>
-        <button class="btn-reg-out" onclick="openLoginModal()">已有帳號？登入</button>
+        <button class="btn-reg-wh" onclick="openLoginModal()">免費註冊 / 登入</button>
     </div>
 </div>
 
@@ -681,58 +679,58 @@
         </div>
     </div>
 </div>
-        <!-- WELCOME NOTICE MODAL -->
-        <div class="notice-overlay" id="noticeModal">
-            <div class="notice-box">
-                <div class="notice-header">
-                    <div class="notice-header-top">
-                        <span class="notice-header-logo">Scribe</span>
-                        <span class="notice-header-tag">致每一位新成員</span>
+<!-- WELCOME NOTICE MODAL -->
+<div class="notice-overlay" id="noticeModal">
+    <div class="notice-box">
+        <div class="notice-header">
+            <div class="notice-header-top">
+                <span class="notice-header-logo">Scribe</span>
+                <span class="notice-header-tag">致每一位新成員</span>
+            </div>
+            <div class="notice-header-title">歡迎來到Scribe<br>在這裡，你的聲音屬於你自己</div>
+            <div class="notice-header-sub">加入前，請用兩分鐘了解Scribe的核心理念</div>
+        </div>
+        <div class="notice-body">
+            <div class="notice-item">
+                <div class="notice-item-icon">👍</div>
+                <div class="notice-item-content">
+                    <div class="notice-item-title">只有點讚，沒有評論</div>
+                    <div class="notice-item-desc">
+                        Scribe的所有文章只開放點讚功能，不設評論區。我們相信，每個人的思考與感悟應當保持獨立，不被他人的言論左右。讀完一篇文章，你的第一感受，才是最真實的你。
                     </div>
-                    <div class="notice-header-title">歡迎來到Scribe<br>在這裡，你的聲音屬於你自己</div>
-                    <div class="notice-header-sub">加入前，請用兩分鐘了解Scribe的核心理念</div>
                 </div>
-                <div class="notice-body">
-                    <div class="notice-item">
-                        <div class="notice-item-icon">👍</div>
-                        <div class="notice-item-content">
-                            <div class="notice-item-title">只有點讚，沒有評論</div>
-                            <div class="notice-item-desc">
-                                Scribe的所有文章只開放點讚功能，不設評論區。我們相信，每個人的思考與感悟應當保持獨立，不被他人的言論左右。讀完一篇文章，你的第一感受，才是最真實的你。
-                            </div>
-                        </div>
-                    </div>
+            </div>
 
-                    <div class="notice-item">
-                        <div class="notice-item-icon">🌍</div>
-                        <div class="notice-item-content">
-                            <div class="notice-item-title">自由發表，以法律為底線</div>
-                            <div class="notice-item-desc">
-                                我們支持言論自由，Scribe。但自由不是無邊界的——請在遵守所在地法律法規的前提下發文，任何煽動仇恨、違法的內容將被即時移除。
-                            </div>
-                        </div>
-                    </div>
-                    <div class="notice-item">
-                        <div class="notice-item-icon">🤝</div>
-                        <div class="notice-item-content">
-                            <div class="notice-item-title">世界公民，懂得尊重他人</div>
-                            <div class="notice-item-desc">Scribe<br>匯聚了來自47個國家和地區的華人。請以世界公民的胸懷，尊重與你不同的聲音。人身攻擊將永久封禁帳號。
-                            </div>
-                        </div>
+            <div class="notice-item">
+                <div class="notice-item-icon">🌍</div>
+                <div class="notice-item-content">
+                    <div class="notice-item-title">自由發表，以法律為底線</div>
+                    <div class="notice-item-desc">
+                        我們支持言論自由，Scribe。但自由不是無邊界的——請在遵守所在地法律法規的前提下發文，任何煽動仇恨、違法的內容將被即時移除。
                     </div>
                 </div>
-                <div class="notice-footer">
-                    <label class="notice-agree">
-                        <input type="checkbox" id="noticeCheck" onchange="toggleNoticeBtn()">
-                        <span class="notice-agree-text">我已閱讀並理解以上內容，承諾遵守Scribe社區規範，以負責任的態度在Scribe發聲。</span>
-                    </label>
-                    <button class="btn-notice-confirm" id="btnNoticeConfirm" disabled onclick="confirmNotice()">
-                        我明白了，開始探索Scribe →
-                    </button>
+            </div>
+            <div class="notice-item">
+                <div class="notice-item-icon">🤝</div>
+                <div class="notice-item-content">
+                    <div class="notice-item-title">世界公民，懂得尊重他人</div>
+                    <div class="notice-item-desc">Scribe<br>匯聚了來自47個國家和地區的華人。請以世界公民的胸懷，尊重與你不同的聲音。人身攻擊將永久封禁帳號。
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="notice-footer">
+            <label class="notice-agree">
+                <input type="checkbox" id="noticeCheck" onchange="toggleNoticeBtn()">
+                <span class="notice-agree-text">我已閱讀並理解以上內容，承諾遵守Scribe社區規範，以負責任的態度在Scribe發聲。</span>
+            </label>
+            <button class="btn-notice-confirm" id="btnNoticeConfirm" disabled onclick="confirmNotice()">
+                我明白了，開始探索Scribe →
+            </button>
+        </div>
+    </div>
+</div>
 
-        <script src="js/index.js"></script>
+<script src="js/index.js"></script>
 </body>
 </html>

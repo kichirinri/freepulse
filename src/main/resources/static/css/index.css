@@ -5,19 +5,19 @@
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 :root {
-  --ink:      #111111;
-  --ink2:     #333333;
-  --ink3:     #555555;
-  --ink4:     #777777;
-  --rule:     #d0c9c0;
-  --rule-lt:  #e8e4df;
-  --bg:       #ffffff;
-  --bg2:      #f8f6f3;
-  --accent:   #c0392b;
-  --accent2:  #e8622a;
-  --serif:    'Playfair Display', 'Noto Serif TC', 'Songti SC', 'SimSun', Georgia, serif;
-  --sans:     'Lato', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
-  --serif-zh: 'Noto Serif TC', 'Songti SC', 'SimSun', Georgia, serif;
+    --ink:      #111111;
+    --ink2:     #333333;
+    --ink3:     #555555;
+    --ink4:     #777777;
+    --rule:     #d0c9c0;
+    --rule-lt:  #e8e4df;
+    --bg:       #ffffff;
+    --bg2:      #f8f6f3;
+    --accent:   #c0392b;
+    --accent2:  #e8622a;
+    --serif:    'Playfair Display', 'Noto Serif TC', 'Songti SC', 'SimSun', Georgia, serif;
+    --sans:     'Lato', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', 'Microsoft YaHei', sans-serif;
+    --serif-zh: 'Noto Serif TC', 'Songti SC', 'SimSun', Georgia, serif;
 }
 
 html { font-size: 18px; }
@@ -310,40 +310,40 @@ button { cursor: pointer; font-family: var(--sans); }
 
 /* 新版发文按钮 + 头像 */
 .nav-btn-fill {
-  background: var(--ink);
-  color: white;
-  border: none;
-  border-radius: 20px;
-  padding: 7px 18px;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 7px 18px;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 .nav-btn-fill::before { content: '✦'; font-size: 10px; opacity: 0.8; }
 .nav-btn-fill:hover { background: #333; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
 .user-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--serif);
-  font-size: 20px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(102,126,234,0.4);
-  user-select: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.4);
+    user-select: none;
 }
 .user-avatar:hover {
-  transform: scale(1.08);
-  box-shadow: 0 4px 16px rgba(102,126,234,0.6);
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(102,126,234,0.6);
 }
