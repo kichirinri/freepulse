@@ -9,8 +9,9 @@
           href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap"
           onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
-    <link rel="stylesheet" href="css/index.css?v=5">
+    <link rel="stylesheet" href="css/index.css?v=6">
     <link rel="stylesheet" href="css/treeholl.css">
+    <link rel="stylesheet" href="css/category.css">
 </head>
 <body>
 
@@ -24,35 +25,31 @@
         <div class="nav-topic" onclick="window.location.href='category.html?cat=生活'">生活</div>
         <div class="nav-topic" onclick="window.location.href='category.html?cat=海外'">海外</div>
         <div class="nav-topic" onclick="window.location.href='category.html?cat=創作'">創作</div>
-        <div class="nav-topic treeholl active" onclick="window.location.href='treeholl.html'">🕳️ 樹洞</div>
+        <div class="nav-topic treeholl active">🕳️ 樹洞</div>
     </div>
-    <div class="nav-right">
+    <div class="nav-right" id="navRight">
         <div id="stateGuest" style="display:flex;align-items:center;gap:12px;">
-            <button class="nav-btn" onclick="window.location.href='index.html'">登入</button>
-            <div class="nav-divider"></div>
-            <button class="nav-btn-fill" onclick="openWriteModal()">發文</button>
+            <button class="nav-btn-fill" onclick="openWriteModal()">投入樹洞</button>
         </div>
         <div id="stateUser" style="display:none;align-items:center;gap:12px;">
             <button class="nav-btn-fill" onclick="openWriteModal()">投入樹洞</button>
             <div class="nav-divider"></div>
-            <div class="user-avatar" id="userAvatar" onclick="window.location.href='myarticles.html'">文</div>
+            <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu()">文</div>
         </div>
     </div>
 </nav>
 
 <!-- TREEHOLL HEADER -->
 <div class="treeholl-header">
-    <img class="treeholl-header-bg" src="mage/treeholl.jpg" alt="">
-
+    <img class="treeholl-header-bg" src="image/treeholl.jpg" alt="">
     <div class="treeholl-header-inner">
-        <div class="th-back" onclick="window.location.href='index.html'" style="position:absolute;top:20px;left:40px;font-size:13px;color:rgba(255,255,255,0.4);cursor:pointer;">← 返回首頁</div>
-
+        <div class="th-back" onclick="window.location.href='index.html'">← 返回首頁</div>
         <div class="th-sign-boards">
             <div class="th-sign-board">
                 <div class="th-sign-title">🕳️ 樹 洞</div>
             </div>
             <div class="th-sign-board">
-
+                <div class="th-sign-desc">說出你不敢說的話</div>
             </div>
             <div class="th-sign-board">
                 <div class="th-sign-rules">
@@ -91,7 +88,7 @@
     <div class="footer-copy">© 2026 WenHui · Scribe</div>
 </div>
 
-<!-- 确认弹窗 -->
+<!-- 投入樹洞确认弹窗 -->
 <div class="modal-overlay" id="writeModal" onclick="closeOnOverlay(event)">
     <div class="modal-box">
         <button class="modal-close" onclick="closeWriteModal()">×</button>
@@ -111,5 +108,6 @@
 </div>
 
 <script src="js/treeholl.js"></script>
+<script src="js/common.js"></script>
 </body>
 </html>
