@@ -141,6 +141,7 @@
       <button class="publish-close" onclick="closePublishPanel()">×</button>
     </div>
     <div class="publish-body">
+      <!-- 发文模式 -->
       <div class="pub-field">
         <div class="pub-label">發文模式</div>
         <div class="mode-switch">
@@ -148,47 +149,83 @@
             <span class="mode-icon">✍️</span>
             <div>
               <div class="mode-title">署名發文</div>
-              <div class="mode-desc">顯示作者名稱，建立個人影響力</div>
+              <div class="mode-desc">顯示作者名稱</div>
             </div>
           </div>
           <div class="mode-btn" id="modeAnon" onclick="setMode('anon')">
             <span class="mode-icon">🕳️</span>
             <div>
               <div class="mode-title">投入樹洞</div>
-              <div class="mode-desc">完全匿名，說出真心話</div>
+              <div class="mode-desc">完全匿名</div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- 笔名选择（署名模式才显示） -->
+      <div class="pub-field" id="pennameField">
+        <div class="pub-label">署名筆名</div>
+        <select class="pub-select" id="pennameSelect">
+        </select>
+        <div style="font-size:12px;color:var(--ink4);margin-top:6px;font-family:var(--sans);">
+          可在 <a href="settings.html" target="_blank" style="color:var(--ink);text-decoration:underline;">帳號設定</a> 中管理筆名
+        </div>
+      </div>
+
+      <!-- 分类 -->
       <div class="pub-field">
         <div class="pub-label">選擇分類 <span style="color:var(--accent);font-size:10px;">必選</span></div>
         <div class="category-grid">
+          <!-- 時事 -->
+          <div class="cat-btn cat-group-label">時事</div>
           <div class="cat-btn" onclick="selectCat(this,'社會')">社會</div>
-          <div class="cat-btn" onclick="selectCat(this,'時事')">時事</div>
-          <div class="cat-btn" onclick="selectCat(this,'哲學')">哲學</div>
-          <div class="cat-btn" onclick="selectCat(this,'歷史')">歷史</div>
           <div class="cat-btn" onclick="selectCat(this,'財經')">財經</div>
+          <div class="cat-btn" onclick="selectCat(this,'國際')">國際</div>
           <div class="cat-btn" onclick="selectCat(this,'科技')">科技</div>
+          <div class="cat-btn" onclick="selectCat(this,'軍事')">軍事</div>
+          <div class="cat-btn" onclick="selectCat(this,'法律')">法律</div>
           <div class="cat-btn" onclick="selectCat(this,'教育')">教育</div>
-          <div class="cat-btn" onclick="selectCat(this,'海外')">海外</div>
-          <div class="cat-btn" onclick="selectCat(this,'移民')">移民</div>
-          <div class="cat-btn" onclick="selectCat(this,'娛樂')">娛樂</div>
-          <div class="cat-btn" onclick="selectCat(this,'影視')">影視</div>
+          <div class="cat-btn" onclick="selectCat(this,'環境')">環境</div>
+          <!-- 文化 -->
+          <div class="cat-btn cat-group-label">文化</div>
+          <div class="cat-btn" onclick="selectCat(this,'歷史')">歷史</div>
+          <div class="cat-btn" onclick="selectCat(this,'哲學')">哲學</div>
+          <div class="cat-btn" onclick="selectCat(this,'藝術')">藝術</div>
+          <div class="cat-btn" onclick="selectCat(this,'電影')">電影</div>
           <div class="cat-btn" onclick="selectCat(this,'音樂')">音樂</div>
+          <div class="cat-btn" onclick="selectCat(this,'設計')">設計</div>
+          <div class="cat-btn" onclick="selectCat(this,'宗教')">宗教</div>
+          <!-- 生活 -->
+          <div class="cat-btn cat-group-label">生活</div>
           <div class="cat-btn" onclick="selectCat(this,'美食')">美食</div>
           <div class="cat-btn" onclick="selectCat(this,'旅遊')">旅遊</div>
           <div class="cat-btn" onclick="selectCat(this,'健康')">健康</div>
-          <div class="cat-btn" onclick="selectCat(this,'藝術')">藝術</div>
-          <div class="cat-btn" onclick="selectCat(this,'讀書')">讀書</div>
-          <div class="cat-btn" onclick="selectCat(this,'深度')">深度</div>
+          <div class="cat-btn" onclick="selectCat(this,'攝影')">攝影</div>
+          <div class="cat-btn" onclick="selectCat(this,'時尚')">時尚</div>
+          <div class="cat-btn" onclick="selectCat(this,'家居')">家居</div>
+          <div class="cat-btn" onclick="selectCat(this,'運動')">運動</div>
+          <div class="cat-btn" onclick="selectCat(this,'婚戀')">婚戀</div>
+          <div class="cat-btn" onclick="selectCat(this,'育兒')">育兒</div>
+          <!-- 海外 -->
+          <div class="cat-btn cat-group-label">海外</div>
+          <div class="cat-btn" onclick="selectCat(this,'移民')">移民</div>
+          <div class="cat-btn" onclick="selectCat(this,'同城')">同城</div>
+          <div class="cat-btn" onclick="selectCat(this,'留學')">留學</div>
+          <div class="cat-btn" onclick="selectCat(this,'工作')">工作</div>
+          <div class="cat-btn" onclick="selectCat(this,'文化衝擊')">文化衝擊</div>
+          <!-- 創作 -->
+          <div class="cat-btn cat-group-label">創作</div>
+          <div class="cat-btn" onclick="selectCat(this,'小說')">小說</div>
+          <div class="cat-btn" onclick="selectCat(this,'散文')">散文</div>
           <div class="cat-btn" onclick="selectCat(this,'詩詞')">詩詞</div>
-          <div class="cat-btn fire" onclick="selectCat(this,'煙火飄香')">🔥 煙火飄香</div>
-          <div class="cat-btn" onclick="selectCat(this,'嚴肅創作')">嚴肅創作</div>
           <div class="cat-btn" onclick="selectCat(this,'隨筆')">隨筆</div>
-          <div class="cat-btn" onclick="selectCat(this,'法律')">法律</div>
-          <div class="cat-btn" onclick="selectCat(this,'軍事')">軍事</div>
+          <div class="cat-btn" onclick="selectCat(this,'文學評論')">文學評論</div>
+          <!-- 煙火飄香 -->
+          <div class="cat-btn fire" onclick="selectCat(this,'煙火飄香')">🔥 煙火飄香</div>
         </div>
       </div>
+
+      <!-- 标签 -->
       <div class="pub-field">
         <div class="pub-label">標籤 Tags <span style="color:var(--ink4);font-weight:400;text-transform:none;letter-spacing:0;">（最多5個）</span></div>
         <div class="tags-wrap" id="tagsWrap" onclick="document.getElementById('tagInput').focus()">
@@ -196,6 +233,8 @@
         </div>
         <div class="tag-hint">按 Enter 新增標籤</div>
       </div>
+
+      <!-- 预览 -->
       <div class="pub-field">
         <div class="pub-label">發佈預覽</div>
         <div class="pub-summary">
@@ -203,6 +242,7 @@
           分類：<span id="previewCat">未選擇</span> · 字數：<span id="previewWords">0</span> 字
         </div>
       </div>
+
       <div id="pubError"></div>
       <div class="pub-actions">
         <button class="btn-pub-cancel" onclick="closePublishPanel()">取消</button>

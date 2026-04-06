@@ -314,7 +314,19 @@ function discardDraft() {
     function removeTag(i) { tags.splice(i,1); renderTags(); }
 
     /* ── 发布 ── */
-    function openPublishPanel() {
+function openPublishPanel() {
+    // 重置分类选中状态
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+    if (selectedCat) {
+        document.querySelectorAll('.cat-btn').forEach(b => {
+            if (b.textContent.trim().replace('🔥 ','') === selectedCat) b.classList.add('selected');
+        });
+    }
+
+    // 初始化笔名下拉
+    const user = JSON.parse(sessionStorage.getItem('wh_user') || '{}');
+
+    // 其他原有逻辑
     const title = document.getElementById('titleInput').value.trim();
     const words = (document.getElementById('bodyEditor').innerText||'').replace(/\s/g,'').length;
     document.getElementById('previewTitle').textContent = title||'（請輸入標題）';
@@ -346,7 +358,7 @@ function discardDraft() {
             bodyHTML: bodyHTML,
             category: isAnon ? '樹洞' : selectedCat,
             tags: tags.join(','),
-            authorName: isAnon ? '樹洞' : (user.name || '用戶'),
+            authorName: isAnon ? '樹洞' : (document.getElementById('pennameSelect').value || user.name || '用戶'),
             authorEmail: isAnon ? '' : (user.email || '')
         };
 

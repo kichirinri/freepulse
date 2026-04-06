@@ -35,12 +35,19 @@ function loadArticles() {
                 tabs.appendChild(tab);
             });
 
+            // 獲讚文章tab
+                        const likedByOthersTab = document.createElement('div');
+                        likedByOthersTab.className = 'filter-tab';
+                        likedByOthersTab.textContent = '獲讚文章';
+                        likedByOthersTab.onclick = function() { showLikedByOthers(this); };
+                        tabs.appendChild(likedByOthersTab);
+
             // 已讚tab始终在最后
-            const likedTab = document.createElement('div');
-            likedTab.className = 'filter-tab';
-            likedTab.textContent = '已讚文章';
-            likedTab.onclick = function() { showLiked(this); };
-            tabs.appendChild(likedTab);
+                        const likedTab = document.createElement('div');
+                        likedTab.className = 'filter-tab';
+                        likedTab.textContent = '已讚文章';
+                        likedTab.onclick = function() { showLiked(this); };
+                        tabs.appendChild(likedTab);
 
             // 检测URL参数，自动切换到已讚tab
             if (new URLSearchParams(location.search).get('tab') === 'liked') {
@@ -182,4 +189,13 @@ function showToast(msg) {
     t.textContent = msg;
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 3000);
+}
+function showLikedByOthers(tabEl) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+    // 从自己的文章里筛选出有被点赞的，按点赞数降序
+    const liked = [...allMyArticles]
+        .filter(a => (a.likes || 0) > 0)
+        .sort((a, b) => (b.likes || 0) - (a.likes || 0));
+    renderList(liked);
 }

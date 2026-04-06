@@ -1,26 +1,26 @@
 const CAT_CONFIG = {
     '時事': {
-        sub: ['全部','社會','財經','國際','軍事','法律','教育'],
+        sub: ['全部','社會','財經','國際','科技','軍事','法律','教育','環境'],
         desc: '時事 · 社會 · 財經 · 國際視野',
         img: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1400&q=80'
     },
     '文化': {
-        sub: ['全部','歷史','哲學','讀書','藝術','詩詞','科普'],
+        sub: ['全部','歷史','哲學','藝術','電影','音樂','設計','宗教'],
         desc: '歷史 · 哲學 · 藝術 · 思想深度',
         img: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1400&q=80'
     },
     '生活': {
-        sub: ['全部','美食','旅遊','健康','情感','婚戀','育兒'],
+        sub: ['全部','美食','旅遊','健康','攝影','時尚','家居','寵物','運動','婚戀','育兒'],
         desc: '美食 · 旅遊 · 健康 · 生活美學',
         img: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=1400&q=80'
     },
     '海外': {
-        sub: ['全部','移民','同城','留學'],
+        sub: ['全部','移民','同城','留學','工作','文化衝擊'],
         desc: '移民 · 同城 · 海外華人生活',
         img: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1400&q=80'
     },
     '創作': {
-        sub: ['全部','小說','散文','詩詞','隨筆'],
+        sub: ['全部','小說','散文','詩詞','隨筆','文學評論'],
         desc: '小說 · 散文 · 詩詞 · 自由創作',
         img: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1400&q=80'
     },
@@ -32,11 +32,11 @@ const CAT_CONFIG = {
 };
 
 const CAT_TO_BACKEND = {
-    '時事': ['時事','社會','財經','國際','軍事','法律','教育'],
-    '文化': ['歷史','哲學','讀書','藝術','詩詞','科普','文化'],
-    '生活': ['生活','美食','旅遊','健康','情感','婚戀','育兒','美妝','家居'],
-    '海外': ['海外','移民','同城'],
-    '創作': ['創作','小說','散文','隨筆','詩詞'],
+    '時事': ['時事','社會','財經','國際','科技','軍事','法律','教育','環境'],
+    '文化': ['文化','歷史','哲學','藝術','電影','音樂','設計','讀書','科普','宗教'],
+    '生活': ['生活','美食','旅遊','健康','攝影','時尚','家居','寵物','運動','婚戀','育兒','美妝','情感'],
+    '海外': ['海外','移民','同城','留學','工作','文化衝擊'],
+    '創作': ['創作','小說','散文','詩詞','隨筆','文學評論'],
     '樹洞': ['樹洞']
 };
 
@@ -135,24 +135,24 @@ function renderArticles(articles) {
         el.className = 'art-text';
         el.style.cursor = 'pointer';
         el.innerHTML = `
-      <div class="art-text-top">
-        ${isAnon
+            <div class="art-text-top">
+                ${isAnon
             ? `<span style="font-size:11px;letter-spacing:1px;color:var(--ink4);border:1px solid var(--rule);padding:2px 8px;border-radius:2px;">🕳️ 匿名</span>`
             : `<div class="art-text-avatar" style="background:linear-gradient(135deg,${color})">${initial}</div>
-             <span class="art-text-author">${a.authorName || '用戶'}</span>
-             <span class="art-text-pub">· ${a.category}</span>`
+                       <span class="art-text-author">${a.authorName || '用戶'}</span>
+                       <span class="art-text-pub">· ${a.category}</span>`
         }
-        <span class="art-text-loc" style="margin-left:auto;font-size:13px;color:var(--ink4);">${dateStr}</span>
-      </div>
-      <div class="art-title" style="font-family:var(--serif);font-size:22px;font-weight:700;line-height:1.35;color:var(--ink);margin-bottom:8px;transition:color 0.15s;"
-           onmouseover="this.style.color='#c0392b'" onmouseout="this.style.color='var(--ink)'">${a.title}</div>
-      <div style="font-size:15px;color:var(--ink3);line-height:1.65;margin-bottom:12px;">${excerpt}…</div>
-      <div class="art-text-footer">
-        <span class="art-text-cat">${a.category}</span>
-        <span class="art-text-date">${mins} 分鐘閱讀</span>
-        <div class="art-text-stats"><span class="art-text-stat">👍 ${a.likes||0}</span></div>
-      </div>
-    `;
+                <span class="art-text-loc" style="margin-left:auto;font-size:13px;color:var(--ink4);">${dateStr}</span>
+            </div>
+            <div class="art-title" style="font-family:var(--serif);font-size:22px;font-weight:700;line-height:1.35;color:var(--ink);margin-bottom:8px;transition:color 0.15s;"
+                 onmouseover="this.style.color='#c0392b'" onmouseout="this.style.color='var(--ink)'">${a.title}</div>
+            <div style="font-size:15px;color:var(--ink3);line-height:1.65;margin-bottom:12px;">${excerpt}…</div>
+            <div class="art-text-footer">
+                <span class="art-text-cat">${a.category}</span>
+                <span class="art-text-date">${mins} 分鐘閱讀</span>
+                <div class="art-text-stats"><span class="art-text-stat">👍 ${a.likes||0}</span></div>
+            </div>
+        `;
         el.onclick = () => window.location.href = 'article.html?id=' + a.id;
         feed.appendChild(el);
     });
@@ -165,22 +165,23 @@ function renderSide(articles) {
     sorted.forEach((a, i) => {
         const r = i===0?'r1':i===1?'r2':i===2?'r3':'';
         html += `
-      <div class="hot-list-item" style="cursor:pointer;" onclick="window.location.href='article.html?id=${a.id}'">
-        <div class="hot-list-num ${r}">${i+1}</div>
-        <div>
-          <div class="hot-list-text">${a.title}</div>
-          <div class="hot-list-heat">👍 ${a.likes||0} · ${a.category}</div>
-        </div>
-      </div>
-    `;
+            <div class="hot-list-item" style="cursor:pointer;" onclick="window.location.href='article.html?id=${a.id}'">
+                <div class="hot-list-num ${r}">${i+1}</div>
+                <div>
+                    <div class="hot-list-text">${a.title}</div>
+                    <div class="hot-list-heat">👍 ${a.likes||0} · ${a.category}</div>
+                </div>
+            </div>
+        `;
     });
     html += `<hr class="side-rule" style="margin-top:28px;"><div class="side-title">其他分類</div>`;
     ['時事','文化','生活','海外','創作','樹洞'].filter(c => c !== currentCat).forEach(c => {
         html += `
-      <div class="hot-list-item" style="cursor:pointer;padding:12px 0;" onclick="${c==='樹洞'?'window.location.href=\'treeholl.html\'':'goCategory(\''+c+'\')'}">
-        <div style="font-size:15px;font-weight:700;color:var(--ink2);font-family:var(--serif-zh);">${c==='樹洞'?'🕳️ '+c:c}</div>
-      </div>
-    `;
+            <div class="hot-list-item" style="cursor:pointer;padding:12px 0;"
+                 onclick="${c==='樹洞' ? "window.location.href='treeholl.html'" : "goCategory('"+c+"')"}">
+                <div style="font-size:15px;font-weight:700;color:var(--ink2);font-family:var(--serif-zh);">${c==='樹洞'?'🕳️ '+c:c}</div>
+            </div>
+        `;
     });
     side.innerHTML = html;
 }

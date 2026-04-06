@@ -1,26 +1,23 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>文章 · Scribe writing go</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
-<!-- jsPDF for PDF export -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <link rel="stylesheet" href="css/article.css?v=5">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文章 · Scribe writing go</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="stylesheet" href="css/article.css?v=7">
   <link rel="stylesheet" href="css/index.css?v=6">
 </head>
 <body>
 
 <!-- TOP BAR -->
 <div class="art-bar">
-  <a class="art-bar-logo" href="index.html">Scribe </a>
+  <a class="art-bar-logo" href="index.html">Scribe</a>
   <div class="art-bar-right">
-    <button class="btn-bar" onclick="window.location.href='index.html'">
-      ← 返回首頁
-    </button>
+    <button class="btn-bar" onclick="window.location.href='index.html'">← 返回首頁</button>
   </div>
 </div>
 
@@ -37,6 +34,10 @@
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
       下載 PDF
     </button>
+    <button class="btn-bar" onclick="openImgDialog()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+      下載圖片
+    </button>
     <button class="btn-bar danger" onclick="openDeleteDialog()">
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
       刪除文章
@@ -44,36 +45,69 @@
   </div>
 </div>
 
-<!-- ARTICLE -->
-<div class="art-container" id="artContainer">
-  <img class="art-cover" id="artCover" src="" alt="">
-
-  <div class="art-meta-top">
-    <span class="art-cat-badge" id="artCat"></span>
-    <div class="art-tags" id="artTags"></div>
-  </div>
-
-  <h1 class="art-title" id="artTitle"></h1>
-
-  <div class="art-byline">
-    <div class="art-author-avatar" id="artAuthorAvatar"></div>
-    <div>
-      <div class="art-author-name" id="artAuthorName"></div>
-      <div style="display:flex;gap:12px;margin-top:2px;">
-        <span class="art-publish-date" id="artDate"></span>
-        <span class="art-read-time" id="artReadTime"></span>
+<!-- 主布局 -->
+<div class="art-page-layout">
+  <div class="art-main-col">
+    <div class="art-container" id="artContainer">
+      <img class="art-cover" id="artCover" src="" alt="">
+      <div class="art-meta-top">
+        <span class="art-cat-badge" id="artCat"></span>
+        <div class="art-tags" id="artTags"></div>
+      </div>
+      <h1 class="art-title" id="artTitle"></h1>
+      <div class="art-byline">
+        <div class="art-author-avatar" id="artAuthorAvatar"></div>
+        <div>
+          <div class="art-author-name" id="artAuthorName"></div>
+          <div style="display:flex;gap:12px;margin-top:2px;">
+            <span class="art-publish-date" id="artDate"></span>
+            <span class="art-read-time" id="artReadTime"></span>
+          </div>
+        </div>
+      </div>
+      <div class="art-body" id="artBody"></div>
+      <div class="art-footer">
+        <div class="art-footer-row">
+          <button class="like-btn" id="likeBtn" onclick="toggleLike()">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            <span id="likeCount">0</span> 讚
+          </button>
+          <div class="art-share-group">
+            <button class="art-share-btn" onclick="copyLink()" id="btnCopyLink">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              複製連結
+            </button>
+            <button class="art-share-btn" onclick="showQRCode()">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="17" y="17" width="4" height="4"/></svg>
+              二維碼
+            </button>
+          </div>
+        </div>
+        <div class="art-copyright" id="artCopyright"></div>
+      </div>
+      <div class="art-recommend" id="artRecommend" style="display:none;">
+        <div class="art-recommend-title">你可能也喜歡</div>
+        <div class="art-recommend-list" id="artRecommendList"></div>
       </div>
     </div>
   </div>
 
-  <div class="art-body" id="artBody"></div>
-
-  <div class="art-footer">
-    <button class="like-btn" id="likeBtn" onclick="toggleLike()">
-      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
-      <span id="likeCount">0</span> 讚
-    </button>
-    <div class="art-copyright" id="artCopyright"></div>
+  <!-- 右侧边栏 -->
+  <div class="art-side-col" id="artSide">
+    <div class="art-side-card" id="authorCard">
+      <div class="art-side-label">關於作者</div>
+      <div class="art-side-author">
+        <div class="art-side-avatar" id="sideAvatar"></div>
+        <div>
+          <div class="art-side-name" id="sideName"></div>
+          <div class="art-side-stats" id="sideStats"></div>
+        </div>
+      </div>
+    </div>
+    <div class="art-side-card" id="sideHotCard" style="display:none;">
+      <div class="art-side-label" id="sideHotLabel">同分類熱門</div>
+      <div id="sideHotList"></div>
+    </div>
   </div>
 </div>
 
@@ -84,35 +118,55 @@
   <button class="btn-home" onclick="window.location.href='index.html'">返回首頁</button>
 </div>
 
-<!-- PDF WATERMARK DIALOG -->
+<!-- PDF DIALOG -->
 <div class="dialog-overlay" id="pdfDialog" onclick="closePdfOnOverlay(event)">
   <div class="dialog-box">
     <div class="dialog-title">下載 PDF</div>
-    <div class="dialog-sub">選擇是否在 PDF 中加入水印，水印內容為你的署名與文章連結。</div>
-
+    <div class="dialog-sub">選擇是否在 PDF 中加入水印。</div>
     <div class="wm-option selected" id="wmOpt1" onclick="selectWm('yes')">
       <input type="radio" name="wm" id="wmYes" checked>
-      <div>
-        <div class="wm-option-label">加入水印</div>
-        <div class="wm-option-desc">PDF 每頁底部將顯示你的署名與文章連結，保護原創版權。</div>
-      </div>
+      <div><div class="wm-option-label">加入水印</div><div class="wm-option-desc">PDF 每頁底部顯示署名與文章連結，保護原創版權。</div></div>
     </div>
-
     <div class="wm-option" id="wmOpt2" onclick="selectWm('no')">
       <input type="radio" name="wm" id="wmNo">
-      <div>
-        <div class="wm-option-label">不加水印</div>
-        <div class="wm-option-desc">下載純文字 PDF，不含任何版權標記。</div>
-      </div>
+      <div><div class="wm-option-label">不加水印</div><div class="wm-option-desc">下載純文字 PDF，不含任何版權標記。</div></div>
     </div>
-
-    <div class="dialog-preview" id="wmPreview">
-      水印預覽：<strong id="wmPreviewText"></strong>
-    </div>
-
+    <div class="dialog-preview" id="wmPreview">水印預覽：<strong id="wmPreviewText"></strong></div>
     <div class="dialog-actions">
       <button class="btn-dialog-cancel" onclick="closePdfDialog()">取消</button>
       <button class="btn-dialog-confirm" onclick="downloadPDF()">確認下載</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE DIALOG -->
+<div class="dialog-overlay" id="imgDialog" onclick="closeImgOnOverlay(event)">
+  <div class="dialog-box">
+    <div class="dialog-title">下載圖片</div>
+    <div class="dialog-sub">每次下載背景隨機變化，適合在社交平台分享。</div>
+
+    <div class="wm-option selected" id="imgWmOpt1" onclick="selectImgWm('yes')">
+      <input type="radio" name="imgwm" id="imgWmYes" checked>
+      <div><div class="wm-option-label">加入水印</div><div class="wm-option-desc">圖片底部顯示作者署名與網站，保護版權。</div></div>
+    </div>
+    <div class="wm-option" id="imgWmOpt2" onclick="selectImgWm('no')">
+      <input type="radio" name="imgwm" id="imgWmNo">
+      <div><div class="wm-option-label">不加水印</div><div class="wm-option-desc">純淨圖片，不含任何標記。</div></div>
+    </div>
+
+    <div style="margin:16px 0 8px;font-size:12px;color:var(--ink4);font-family:var(--sans);">背景風格</div>
+    <div class="img-theme-grid" id="imgThemeGrid">
+      <div class="img-theme-btn active" data-theme="random" onclick="selectTheme(this,'random')">🎲 隨機</div>
+      <div class="img-theme-btn" data-theme="light" onclick="selectTheme(this,'light')">☀️ 簡約白</div>
+      <div class="img-theme-btn" data-theme="dark" onclick="selectTheme(this,'dark')">🌙 深夜黑</div>
+      <div class="img-theme-btn" data-theme="paper" onclick="selectTheme(this,'paper')">📜 復古紙</div>
+      <div class="img-theme-btn" data-theme="gradient" onclick="selectTheme(this,'gradient')">🌈 漸變色</div>
+      <div class="img-theme-btn" data-theme="ink" onclick="selectTheme(this,'ink')">🖋 水墨藍</div>
+    </div>
+
+    <div class="dialog-actions" style="margin-top:20px;">
+      <button class="btn-dialog-cancel" onclick="closeImgDialog()">取消</button>
+      <button class="btn-dialog-confirm" onclick="downloadImage()">確認下載</button>
     </div>
   </div>
 </div>
@@ -129,12 +183,23 @@
   </div>
 </div>
 
-<!-- TOASTS -->
+<!-- 二维码弹窗 -->
+<div class="qr-overlay" id="qrOverlay" onclick="closeQR(event)">
+  <div class="qr-box" onclick="event.stopPropagation()">
+    <div class="qr-title">掃碼分享</div>
+    <div class="qr-sub">用微信或其他應用掃描二維碼</div>
+    <img id="qrImg" src="" alt="QR Code" width="160" height="160" style="display:block;margin:0 auto;">
+    <div class="qr-actions">
+      <button class="btn-qr" onclick="copyLink();closeQRDirect()">複製連結</button>
+      <button class="btn-qr-cancel" onclick="closeQRDirect()">關閉</button>
+    </div>
+  </div>
+</div>
+
 <div class="copy-block-toast" id="copyBlockToast">🚫 文章內容受版權保護，不允許複製</div>
 <div class="toast" id="toast"></div>
 
 <script src="js/article.js"></script>
 <script src="js/common.js"></script>
-
 </body>
 </html>
