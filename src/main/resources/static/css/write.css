@@ -201,11 +201,8 @@ button { cursor:pointer; font-family:var(--sans); }
     content: attr(data-placeholder);
     color: #bbb;
     pointer-events: none;
-    font-size: 16px;
+    font-size: 18px;
     font-family: var(--sans);
-    position: absolute;
-    top: 0;
-    left: 0;
 }
 .editor-wrap { position: relative; }
 

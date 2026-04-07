@@ -49,11 +49,13 @@
 <!-- EDITOR -->
 <div class="write-container">
   <!-- 草稿提示 -->
-  <div id="draftBanner" style="display:none;background:#fffbf0;border-bottom:1px solid #f0e0a0;padding:10px 40px;font-size:13px;color:#888;display:flex;align-items:center;justify-content:center;gap:16px;">
-    <span>📝 檢測到上次未完成的草稿</span>
-    <button onclick="loadDraftConfirm()" style="background:var(--ink);color:white;border:none;padding:4px 14px;font-size:12px;border-radius:2px;cursor:pointer;">繼續編輯</button>
-    <button onclick="discardDraft()" style="background:none;border:1px solid #ccc;color:#888;padding:4px 14px;font-size:12px;border-radius:2px;cursor:pointer;">丟棄草稿</button>
+  <div id="draftBanner" style="display:none;background:#fffbf0;border-bottom:1px solid #f0e0a0;padding:10px 40px;font-size:13px;color:#888;align-items:center;justify-content:center;gap:16px;">
+    <span>📝 你有未完成的草稿</span>
+    <button onclick="loadDraftConfirm()" style="background:var(--ink);color:white;border:none;padding:4px 14px;font-size:12px;cursor:pointer;">載入草稿</button>
+    <button onclick="discardDraft()" style="background:none;border:1px solid #ccc;padding:4px 14px;font-size:12px;cursor:pointer;color:#888;">忽略</button>
   </div>
+
+  <!-- COVER IMAGE -->
 
   <!-- COVER IMAGE -->
   <div class="cover-area">
@@ -253,8 +255,8 @@
 </div>
 
 <div class="toast" id="toast"></div>
-<script src="js/write.js"></script>
 
-</script>
+
+<script src="js/write.js"></script>
 </body>
 </html>

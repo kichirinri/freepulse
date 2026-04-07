@@ -157,6 +157,12 @@ public class ArticleController {
         return articleService.getByAuthorEmail(email);
     }
 
+    // 按筆名查詢
+    @GetMapping("/author-name/{name}")
+    public List<Article> getByAuthorName(@PathVariable String name) {
+        return articleService.getByAuthorName(name);
+    }
+
     // 搜尋
     @GetMapping("/search")
     public List<Article> search(@RequestParam String keyword) {
@@ -192,4 +198,20 @@ public class ArticleController {
     public Article addLike(@PathVariable Long id) {
         return articleService.addLike(id);
     }
+
+    // 今日頭條：点赞最多的1篇
+    @GetMapping("/top1")
+    public Article getTop1() {
+        List<Article> list = articleService.getHotArticles();
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    // 各分类最新N篇
+    @GetMapping("/category/{category}/latest")
+    public List<Article> getCategoryLatest(@PathVariable String category,
+                                           @RequestParam(defaultValue = "5") int limit) {
+        return articleService.getCategoryLatest(category, limit);
+    }
 }
+
+

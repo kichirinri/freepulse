@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scribe Writing go</title>
+    <title>Scribe Writing Go</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preload" as="style"
           href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap"
@@ -32,25 +32,22 @@
         <div class="banner-slide active" style="background-image:url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1400&q=80')">
             <div class="banner-overlay"></div>
             <div class="banner-copy">
-                <span class="globe-label">全球即時 · Live</span>
+                <span class="globe-label">即時 · Live</span>
                 <div class="globe-headline">讓自己發現世界<br><em>讓世界發現自己</em></div>
-                <button class="globe-cta" onclick="openLoginModal()">立即加入Scribe</button>
             </div>
         </div>
         <div class="banner-slide" style="background-image:url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1400&q=80')">
             <div class="banner-overlay"></div>
             <div class="banner-copy">
-                <span class="globe-label">嚴肅創作 · Serious</span>
+                <span class="globe-label">創作 · Serious</span>
                 <div class="globe-headline">每一個聲音<br><em>都值得被聽見</em></div>
-                <button class="globe-cta" onclick="openLoginModal()">開始寫作</button>
             </div>
         </div>
         <div class="banner-slide" style="background-image:url('https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?w=1400&q=80')">
             <div class="banner-overlay"></div>
             <div class="banner-copy">
-                <span class="globe-label">煙火飄香 · Life</span>
+                <span class="globe-label">煙火 · Life</span>
                 <div class="globe-headline">記錄生活的溫度<br><em>連結他鄉的你</em></div>
-                <button class="globe-cta" onclick="openLoginModal()">探索文章</button>
             </div>
         </div>
     </div>
@@ -107,158 +104,26 @@
 </div>
 
 <!-- MAIN PAGE -->
+<!-- MAIN PAGE -->
 <div class="page">
     <div class="grid-a">
         <div class="grid-a-lead">
             <span class="sec-label red">今日頭條</span>
-            <div class="art-lead">
-                <div class="art-thumb" style="background:none;padding:0;overflow:hidden;">
-                    <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&q=80"
-                         style="width:100%;height:100%;object-fit:cover;display:block;">
-                </div>
-                <div class="art-caption">圖：全球華人正通過Scribe跨越時區、跨越國界地交流</div>
-                <br>
-                <span class="art-kicker">時事 · 海外</span>
-                <div class="art-title">日元創三十年新低，旅日華人與留學生的生存現狀全面調查</div>
-                <div class="art-dek">從東京到大阪，我們採訪了二十位在日華人，記錄他們如何在匯率衝擊下調整生活、重新思考去留，以及那些不輕易說出口的疲憊與堅守。</div>
-                <div class="art-byline"><span>蘇行道 · 東京</span><span>·</span><span>3月22日</span><span>·</span><span>👍 22.4K</span></div>
+            <div class="art-lead" style="cursor:pointer;" id="leadCard">
+                <span class="art-kicker" id="leadCat"></span>
+                <div class="art-title" id="leadTitle" style="font-size:28px;line-height:1.3;margin-bottom:12px;"></div>
+                <div class="art-dek" id="leadDek"></div>
+                <div class="art-byline" id="leadMeta"></div>
             </div>
         </div>
         <div class="grid-a-stack">
             <span class="sec-label">最多閱讀</span>
-            <div class="art-mid">
-                <span class="sec-label fire" style="font-size:9px;margin-bottom:4px;">煙火飄香</span>
-                <div class="art-title">炸醬麵的味道，是我唯一能帶走的故鄉</div>
-                <div class="art-dek">離開北京八年，每次在海外自己煮炸醬麵，那股味道一出來，眼眶就濕了。</div>
-                <div class="art-meta"><span>林曉雨 · 大阪</span><span>·</span><span>7.4K 讚</span></div>
-            </div>
-            <div class="art-mid">
-                <span class="sec-label" style="font-size:9px;margin-bottom:4px;">哲學思想</span>
-                <div class="art-title">人生從不等你準備好，所以請帶著恐懼前行</div>
-                <div class="art-dek">真正的成長，從來都發生在你還沒準備好的那一刻。</div>
-                <div class="art-meta"><span>蘇行道 · 東京</span><span>·</span><span>18.2K 讚</span></div>
-            </div>
-            <div class="art-mid">
-                <span class="sec-label" style="font-size:9px;margin-bottom:4px;">歷史鏡鑑</span>
-                <div class="art-title">司馬遷的沉默：一個史官的尊嚴與屈辱</div>
-                <div class="art-dek">宮刑之後，司馬遷沒有死。這個選擇比死更難。</div>
-                <div class="art-meta"><span>陳望山 · 倫敦</span><span>·</span><span>4.9K 讚</span></div>
-            </div>
-            <div class="art-mid">
-                <div class="art-title">在澳洲待了五年，我終於明白「融入」是個謊言</div>
-                <div class="art-dek">不是說澳洲不好。只是某天早上醒來，我意識到自己只是在這裡「生活」。</div>
-                <div class="art-meta"><span>張以言 · 悉尼</span><span>·</span><span>3.1K 讚</span></div>
-            </div>
+            <div id="hot4List"></div>
         </div>
     </div>
-
-    <div class="grid-b">
-        <div>
-            <span class="sec-label">深度文章</span>
-            <div class="art-sm"><div class="art-sm-num">1</div><div class="art-sm-body"><div class="art-title">台積電赴美建廠兩年，那些被迫遷移的工程師現在怎樣了</div><div class="art-meta"><span>財經</span><span>·</span><span>謝如初</span><span>·</span><span>台北</span></div></div></div>
-            <div class="art-sm"><div class="art-sm-num">2</div><div class="art-sm-body"><div class="art-title">ChatGPT問世三年後：我們的思維正在被悄悄改變</div><div class="art-meta"><span>科技</span><span>·</span><span>吳子言</span><span>·</span><span>東京</span></div></div></div>
-            <div class="art-sm"><div class="art-sm-num">3</div><div class="art-sm-body"><div class="art-title">論語中最被誤解的一句話，學者爭論了兩千年</div><div class="art-meta"><span>哲學</span><span>·</span><span>葉長青</span><span>·</span><span>香港</span></div></div></div>
-            <div class="art-sm"><div class="art-sm-num">4</div><div class="art-sm-body"><div class="art-title">海外子女的中文教育困境：語言能傳承，文化呢？</div><div class="art-meta"><span>教育</span><span>·</span><span>錢幕白</span><span>·</span><span>柏林</span></div></div></div>
-            <div class="art-sm"><div class="art-sm-num">5</div><div class="art-sm-body"><div class="art-title">加拿大楓葉卡政策大變：2026年哪些人受影響</div><div class="art-meta"><span>移民</span><span>·</span><span>方子羽</span><span>·</span><span>溫哥華</span></div></div></div>
-        </div>
-        <div>
-            <span class="sec-label fire">🔥 煙火飄香</span>
-            <div class="art-sm"><div class="art-sm-num">1</div><div class="art-sm-body"><div class="art-title">在京都的最後一個冬夜，我學會了告別</div><div class="art-meta"><span>梁映秋</span><span>·</span><span>京都</span><span>·</span><span>9.8K 讚</span></div></div></div>
-            <div class="art-sm"><div class="art-sm-num">2</div><div class="art-sm-body"><div class="art-title">有時候我會想，如果有一天我消失了，還有人記得嗎</div><div class="art-meta"><span>朱以安</span><span>·</span><span>悉尼</span><span>·</span><span>6.2K 讚</span></div></div></div>
-            <div class="art-sm"><div class="art-sm-num">3</div><div class="art-sm-body"><div class="art-title">媽媽的廚房永遠亮著一盞燈，即使她已不在了</div><div class="art-meta"><span>林曉雨</span><span>·</span><span>大阪</span><span>·</span><span>5.1K 讚</span></div></div></div>
-            <div class="art-sm"><div class="art-sm-num">4</div><div class="art-sm-body"><div class="art-title">他鄉遇故知，卻說不出一句完整的廣東話</div><div class="art-meta"><span>陳宇晴</span><span>·</span><span>倫敦</span><span>·</span><span>3.7K 讚</span></div></div></div>
-            <div class="art-sm"><div class="art-sm-num">5</div><div class="art-sm-body"><div class="art-title">春節零下三十度的哈爾濱，和零下二度的我的心</div><div class="art-meta"><span>王玉婷</span><span>·</span><span>多倫多</span><span>·</span><span>2.9K 讚</span></div></div></div>
-        </div>
-        <div>
-            <span class="sec-label">嚴肅創作</span>
-            <div class="art-sm"><div class="art-sm-num">1</div><div class="art-sm-body"><div class="art-title">無題·其一：願你走出半生，歸來仍是少年</div><div class="art-meta"><span>詩詞</span><span>·</span><span>方子羽</span><span>·</span><span>台北</span></div></div></div>
-            <div class="art-sm"><div class="art-sm-num">2</div><div class="art-sm-body"><div class="art-title">《長夜》短篇小說：她在咖啡館等了三個小時</div><div class="art-meta"><span>小說</span><span>·</span><span>謝流光</span><span>·</span><span>紐約</span></div></div></div>
-            <div class="art-sm"><div class="art-sm-num">3</div><div class="art-sm-body"><div class="art-title">散文：我與父親之間，隔著一個太平洋</div><div class="art-meta"><span>散文</span><span>·</span><span>周安然</span><span>·</span><span>溫哥華</span></div></div></div>
-            <div class="art-sm"><div class="art-sm-num">4</div><div class="art-sm-body"><div class="art-title">評論：《繁花》的滬語之美，無法被普通話翻譯</div><div class="art-meta"><span>文化評論</span><span>·</span><span>石磊</span><span>·</span><span>上海</span></div></div></div>
-            <div class="art-sm"><div class="art-sm-num">5</div><div class="art-sm-body"><div class="art-title">隨筆：三十歲，終於學會了如何與孤獨共處</div><div class="art-meta"><span>隨筆</span><span>·</span><span>任靜雯</span><span>·</span><span>巴黎</span></div></div></div>
-        </div>
-    </div>
-
-    <div class="grid-c">
-        <div class="grid-c-main">
-            <div class="divider-label"><span class="divider-label-text">為你推薦</span></div>
-            <div class="art-text">
-                <div class="art-text-top">
-                    <div class="art-text-avatar" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">蘇</div>
-                    <span class="art-text-author">蘇行道</span><span class="art-text-pub">· 哲思漫筆</span>
-                    <span class="art-text-loc"><svg width="9" height="9" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>東京</span>
-                </div>
-                <div class="art-title">人生從不等你準備好，所以請帶著恐懼前行</div>
-                <div class="art-dek">我們總以為，等自己準備充分了，才能邁出那一步。但真正的成長，從來都發生在你還沒準備好的那一刻。</div>
-                <div class="art-text-footer"><span class="art-text-cat">哲學思想</span><span class="art-text-date">3月15日 · 8分鐘閱讀</span><div class="art-text-stats"><span class="art-text-stat">👍 22K</span><span class="art-text-stat">🔖</span></div></div>
-            </div>
-            <div class="art-text">
-                <div class="art-text-top">
-                    <div class="art-text-avatar" style="background:linear-gradient(135deg,#fa709a,#fee140)">林</div>
-                    <span class="art-text-author">林曉雨</span><span class="art-text-pub">· 煙火日記</span>
-                    <span class="art-text-loc"><svg width="9" height="9" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>大阪</span>
-                </div>
-                <div class="art-title">炸醬麵的味道，是我唯一能帶走的故鄉</div>
-                <div class="art-dek">離開北京八年，每次在海外自己煮炸醬麵，那股味道一出來，眼眶就濕了。不是思念，是某種無法言說的東西，鑽進了胃裡，再也出不來。</div>
-                <div class="art-text-footer"><span class="art-text-cat fire">煙火飄香</span><span class="art-text-date">3月12日 · 5分鐘閱讀</span><div class="art-text-stats"><span class="art-text-stat">👍 7.4K</span><span class="art-text-stat">🔖</span></div></div>
-            </div>
-            <div class="art-text">
-                <div class="art-text-top">
-                    <div class="art-text-avatar" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb)">陳</div>
-                    <span class="art-text-author">陳望山</span><span class="art-text-pub">· 史鑑今用</span>
-                    <span class="art-text-loc"><svg width="9" height="9" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>倫敦</span>
-                </div>
-                <div class="art-title">司馬遷的沉默：一個史官的尊嚴與屈辱</div>
-                <div class="art-dek">宮刑之後，司馬遷沒有死，這個選擇比死更難。他把所有的屈辱、憤怒、悲痛，全部化為筆墨，成就了「史家之絕唱，無韻之離騷」。</div>
-                <div class="art-text-footer"><span class="art-text-cat">歷史鏡鑑</span><span class="art-text-date">3月8日 · 12分鐘閱讀</span><div class="art-text-stats"><span class="art-text-stat">👍 4.9K</span><span class="art-text-stat">🔖</span></div></div>
-            </div>
-            <div class="art-text">
-                <div class="art-text-top">
-                    <div class="art-text-avatar" style="background:linear-gradient(135deg,#30cfd0,#667eea)">張</div>
-                    <span class="art-text-author">張以言</span><span class="art-text-pub">· 移民手記</span>
-                    <span class="art-text-loc"><svg width="9" height="9" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>悉尼</span>
-                </div>
-                <div class="art-title">在澳洲待了五年，我終於明白「融入」是個謊言</div>
-                <div class="art-dek">不是說澳洲不好，也不是說沒有嘗試。只是某天早上醒來，突然意識到——我只是在這裡「生活」，而不是真正「活著」。</div>
-                <div class="art-text-footer"><span class="art-text-cat">海外</span><span class="art-text-date">3月1日 · 10分鐘閱讀</span><div class="art-text-stats"><span class="art-text-stat">👍 3.1K</span><span class="art-text-stat">🔖</span></div></div>
-            </div>
-        </div>
-        <div class="grid-c-side">
-            <div class="side-section">
-                <hr class="side-rule">
-                <div class="side-title">Scribe熱搜榜</div>
-                <div class="hot-list-item"><div class="hot-list-num r1">1</div><div><div class="hot-list-text">日元匯率跌破158大關</div><div class="hot-list-heat">38.2萬熱度</div></div></div>
-                <div class="hot-list-item"><div class="hot-list-num r2">2</div><div><div class="hot-list-text">海外子女中文教育困境</div><div class="hot-list-heat">24.1萬</div></div></div>
-                <div class="hot-list-item"><div class="hot-list-num r3">3</div><div><div class="hot-list-text">澳洲移民新政策解讀</div><div class="hot-list-heat">19.7萬</div></div></div>
-                <div class="hot-list-item"><div class="hot-list-num">4</div><div><div class="hot-list-text">春節在海外過年攻略</div><div class="hot-list-heat">15.0萬</div></div></div>
-                <div class="hot-list-item"><div class="hot-list-num">5</div><div><div class="hot-list-text">英國簽證費用上調30%</div><div class="hot-list-heat">12.3萬</div></div></div>
-                <div class="hot-list-item"><div class="hot-list-num">6</div><div><div class="hot-list-text">DeepSeek海外使用攻略</div><div class="hot-list-heat">9.8萬</div></div></div>
-                <div class="hot-list-item"><div class="hot-list-num">7</div><div><div class="hot-list-text">加拿大楓葉卡政策大變</div><div class="hot-list-heat">8.2萬</div></div></div>
-            </div>
-            <div class="side-section">
-                <hr class="side-rule">
-                <div class="side-title">全球同城</div>
-                <div class="world-items">
-                    <div class="world-item"><span class="world-item-flag">🇯🇵</span><span class="world-item-name">東京 · 大阪</span><div class="world-item-dot"></div><span class="world-item-count">2.1萬</span></div>
-                    <div class="world-item"><span class="world-item-flag">🇺🇸</span><span class="world-item-name">紐約 · 洛杉磯</span><div class="world-item-dot"></div><span class="world-item-count">1.8萬</span></div>
-                    <div class="world-item"><span class="world-item-flag">🇬🇧</span><span class="world-item-name">倫敦 · 曼徹斯特</span><div class="world-item-dot"></div><span class="world-item-count">9.4千</span></div>
-                    <div class="world-item"><span class="world-item-flag">🇦🇺</span><span class="world-item-name">悉尼 · 墨爾本</span><div class="world-item-dot"></div><span class="world-item-count">6.7千</span></div>
-                    <div class="world-item"><span class="world-item-flag">🇨🇦</span><span class="world-item-name">溫哥華 · 多倫多</span><div class="world-item-dot"></div><span class="world-item-count">5.2千</span></div>
-                    <div class="world-item"><span class="world-item-flag">🇸🇬</span><span class="world-item-name">新加坡</span><div class="world-item-dot"></div><span class="world-item-count">4.1千</span></div>
-                    <div class="world-item"><span class="world-item-flag">🇩🇪</span><span class="world-item-name">柏林 · 法蘭克福</span><div class="world-item-dot"></div><span class="world-item-count">2.8千</span></div>
-                </div>
-            </div>
-            <div class="side-section">
-                <hr class="side-rule">
-                <div class="side-title">關於Scribe</div>
-                <div class="about-box">
-                    <p>Scribe，全球華人聚首之地。嚴肅思想與煙火生活，百態話題，在這裡共存。</p>
-                    <div class="about-badge"><span>🌐</span><span>服務節點：海外</span></div>
-                    <div class="about-badge"><span>🔓</span><span>開放討論</span></div>
-                    <div class="about-badge"><span>🚫</span><span>違規內容將限制使用</span></div>
-                </div>
-            </div>
-        </div>
+    <div style="max-width:740px;margin:0 auto;padding:0 40px 80px;">
+        <div class="divider-label"><span class="divider-label-text">最新文章</span></div>
+        <div id="latestList"></div>
     </div>
 </div>
 

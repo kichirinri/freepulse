@@ -71,11 +71,13 @@ function renderArticle() {
 
 /* ── 右侧边栏 ── */
 function loadSidebar() {
-    const initial = (article.authorName || '文')[0].toUpperCase();
-    document.getElementById('sideAvatar').textContent = initial;
-    document.getElementById('sideName').textContent = article.authorName;
-    if (article.authorEmail) {
-        fetch('http://localhost:8080/api/articles/my/' + encodeURIComponent(article.authorEmail))
+    if (article.authorName === '樹洞' || !article.authorEmail) {
+        document.getElementById('authorCard').style.display = 'none';
+    } else {
+        const initial = (article.authorName || '文')[0].toUpperCase();
+        document.getElementById('sideAvatar').textContent = initial;
+        document.getElementById('sideName').textContent = article.authorName;
+        fetch('http://localhost:8080/api/articles/author-name/' + encodeURIComponent(article.authorName))
             .then(r => r.json())
             .then(arts => { document.getElementById('sideStats').textContent = '已發表 ' + arts.length + ' 篇文章'; })
             .catch(() => {});
@@ -169,24 +171,6 @@ document.addEventListener('copy', e => { if (!isAuthor) { e.preventDefault(); sh
 document.addEventListener('contextmenu', e => { if (!isAuthor) { e.preventDefault(); showCopyBlock(); } });
 function showCopyBlock() { const t = document.getElementById('copyBlockToast'); t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
 
-/* ── PDF ── */
-let wmChoice = 'yes';
-function openPdfDialog() { document.getElementById('pdfDialog').classList.add('open'); document.body.style.overflow = 'hidden'; }
-function closePdfDialog() { document.getElementById('pdfDialog').classList.remove('open'); document.body.style.overflow = ''; }
-function closePdfOnOverlay(e) { if (e.target.id === 'pdfDialog') closePdfDialog(); }
-function selectWm(choice) {
-    wmChoice = choice;
-    document.getElementById('wmOpt1').classList.toggle('selected', choice === 'yes');
-    document.getElementById('wmOpt2').classList.toggle('selected', choice === 'no');
-    document.getElementById('wmYes').checked = choice === 'yes';
-    document.getElementById('wmNo').checked = choice === 'no';
-    document.getElementById('wmPreview').style.display = choice === 'yes' ? 'block' : 'none';
-}
-function downloadPDF() {
-    if (!article) return; closePdfDialog();
-    window.location.href = 'http://localhost:8080/api/articles/' + article.id + '/pdf?watermark=' + (wmChoice === 'yes' ? 'true' : 'false');
-    showToast('PDF 下載中…');
-}
 
 /* ================================================================
    圖片下載 — Canvas生成，隨機背景
@@ -259,156 +243,208 @@ function selectTheme(el, theme) {
 function downloadImage() {
     if (!article) return;
     closeImgDialog();
-    showToast('圖片生成中…');
+    showToast('圖片生成中，請稍候…');
 
     const theme = getTheme();
     const W = 800;
+    const H = 1000; // 每张图固定高度
     const PADDING = 56;
     const contentW = W - PADDING * 2;
 
-    // 先计算高度
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-
-    // 字体设置
+    // 准备所有文字内容
     const titleFont = 'bold 32px serif';
-    const bodyFont = '16px serif';
-    const metaFont = '13px sans-serif';
+    const bodyFont = '17px serif';
 
-    // 计算标题高度
-    ctx.font = titleFont;
-    const titleLines = wrapText(ctx, article.title, contentW);
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
 
-    // 计算正文高度（最多显示前400字）
-    ctx.font = bodyFont;
-    const bodyText = (article.content || '').slice(0, 400) + (article.content.length > 400 ? '…' : '');
-    const bodyLines = wrapText(ctx, bodyText, contentW);
+    // 计算标题行
+    tempCtx.font = titleFont;
+    const titleLines = wrapText(tempCtx, article.title, contentW);
 
-    // 计算总高度
-    const headerH = 80;
-    const titleH = titleLines.length * 44 + 20;
-    const metaH = 60;
-    const bodyH = Math.min(bodyLines.length, 12) * 28 + 20;
-    const footerH = imgWmChoice === 'yes' ? 80 : 60;
-    const separatorH = 24;
-    const totalH = headerH + titleH + metaH + separatorH + bodyH + footerH + 40;
+    // 计算全部正文行
+    tempCtx.font = bodyFont;
+    const fullText = article.content || '';
+    const bodyLines = wrapText(tempCtx, fullText, contentW);
 
-    canvas.width = W;
-    canvas.height = totalH;
+    // 第一页头部固定区域高度
+    const HEADER_H = 70;     // logo栏
+    const TITLE_H = titleLines.length * 44 + 12;
+    const DIVIDER_H = 1;
+    const META_H = 70;       // 作者+日期
+    const FOOTER_H = 60;     // 底部版权
+    const LINE_H = 30;       // 每行正文高度
 
-    // 绘制背景渐变
-    const grad = ctx.createLinearGradient(0, 0, W, totalH);
-    grad.addColorStop(0, theme.bg[0]);
-    grad.addColorStop(1, theme.bg[1]);
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, totalH);
+    // 计算每页能放多少行正文
+    const firstPageBodyH = H - HEADER_H - TITLE_H - 24 - META_H - 24 - FOOTER_H - 40;
+    const firstPageLines = Math.max(1, Math.floor(firstPageBodyH / LINE_H));
 
-    // 随机噪点（让每张图不同）
-    const noise = Math.floor(Math.random() * 1000);
-    for (let i = 0; i < 200; i++) {
-        const x = (Math.sin(i * 9.7 + noise) * 0.5 + 0.5) * W;
-        const y = (Math.cos(i * 7.3 + noise) * 0.5 + 0.5) * totalH;
-        ctx.fillStyle = 'rgba(255,255,255,0.015)';
-        ctx.beginPath();
-        ctx.arc(x, y, Math.random() * 3 + 1, 0, Math.PI * 2);
-        ctx.fill();
+    const otherPageBodyH = H - HEADER_H - FOOTER_H - 40;
+    const otherPageLines = Math.max(1, Math.floor(otherPageBodyH / LINE_H));
+
+    // 分页
+    const pages = [];
+    let remaining = [...bodyLines];
+
+    // 第一页
+    pages.push({ type: 'first', lines: remaining.splice(0, firstPageLines) });
+
+    // 后续页
+    let pageNum = 2;
+    while (remaining.length > 0) {
+        pages.push({ type: 'normal', lines: remaining.splice(0, otherPageLines), pageNum });
+        pageNum++;
     }
+    // 最后一页加版权
+    if (pages.length > 0) pages[pages.length - 1].isLast = true;
 
-    let y = 0;
+    const totalPages = pages.length;
 
-    // 顶部Logo栏
-    ctx.fillStyle = theme.border;
-    ctx.fillRect(0, 0, W, 1);
-    y = 24;
-    ctx.font = 'bold 18px serif';
-    ctx.fillStyle = theme.logo;
-    ctx.fillText('Scribe', PADDING, y + 20);
+    // 逐页生成并下载
+    pages.forEach((page, idx) => {
+        setTimeout(() => {
+            const canvas = document.createElement('canvas');
+            canvas.width = W;
+            canvas.height = H;
+            const ctx = canvas.getContext('2d');
 
-    // 分类标签
-    ctx.font = 'bold 11px sans-serif';
-    ctx.fillStyle = theme.accent;
-    const catText = article.category.toUpperCase();
-    const catW = ctx.measureText(catText).width + 20;
-    ctx.strokeStyle = theme.accent;
-    ctx.lineWidth = 1;
-    ctx.strokeRect(W - PADDING - catW, y + 8, catW, 22);
-    ctx.fillText(catText, W - PADDING - catW + 10, y + 23);
+            // 背景
+            const grad = ctx.createLinearGradient(0, 0, W, H);
+            grad.addColorStop(0, theme.bg[0]);
+            grad.addColorStop(1, theme.bg[1]);
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, W, H);
 
-    y += headerH;
+            // 噪点
+            const noise = Math.floor(Math.random() * 1000) + idx * 37;
+            for (let i = 0; i < 150; i++) {
+                const x = (Math.sin(i * 9.7 + noise) * 0.5 + 0.5) * W;
+                const y = (Math.cos(i * 7.3 + noise) * 0.5 + 0.5) * H;
+                ctx.fillStyle = 'rgba(255,255,255,0.012)';
+                ctx.beginPath();
+                ctx.arc(x, y, Math.random() * 2 + 1, 0, Math.PI * 2);
+                ctx.fill();
+            }
 
-    // 标题
-    ctx.font = titleFont;
-    ctx.fillStyle = theme.text;
-    titleLines.forEach(line => {
-        ctx.fillText(line, PADDING, y);
-        y += 44;
+            let y = 0;
+
+            // ── 顶部Logo栏 ──
+            y = 28;
+            ctx.font = 'bold 18px serif';
+            ctx.fillStyle = theme.logo;
+            ctx.fillText('Scribe', PADDING, y + 16);
+
+            // 页码
+            ctx.font = '12px sans-serif';
+            ctx.fillStyle = theme.sub;
+            ctx.textAlign = 'right';
+            ctx.fillText((idx + 1) + ' / ' + totalPages, W - PADDING, y + 16);
+            ctx.textAlign = 'left';
+
+            // 分类标签（右上）
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillStyle = theme.accent;
+            const catText = article.category.toUpperCase();
+            const catW = ctx.measureText(catText).width + 20;
+            ctx.strokeStyle = theme.accent;
+            ctx.lineWidth = 1;
+            ctx.strokeRect(W - PADDING - catW - 60, y + 4, catW, 22);
+            ctx.fillText(catText, W - PADDING - catW - 50, y + 19);
+
+            y += HEADER_H;
+
+            // ── 第一页：标题 + 作者 ──
+            if (page.type === 'first') {
+                ctx.font = titleFont;
+                ctx.fillStyle = theme.text;
+                titleLines.forEach(line => {
+                    ctx.fillText(line, PADDING, y);
+                    y += 44;
+                });
+                y += 12;
+
+                // 分割线
+                ctx.strokeStyle = theme.border;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(PADDING, y); ctx.lineTo(W - PADDING, y);
+                ctx.stroke();
+                y += 24;
+
+                // 作者+日期
+                ctx.font = 'bold 14px sans-serif';
+                ctx.fillStyle = theme.text;
+                ctx.fillText(article.authorName || '用戶', PADDING, y);
+                const date = new Date(article.createdDate);
+                const dateStr = date.getFullYear() + '年' + (date.getMonth()+1) + '月' + date.getDate() + '日';
+                ctx.font = '13px sans-serif';
+                ctx.fillStyle = theme.sub;
+                ctx.fillText(dateStr + '  ·  ' + article.category, PADDING, y + 22);
+                y += META_H;
+            } else {
+                // 后续页：显示标题缩略
+                ctx.font = 'bold 14px sans-serif';
+                ctx.fillStyle = theme.sub;
+                ctx.fillText('《' + article.title + '》', PADDING, y - 10);
+
+                // 分割线
+                ctx.strokeStyle = theme.border;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(PADDING, y); ctx.lineTo(W - PADDING, y);
+                ctx.stroke();
+                y += 24;
+            }
+
+            // ── 正文 ──
+            ctx.font = bodyFont;
+            ctx.fillStyle = theme.text;
+            page.lines.forEach(line => {
+                ctx.fillText(line, PADDING, y);
+                y += LINE_H;
+            });
+
+            // ── 底部 ──
+            const footerY = H - FOOTER_H + 10;
+
+            // 底部分割线
+            ctx.strokeStyle = theme.border;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(PADDING, footerY); ctx.lineTo(W - PADDING, footerY);
+            ctx.stroke();
+
+            if (page.isLast && imgWmChoice === 'yes') {
+                // 最后一页显示完整版权
+                ctx.font = '12px sans-serif';
+                ctx.fillStyle = theme.sub;
+                ctx.fillText('© ' + (article.authorName || '用戶') + ' · Scribe', PADDING, footerY + 22);
+                ctx.font = '11px sans-serif';
+                ctx.fillStyle = theme.border;
+                const shortUrl = location.href.length > 60 ? location.href.slice(0, 57) + '...' : location.href;
+                ctx.fillText(shortUrl, PADDING, footerY + 40);
+            } else {
+                ctx.font = '12px sans-serif';
+                ctx.fillStyle = theme.sub;
+                ctx.fillText('Scribe · 全球華人寫作平台', PADDING, footerY + 22);
+                if (imgWmChoice === 'yes') {
+                    ctx.font = '11px sans-serif';
+                    ctx.fillStyle = theme.border;
+                    ctx.fillText('© ' + (article.authorName || '用戶'), PADDING, footerY + 40);
+                }
+            }
+
+            // 下载
+            const link = document.createElement('a');
+            link.download = 'scribe-' + article.id + '-p' + (idx + 1) + '-' + Date.now() + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+
+            if (idx === totalPages - 1) {
+                showToast('全部 ' + totalPages + ' 張圖片已下載 ✓');
+            }
+        }, idx * 800); // 每张间隔800ms，避免浏览器拦截
     });
-    y += 16;
-
-    // 分割线
-    ctx.strokeStyle = theme.border;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(PADDING, y); ctx.lineTo(W - PADDING, y);
-    ctx.stroke();
-    y += 24;
-
-    // 作者 & 日期
-    ctx.font = 'bold 13px sans-serif';
-    ctx.fillStyle = theme.text;
-    ctx.fillText(article.authorName || '用戶', PADDING, y);
-    const date = new Date(article.createdDate);
-    const dateStr = date.getFullYear() + '年' + (date.getMonth()+1) + '月' + date.getDate() + '日';
-    ctx.font = '13px sans-serif';
-    ctx.fillStyle = theme.sub;
-    ctx.fillText(dateStr + '  ·  ' + article.category, PADDING, y + 22);
-    y += metaH;
-
-    // 正文
-    ctx.font = bodyFont;
-    ctx.fillStyle = theme.sub;
-    const maxBodyLines = Math.min(bodyLines.length, 12);
-    for (let i = 0; i < maxBodyLines; i++) {
-        ctx.fillText(bodyLines[i], PADDING, y);
-        y += 28;
-    }
-    if (bodyLines.length > 12) {
-        ctx.fillStyle = theme.accent;
-        ctx.fillText('閱讀全文 →', PADDING, y);
-        y += 28;
-    }
-    y += 16;
-
-    // 底部分割线
-    ctx.strokeStyle = theme.border;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(PADDING, y); ctx.lineTo(W - PADDING, y);
-    ctx.stroke();
-    y += 20;
-
-    // 水印 / 来源
-    if (imgWmChoice === 'yes') {
-        ctx.font = '12px sans-serif';
-        ctx.fillStyle = theme.sub;
-        ctx.fillText('© ' + (article.authorName || '用戶') + ' · Scribe', PADDING, y);
-        ctx.font = '11px sans-serif';
-        ctx.fillStyle = theme.border;
-        const shortUrl = location.href.length > 60 ? location.href.slice(0, 57) + '...' : location.href;
-        ctx.fillText(shortUrl, PADDING, y + 18);
-    } else {
-        ctx.font = '12px sans-serif';
-        ctx.fillStyle = theme.sub;
-        ctx.fillText('Scribe · 全球華人寫作平台', PADDING, y);
-    }
-
-    // 下载
-    const link = document.createElement('a');
-    link.download = 'scribe-' + article.id + '-' + Date.now() + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-
-    showToast('圖片已下載 ✓');
 }
 
 // 文字换行辅助

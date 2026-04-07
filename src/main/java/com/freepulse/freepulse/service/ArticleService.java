@@ -84,8 +84,18 @@ public class ArticleService {
         }).orElse(null);
     }
 
+    public List<Article> getByAuthorName(String name) {
+        return articleRepository.findByAuthorName(name);
+    }
+
     // 搜尋
     public List<Article> search(String keyword) {
         return articleRepository.findByTitleContainingOrContentContainingOrAuthorNameContaining(keyword, keyword, keyword);
     }
+
+    public List<Article> getCategoryLatest(String category, int limit) {
+        return articleRepository.findByCategoryOrderByCreatedDateDesc(category)
+                .stream().limit(limit).collect(java.util.stream.Collectors.toList());
+    }
 }
+

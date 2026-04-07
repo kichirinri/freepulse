@@ -6,42 +6,6 @@ function goCategory(cat) {
     window.location.href = 'category.html?cat=' + encodeURIComponent(cat);
 }
 
-function toggleTsPanel() {
-    const p = document.getElementById('tsPanel');
-    const b = document.getElementById('tsExpandBtn');
-    p.classList.toggle('open');
-    b.classList.toggle('open');
-    if (p.classList.contains('open')) {
-        setTimeout(() => {
-            document.addEventListener('click', function h(e) {
-                if (!document.querySelector('.topic-strip').contains(e.target)) {
-                    p.classList.remove('open');
-                    b.classList.remove('open');
-                    document.removeEventListener('click', h);
-                }
-            });
-        }, 10);
-    }
-}
-
-document.querySelectorAll('.ts-panel-tag').forEach(t => {
-    t.addEventListener('click', () => t.classList.toggle('on'));
-});
-
-function trimTags() {
-    const wrap = document.getElementById('tsTags');
-    if (!wrap) return;
-    const tags = wrap.querySelectorAll('.ts-tag');
-    tags.forEach(t => t.style.display = '');
-    let used = 0;
-    tags.forEach(t => {
-        used += t.offsetWidth;
-        if (used > wrap.offsetWidth - 10) t.style.display = 'none';
-    });
-}
-setTimeout(trimTags, 300);
-window.addEventListener('resize', trimTags);
-
 /* Banner Slider */
 let currentSlide = 0;
 let sliderTimer = null;
@@ -86,7 +50,6 @@ function openLoginModal() {
     document.getElementById('loginModal').classList.add('open');
     document.body.style.overflow = 'hidden';
     switchTab('login');
-    resetCodeTimer();
 }
 function closeLoginModal() {
     document.getElementById('loginModal').classList.remove('open');
@@ -96,7 +59,6 @@ function closeLoginModal() {
 function closeOnOverlay(e, id) {
     if (e.target.id === id && id === 'loginModal') closeLoginModal();
 }
-
 function switchTab(tab) {
     const tabMap  = { login: 'tabLogin', register: 'tabReg' };
     const formMap = { login: 'formLogin', register: 'formReg', forgot: 'formForgot' };
@@ -108,14 +70,12 @@ function switchTab(tab) {
     });
     clearForms();
 }
-
 function showForgotPwd() {
     ['tabLogin','tabReg'].forEach(id => document.getElementById(id).classList.remove('active'));
     ['formLogin','formReg'].forEach(id => document.getElementById(id).classList.add('hidden'));
     document.getElementById('formForgot').classList.remove('hidden');
     clearForms();
 }
-
 function doForgotPwd() {
     const email = document.getElementById('forgotEmail').value.trim();
     const errEl = document.getElementById('forgotError');
@@ -130,7 +90,6 @@ function doForgotPwd() {
         btn.disabled = false; btn.textContent = '發送重設連結';
     }, 800);
 }
-
 function clearForms() {
     ['loginEmail','loginPwd','regName','regEmail','regPwd'].forEach(id => {
         const el = document.getElementById(id);
@@ -141,7 +100,6 @@ function clearForms() {
         if (el) el.textContent = '';
     });
 }
-
 function doLogin() {
     const email = document.getElementById('loginEmail').value.trim();
     const pwd   = document.getElementById('loginPwd').value;
@@ -164,7 +122,6 @@ function doLogin() {
         onLoginSuccess(user);
     }, 600);
 }
-
 function doRegister() {
     const name  = document.getElementById('regName').value.trim();
     const email = document.getElementById('regEmail').value.trim();
@@ -190,20 +147,12 @@ function doRegister() {
         onLoginSuccess({ email, name });
     }, 700);
 }
-
-let codeTimer = null;
-let codeCountdown = 0;
-function resetCodeTimer() {
-    clearInterval(codeTimer);
-    codeTimer = null; codeCountdown = 0;
-}
-
 let currentUser = null;
 function onLoginSuccess(user) {
     sessionStorage.setItem('wh_user', JSON.stringify(user));
     currentUser = user;
     closeLoginModal();
-    renderUserState();  // common.js
+    renderUserState();
     const key = 'wh_noticed_' + user.email;
     if (!localStorage.getItem(key)) {
         setTimeout(() => openNoticeModal(), 400);
@@ -227,7 +176,6 @@ function confirmNotice() {
     document.getElementById('noticeModal').classList.remove('open');
     document.body.style.overflow = '';
 }
-
 document.addEventListener('keydown', function(e) {
     if (e.key !== 'Enter') return;
     const modal = document.getElementById('loginModal');
@@ -239,55 +187,75 @@ document.addEventListener('keydown', function(e) {
 });
 
 /* ================================================================
- *  首页动态文章加载 + 分类过滤
+ *  首页动态文章加载
  * ================================================================ */
 let allArticles = [];
 
 (function loadUserArticles() {
     fetch('http://localhost:8080/api/articles')
         .then(res => res.json())
-        .then(articles => { allArticles = articles; renderFeed(articles); })
+        .then(articles => {
+            allArticles = articles;
+
+            // 今日頭條：点赞最多
+            const sorted = [...articles].sort((a,b) => (b.likes||0)-(a.likes||0));
+            const top = sorted[0];
+            if (top) {
+                const date = new Date(top.createdDate);
+                const dateStr = (date.getMonth()+1) + '月' + date.getDate() + '日';
+                document.getElementById('leadCat').textContent = top.category;
+                document.getElementById('leadTitle').textContent = top.title;
+                document.getElementById('leadDek').textContent = (top.content||'').slice(0,100) + '…';
+                document.getElementById('leadMeta').innerHTML =
+                    `<span>${top.authorName}</span><span>·</span><span>${dateStr}</span><span>·</span><span>👍 ${top.likes||0}</span>`;
+                document.getElementById('leadCard').onclick = () => window.location.href = 'article.html?id=' + top.id;
+            }
+
+            // 最多閱讀（2-5名）
+            const hot4El = document.getElementById('hot4List');
+            hot4El.innerHTML = '';
+            sorted.slice(1, 5).forEach(a => {
+                const div = document.createElement('div');
+                div.className = 'art-mid';
+                div.style.cursor = 'pointer';
+                div.onclick = () => window.location.href = 'article.html?id=' + a.id;
+                div.innerHTML = `
+                    <span class="sec-label" style="font-size:9px;margin-bottom:4px;">${a.category}</span>
+                    <div class="art-title">${a.title}</div>
+                    <div class="art-meta"><span>${a.authorName}</span><span>·</span><span>👍 ${a.likes||0}</span></div>`;
+                hot4El.appendChild(div);
+            });
+
+            // 最新文章
+            renderFeed(articles);
+        })
         .catch(err => console.log('載入文章失敗', err));
 })();
 
 function renderFeed(articles) {
-    let section = document.getElementById('userFeedSection');
-    if (!section) {
-        section = document.createElement('div');
-        section.id = 'userFeedSection';
-        section.innerHTML = `
-            <div class="divider-label" style="margin:32px 0 20px;">
-                <span class="divider-label-text" id="feedLabel">最新發表</span>
-            </div>
-            <div class="grid-c">
-                <div class="grid-c-main" id="userFeed"></div>
-                <div class="grid-c-side" id="userFeedSide"></div>
-            </div>`;
-        document.querySelector('.page').appendChild(section);
-    }
-
-    const feed = document.getElementById('userFeed');
-    const side = document.getElementById('userFeedSide');
-    feed.innerHTML = '';
-
+    const el = document.getElementById('latestList');
+    if (!el) return;
+    el.innerHTML = '';
     if (!articles.length) {
-        feed.innerHTML = '<div style="padding:60px 0;text-align:center;color:var(--ink4);font-size:15px;">此分類暫無文章</div>';
-        side.innerHTML = '';
+        el.innerHTML = '<div style="padding:60px 0;text-align:center;color:var(--ink4);font-size:15px;">此分類暫無文章</div>';
         return;
     }
-
-    articles.slice(0, 10).forEach(a => {
-        const date    = new Date(a.createdDate);
+    const colors = ['#4facfe,#00f2fe','#fa709a,#fee140','#a18cd1,#fbc2eb','#30cfd0,#667eea','#43e97b,#38f9d7'];
+    articles.slice(0, 20).forEach(a => {
+        const date = new Date(a.createdDate);
         const dateStr = (date.getMonth()+1) + '月' + date.getDate() + '日';
-        const mins    = Math.max(1, Math.round((a.content||'').replace(/\s/g,'').length / 300));
+        const mins = Math.max(1, Math.round((a.content||'').replace(/\s/g,'').length / 300));
         const excerpt = (a.content||'').slice(0, 100);
-        const isFire  = a.category === '煙火飄香';
+        const isFire = a.category === '煙火飄香';
         const initial = (a.authorName||'文')[0].toUpperCase();
-        const el = document.createElement('div');
-        el.className = 'art-text';
-        el.innerHTML = `
+        const color = colors[a.id % colors.length];
+        const div = document.createElement('div');
+        div.className = 'art-text';
+        div.style.cursor = 'pointer';
+        div.onclick = () => window.location.href = 'article.html?id=' + a.id;
+        div.innerHTML = `
             <div class="art-text-top">
-                <div class="art-text-avatar" style="background:linear-gradient(135deg,#667eea,#764ba2)">${initial}</div>
+                <div class="art-text-avatar" style="background:linear-gradient(135deg,${color})">${initial}</div>
                 <span class="art-text-author">${a.authorName||'用戶'}</span>
                 <span class="art-text-pub">· ${a.category}</span>
                 <span class="art-text-loc" style="margin-left:auto;font-size:13px;color:var(--ink4);">${dateStr}</span>
@@ -299,38 +267,26 @@ function renderFeed(articles) {
                 <span class="art-text-date">${mins} 分鐘閱讀</span>
                 <div class="art-text-stats"><span class="art-text-stat">👍 ${a.likes||0}</span></div>
             </div>`;
-        el.onclick = () => window.location.href = 'article.html?id=' + a.id;
-        feed.appendChild(el);
+        el.appendChild(div);
     });
-
-    const sorted = [...articles].sort((a,b) => (b.likes||0)-(a.likes||0)).slice(0,5);
-    let sideHTML = `<hr class="side-rule"><div class="side-title">熱門文章</div>`;
-    sorted.forEach((a,i) => {
-        const r = i===0?'r1':i===1?'r2':i===2?'r3':'';
-        sideHTML += `<div class="hot-list-item" onclick="window.location.href='article.html?id=${a.id}'">
-            <div class="hot-list-num ${r}">${i+1}</div>
-            <div><div class="hot-list-text">${a.title}</div>
-            <div class="hot-list-heat">👍 ${a.likes||0} · ${a.category}</div></div></div>`;
-    });
-    side.innerHTML = sideHTML;
 }
 
 function filterByTopic(topic, el) {
     document.querySelectorAll('.nav-topic').forEach(t => t.classList.remove('active'));
     if (el) el.classList.add('active');
-    const label = document.getElementById('feedLabel');
     if (topic === '熱門') {
-        if (label) label.textContent = '熱門文章';
         renderFeed([...allArticles].sort((a,b) => (b.likes||0)-(a.likes||0)));
         return;
     }
-    if (label) label.textContent = topic;
     fetch(`http://localhost:8080/api/articles/category/${encodeURIComponent(topic)}`)
         .then(res => res.json())
         .then(articles => renderFeed(articles))
         .catch(() => renderFeed(allArticles.filter(a => a.category === topic)));
 }
 
+/* ================================================================
+ *  搜索
+ * ================================================================ */
 function toggleSearch() {
     document.getElementById('searchOverlay').style.display = 'block';
     document.body.style.overflow = 'hidden';
@@ -356,10 +312,10 @@ function doSearch() {
             }
             list.innerHTML = `<div style="font-size:13px;color:var(--ink4);margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--rule);">找到 ${articles.length} 篇相關文章</div>`;
             articles.forEach(a => {
-                const date    = new Date(a.createdDate);
+                const date = new Date(a.createdDate);
                 const dateStr = (date.getMonth()+1) + '月' + date.getDate() + '日';
                 const excerpt = (a.content||'').slice(0,120);
-                const hl      = s => s.replace(new RegExp(keyword,'gi'), m => `<mark style="background:#fff3cd;padding:0 2px;">${m}</mark>`);
+                const hl = s => s.replace(new RegExp(keyword,'gi'), m => `<mark style="background:#fff3cd;padding:0 2px;">${m}</mark>`);
                 const el = document.createElement('div');
                 el.style.cssText = 'padding:24px 0;border-bottom:1px solid var(--rule-lt);cursor:pointer;';
                 el.innerHTML = `
