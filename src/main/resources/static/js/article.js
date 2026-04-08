@@ -496,3 +496,9 @@ function confirmDelete() {
 
 /* ── Toast ── */
 function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+
+function editArticle() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    if (id) window.location.href = 'write.html?editId=' + id;
+}

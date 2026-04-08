@@ -196,38 +196,84 @@ let allArticles = [];
         .then(res => res.json())
         .then(articles => {
             allArticles = articles;
-
-            // 今日頭條：点赞最多
             const sorted = [...articles].sort((a,b) => (b.likes||0)-(a.likes||0));
-            const top = sorted[0];
-            if (top) {
+            const colors = ['#4facfe,#00f2fe','#fa709a,#fee140','#a18cd1,#fbc2eb','#30cfd0,#667eea','#43e97b,#38f9d7'];
+
+            renderFeed(articles);
+
+            // 边栏：今日头条
+            const leadEl = document.getElementById('sidebarLead');
+            if (leadEl && sorted[0]) {
+                const top = sorted[0];
                 const date = new Date(top.createdDate);
                 const dateStr = (date.getMonth()+1) + '月' + date.getDate() + '日';
-                document.getElementById('leadCat').textContent = top.category;
-                document.getElementById('leadTitle').textContent = top.title;
-                document.getElementById('leadDek').textContent = (top.content||'').slice(0,100) + '…';
-                document.getElementById('leadMeta').innerHTML =
-                    `<span>${top.authorName}</span><span>·</span><span>${dateStr}</span><span>·</span><span>👍 ${top.likes||0}</span>`;
-                document.getElementById('leadCard').onclick = () => window.location.href = 'article.html?id=' + top.id;
+                leadEl.innerHTML = `
+                <div style="cursor:pointer;" onclick="window.location.href='article.html?id=${top.id}'">
+                    <div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:1px;margin-bottom:6px;">${top.category}</div>
+                    <div style="font-family:var(--serif);font-size:17px;font-weight:700;line-height:1.35;color:#111;margin-bottom:8px;">${top.title}</div>
+                    <div style="font-size:13px;color:#777;line-height:1.6;">${(top.content||'').slice(0,60)}…</div>
+                    <div style="font-size:12px;color:#aaa;margin-top:8px;">${top.authorName} · ${dateStr} · 👍 ${top.likes||0}</div>
+                </div>`;
             }
 
-            // 最多閱讀（2-5名）
-            const hot4El = document.getElementById('hot4List');
-            hot4El.innerHTML = '';
-            sorted.slice(1, 5).forEach(a => {
-                const div = document.createElement('div');
-                div.className = 'art-mid';
-                div.style.cursor = 'pointer';
-                div.onclick = () => window.location.href = 'article.html?id=' + a.id;
-                div.innerHTML = `
-                    <span class="sec-label" style="font-size:9px;margin-bottom:4px;">${a.category}</span>
-                    <div class="art-title">${a.title}</div>
-                    <div class="art-meta"><span>${a.authorName}</span><span>·</span><span>👍 ${a.likes||0}</span></div>`;
-                hot4El.appendChild(div);
-            });
 
-            // 最新文章
-            renderFeed(articles);
+
+            // 边栏：树洞最新3条
+            const treehollEl = document.getElementById('sidebarTreeholl');
+            if (treehollEl) {
+                const treehollPosts = articles.filter(a => a.category === '樹洞').slice(0, 3);
+                if (!treehollPosts.length) {
+                    treehollEl.innerHTML = '<div style="font-size:13px;color:#aaa;">暫無樹洞內容</div>';
+                } else {
+                    treehollEl.innerHTML = treehollPosts.map(a => {
+                        const date = new Date(a.createdDate);
+                        const dateStr = (date.getMonth()+1) + '月' + date.getDate() + '日';
+                        return `<div class="sidebar-treeholl-item" onclick="window.location.href='article.html?id=${a.id}'">
+                            <div class="sidebar-treeholl-title">${a.title}</div>
+                            <div class="sidebar-treeholl-meta">${a.authorName} · ${dateStr} · 👍 ${a.likes||0}</div>
+                        </div>`;
+                    }).join('');
+                }
+            }
+
+            // 边栏：推荐作者（点赞数最高的前4位不重复作者）
+            const authorsEl = document.getElementById('sidebarAuthors');
+            if (authorsEl) {
+                const seen = new Set();
+                const topAuthors = [];
+                [...articles].sort((a,b) => (b.likes||0)-(a.likes||0)).forEach(a => {
+                    if (!seen.has(a.authorName)) {
+                        seen.add(a.authorName);
+                        topAuthors.push(a);
+                    }
+                });
+                const colors = ['#4facfe,#00f2fe','#fa709a,#fee140','#a18cd1,#fbc2eb','#43e97b,#38f9d7'];
+                authorsEl.innerHTML = topAuthors.slice(0, 4).map((a, i) => {
+                    const initial = (a.authorName||'文')[0].toUpperCase();
+                    const color = colors[i % colors.length];
+                    return `<div class="sidebar-author-item">
+                        <div class="sidebar-author-avatar" style="background:linear-gradient(135deg,${color})">${initial}</div>
+                        <div>
+                            <div class="sidebar-author-name">${a.authorName}</div>
+                            <div class="sidebar-author-desc">${a.category} · 👍 ${a.likes||0}</div>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+
+            // 边栏：最近热读（点赞最多前5篇）
+            const hotEl = document.getElementById('sidebarHot');
+            if (hotEl) {
+                const hotList = [...articles].sort((a,b) => (b.likes||0)-(a.likes||0)).slice(0, 5);
+                hotEl.innerHTML = hotList.map((a, i) => `
+                    <div class="sidebar-hot-item" onclick="window.location.href='article.html?id=${a.id}'">
+                        <div class="sidebar-hot-num">${i+1}</div>
+                        <div>
+                            <div class="sidebar-hot-title">${a.title}</div>
+                            <div class="sidebar-hot-meta">${a.authorName} · 👍 ${a.likes||0}</div>
+                        </div>
+                    </div>`).join('');
+            }
         })
         .catch(err => console.log('載入文章失敗', err));
 })();
@@ -334,3 +380,110 @@ function doSearch() {
         });
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
+
+
+const colors = ['#4facfe,#00f2fe','#fa709a,#fee140','#a18cd1,#fbc2eb','#30cfd0,#667eea','#43e97b,#38f9d7'];
+
+const SEARCH_HISTORY_KEY = 'scribe_search_history';
+
+function getSearchHistory() {
+    return JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || '[]');
+}
+
+function saveSearchHistory(keyword) {
+    let history = getSearchHistory();
+    history = [keyword, ...history.filter(k => k !== keyword)].slice(0, 8);
+    localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(history));
+}
+
+function showNavDropdown() {
+    const input = document.getElementById('navSearchInput');
+    if (input.value.trim()) { onNavInput(input.value); return; }
+    const history = getSearchHistory();
+    const dd = document.getElementById('navSearchDropdown');
+    if (!history.length) { dd.style.display = 'none'; return; }
+    dd.innerHTML = `
+        <div class="nav-dd-section">
+            <div class="nav-dd-label" style="display:flex;justify-content:space-between;align-items:center;">
+                <span>搜尋歷史</span>
+                <span style="font-size:11px;color:#aaa;cursor:pointer;font-weight:400;text-transform:none;letter-spacing:0;" onclick="clearSearchHistory()">清除歷史</span>
+            </div>
+            ${history.map(k => `
+                <div class="nav-dd-item" onclick="pickHistory('${k}')">
+                    <div class="nav-dd-icon">🕐</div>
+                    <span>${k}</span>
+                </div>`).join('')}
+        </div>`;
+    dd.style.display = 'block';
+}
+
+function onNavInput(val) {
+    toggleNavClear(val);
+    const dd = document.getElementById('navSearchDropdown');
+    if (!val.trim()) { showNavDropdown(); return; }
+    const filtered = allArticles.filter(a =>
+        a.title.includes(val) || (a.authorName||'').includes(val)
+    ).slice(0, 6);
+    if (!filtered.length) {
+        dd.innerHTML = `<div style="padding:20px 16px;font-size:14px;color:#aaa;">沒有找到相關結果</div>`;
+    } else {
+        dd.innerHTML = `<div class="nav-dd-section">
+            <div class="nav-dd-label">搜尋結果</div>
+            ${filtered.map(a => `<div class="nav-dd-item" onclick="window.location.href='article.html?id=${a.id}'">
+                <div class="nav-dd-icon">📄</div>
+                <div><div style="font-weight:600;">${a.title}</div><div style="font-size:12px;color:#aaa;">${a.authorName}</div></div>
+            </div>`).join('')}
+        </div>`;
+    }
+    dd.style.display = 'block';
+}
+
+function doNavSearch(keyword) {
+    if (!keyword.trim()) return;
+    saveSearchHistory(keyword.trim());
+    document.getElementById('navSearchDropdown').style.display = 'none';
+    const filtered = allArticles.filter(a =>
+        a.title.includes(keyword) ||
+        (a.content||'').includes(keyword) ||
+        (a.authorName||'').includes(keyword)
+    );
+    renderFeed(filtered.length ? filtered : allArticles);
+}
+
+function toggleNavClear(val) {
+    document.getElementById('navSearchClear').style.display = val ? 'inline' : 'none';
+}
+
+function clearNavSearch() {
+    const input = document.getElementById('navSearchInput');
+    input.value = '';
+    document.getElementById('navSearchClear').style.display = 'none';
+    document.getElementById('navSearchDropdown').style.display = 'none';
+    renderFeed(allArticles);
+    input.focus();
+}
+
+function pickHistory(keyword) {
+    document.getElementById('navSearchInput').value = keyword;
+    doNavSearch(keyword);
+}
+
+function clearSearchHistory() {
+    localStorage.removeItem(SEARCH_HISTORY_KEY);
+    document.getElementById('navSearchDropdown').style.display = 'none';
+}
+
+
+
+// 点击外部关闭下拉
+document.addEventListener('click', e => {
+    if (!document.getElementById('navSearchWrap')?.contains(e.target)) {
+        const dd = document.getElementById('navSearchDropdown');
+        if (dd) dd.style.display = 'none';
+    }
+});
+
+window.addEventListener('load', () => {
+    const input = document.getElementById('navSearchInput');
+    if (input) { input.value = ''; setTimeout(() => { input.value = ''; }, 300); }
+});

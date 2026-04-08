@@ -16,14 +16,6 @@
 </head>
 <body>
 
-<!-- MASTHEAD -->
-<div class="masthead">
-    <div class="top-strip">
-        <div class="top-strip-right">
-            <span>繁體</span><span>簡體</span><span>日本語</span><span>English</span>
-        </div>
-    </div>
-</div>
 <a class="masthead-logo" href="#">Scribe <span>writing go</span></a>
 
 <!-- BANNER SLIDER -->
@@ -63,13 +55,6 @@
 <!-- NAV BAR -->
 <nav class="nav-bar">
     <div class="nav-logo-mini">Scribe</div>
-    <div class="nav-search" onclick="toggleSearch()">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="m21 21-4.35-4.35"/>
-        </svg>
-        <span>搜尋</span>
-    </div>
     <div class="nav-topics">
         <div class="nav-topic active" onclick="filterByTopic('熱門',this)">熱門</div>
         <div class="nav-topic" onclick="goCategory('時事')">時事</div>
@@ -80,6 +65,21 @@
         <div class="nav-topic treeholl" onclick="window.location.href='treeholl.html'">🕳️ 樹洞</div>
     </div>
     <div class="nav-right" id="navRight">
+        <div class="nav-search-bar" id="navSearchWrap">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input class="nav-search-input" id="navSearchInput" type="text"
+                   placeholder="搜尋文章、作者…"
+                   autocomplete="new-password"
+                   autocorrect="off" spellcheck="false"
+                   onfocus="showNavDropdown()"
+                   oninput="onNavInput(this.value)"
+                   onkeydown="if(event.key==='Enter')doNavSearch(this.value)">
+            <span class="nav-search-clear" id="navSearchClear" onclick="clearNavSearch()" style="display:none;">×</span>
+            <div class="nav-search-dropdown" id="navSearchDropdown" style="display:none;"></div>
+        </div>
         <div id="stateGuest" style="display:flex;align-items:center;gap:12px;">
             <button class="nav-btn-fill" onclick="openLoginModal()">發文</button>
         </div>
@@ -106,38 +106,49 @@
 <!-- MAIN PAGE -->
 <!-- MAIN PAGE -->
 <div class="page">
-    <div class="grid-a">
-        <div class="grid-a-lead">
-            <span class="sec-label red">今日頭條</span>
-            <div class="art-lead" style="cursor:pointer;" id="leadCard">
-                <span class="art-kicker" id="leadCat"></span>
-                <div class="art-title" id="leadTitle" style="font-size:28px;line-height:1.3;margin-bottom:12px;"></div>
-                <div class="art-dek" id="leadDek"></div>
-                <div class="art-byline" id="leadMeta"></div>
+    <div class="medium-layout">
+        <!-- 左侧主栏 -->
+        <div class="medium-main">
+            <div class="divider-label"><span class="divider-label-text">最新文章</span></div>
+            <div id="latestList"></div>
+        </div>
+        <!-- 右侧边栏 -->
+        <aside class="medium-sidebar">
+            <!-- 今日头条 -->
+            <div class="sidebar-block">
+                <div class="sidebar-block-title">📰 今日頭條</div>
+                <div id="sidebarLead"></div>
             </div>
-        </div>
-        <div class="grid-a-stack">
-            <span class="sec-label">最多閱讀</span>
-            <div id="hot4List"></div>
-        </div>
-    </div>
-    <div style="max-width:740px;margin:0 auto;padding:0 40px 80px;">
-        <div class="divider-label"><span class="divider-label-text">最新文章</span></div>
-        <div id="latestList"></div>
+            <!-- 树洞 -->
+            <div class="sidebar-block">
+                <div class="sidebar-block-title">🕳️ 樹洞 · 深度思考</div>
+                <div id="sidebarTreeholl"></div>
+                <a class="sidebar-more" href="treeholl.html">查看更多 →</a>
+            </div>
+            <!-- 推荐作者 -->
+            <div class="sidebar-block">
+                <div class="sidebar-block-title">✍️ 推薦作者</div>
+                <div id="sidebarAuthors"></div>
+            </div>
+            <!-- 热读榜 -->
+            <div class="sidebar-block">
+                <div class="sidebar-block-title">🔥 最近熱讀</div>
+                <div id="sidebarHot"></div>
+            </div>
+        </aside>
     </div>
 </div>
 
 <!-- FOOTER -->
+
 <div class="footer">
     <div class="footer-logo">Scribe</div>
     <div class="footer-links">
         <span class="footer-link">服務條款</span>
         <span class="footer-link">隱私政策</span>
-        <span class="footer-link">投稿規範</span>
         <span class="footer-link">聯繫我們</span>
-        <span class="footer-link">關於Scribe</span>
     </div>
-    <div class="footer-copy">© 2026 WenHui · Scribe</div>
+    <div class="footer-copy">© 2026  Scribe</div>
 </div>
 
 <!-- ============================================================

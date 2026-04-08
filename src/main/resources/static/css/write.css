@@ -40,23 +40,21 @@ button { cursor:pointer; font-family:var(--sans); }
 .fmt-sep { width:1px; height:18px; background:rgba(255,255,255,0.2); margin:0 2px; }
 
 /* EDITOR LAYOUT */
-.write-container { max-width:860px; margin:0 auto; padding:60px 40px 120px 80px; position:relative; }
+.write-container { max-width:860px; margin:0 auto; padding:60px 40px 120px 40px; position:relative; }
 
 /* COVER IMAGE */
-.cover-area { margin-bottom:40px; }
+.cover-area { display:none; }
 .cover-preview { width:100%; height:300px; background:var(--bg2); border:2px dashed var(--rule); display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s; border-radius:2px; position:relative; overflow:hidden; }
 .cover-preview:hover { border-color:var(--ink3); }
 .cover-preview.has-image { border:none; }
 .cover-preview img { width:100%; height:100%; object-fit:cover; display:none; }
 .cover-preview.has-image img { display:block; }
 .cover-preview.has-image .cover-placeholder { display:none; }
-.cover-placeholder { display:flex; flex-direction:column; align-items:center; gap:8px; color:var(--ink4); }
-.cover-placeholder svg { opacity:0.4; }
-.cover-placeholder span { font-size:13px; }
 .cover-remove { display:none; position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.6); color:white; border:none; border-radius:50%; width:28px; height:28px; font-size:14px; align-items:center; justify-content:center; cursor:pointer; }
 .cover-preview.has-image .cover-remove { display:flex; }
 #coverInput { display:none; }
 #inlineImgInput { display:none; }
+#draftBanner { display:none !important; }
 
 /* TITLE */
 .title-input { width:100%; font-family:var(--serif); font-size:42px; font-weight:900; line-height:1.2; color:var(--ink); border:none; outline:none; background:none; resize:none; margin-bottom:32px; min-height:60px; }
@@ -137,7 +135,7 @@ button { cursor:pointer; font-family:var(--sans); }
 .body-editor .video-embed iframe { width:100%; aspect-ratio:16/9; border:none; border-radius:2px; }
 
 /* 图片工具条 */
-.img-toolbar { display:none; position:fixed; background:var(--ink); color:white; border-radius:3px; padding:4px; gap:2px; z-index:500; box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+.img-toolbar { display:none; position:absolute; background:var(--ink); color:white; border-radius:3px; padding:4px; gap:2px; z-index:500; box-shadow:0 4px 12px rgba(0,0,0,0.2); }
 .img-toolbar.show { display:flex; }
 .img-tb-btn { background:none; border:none; color:white; padding:4px 10px; font-size:12px; cursor:pointer; border-radius:2px; }
 .img-tb-btn:hover { background:var(--ink2); }
