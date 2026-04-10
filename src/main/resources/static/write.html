@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
+
 </head>
 <body>
 
@@ -30,7 +31,7 @@
   </div>
 </div>
 
-<!-- FORMAT TOOLBAR -->
+<!-- FORMAT TOOLBAR (浮动，选中文字时显示) -->
 <div class="format-toolbar" id="formatToolbar">
   <button class="fmt-btn" onclick="fmt('bold')"><b>B</b></button>
   <button class="fmt-btn" onclick="fmt('italic')"><i>I</i></button>
@@ -44,44 +45,68 @@
   <button class="fmt-btn" onclick="fmt('insertOrderedList')">1.</button>
 </div>
 
+
 <!-- EDITOR -->
 <div class="write-container">
+  <!-- 草稿提示 -->
+  <div id="draftBanner" style="display:none;background:#fffbf0;border-bottom:1px solid #f0e0a0;padding:10px 40px;font-size:13px;color:#888;align-items:center;justify-content:center;gap:16px;">
+    <span>📝 你有未完成的草稿</span>
+    <button onclick="loadDraftConfirm()" style="background:var(--ink);color:white;border:none;padding:4px 14px;font-size:12px;cursor:pointer;">載入草稿</button>
+    <button onclick="discardDraft()" style="background:none;border:1px solid #ccc;padding:4px 14px;font-size:12px;cursor:pointer;color:#888;">忽略</button>
+  </div>
+
+  <!-- COVER IMAGE -->
+
+<!--  &lt;!&ndash; COVER IMAGE &ndash;&gt;-->
+<!--  <div class="cover-area">-->
+<!--    <div class="cover-preview" id="coverPreview" onclick="document.getElementById('coverInput').click()">-->
+<!--      <div class="cover-placeholder">-->
+<!--        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>-->
+<!--        <span>點擊上傳封面圖片</span>-->
+<!--        <span style="font-size:11px;color:var(&#45;&#45;rule)">建議尺寸 1200 × 630</span>-->
+<!--      </div>-->
+<!--      <img id="coverImg" src="" alt="">-->
+<!--      <button class="cover-remove" onclick="removeCover(event)">×</button>-->
+<!--    </div>-->
+<!--    <input type="file" id="coverInput" accept="image/*" onchange="handleCover(event)">-->
+<!--    <input type="file" id="inlineImgInput" accept="image/*" onchange="insertInlineImage(event)">-->
+<!--  </div>-->
 
   <!-- TITLE -->
-  <textarea class="title-input" id="titleInput" placeholder="文章標題…" rows="2"
-            oninput="autoResize(this);updateStatus()"
-            onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('bodyEditor').focus();}"></textarea>
+  <textarea class="title-input" id="titleInput" placeholder="文章標題…" rows="2" oninput="autoResize(this);updateStatus()" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('bodyEditor').focus();}"></textarea>
 
   <!-- EDITOR WRAP -->
-  <div class="editor-wrap" id="editorWrap">
-
+  <div class="editor-wrap">
     <!-- + 按钮 -->
     <button class="plus-btn" id="plusBtn" onclick="toggleInlineTools()">+</button>
 
-    <!-- 行内工具 -->
+    <!-- 行内工具圆圈 -->
     <div class="inline-tools" id="inlineTools">
+      <!-- 图片 -->
       <button class="inline-tool-btn" title="插入圖片" onclick="triggerInlineImg()">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
       </button>
+      <!-- 视频 -->
       <button class="inline-tool-btn" title="插入視頻" onclick="openVideoDialog()">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       </button>
+      <!-- 分隔线 -->
       <button class="inline-tool-btn" title="分隔線" onclick="insertHR()">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/></svg>
       </button>
+      <!-- H1 -->
       <button class="inline-tool-btn" title="大標題" onclick="fmt('formatBlock','h1')" style="font-family:serif;font-weight:900;font-size:13px;">H1</button>
+      <!-- H2 -->
       <button class="inline-tool-btn" title="小標題" onclick="fmt('formatBlock','h2')" style="font-family:serif;font-weight:700;font-size:12px;">H2</button>
+      <!-- 引用 -->
       <button class="inline-tool-btn" title="引用" onclick="fmt('formatBlock','blockquote')" style="font-size:16px;">❝</button>
     </div>
 
     <!-- BODY EDITOR -->
     <div class="body-editor" id="bodyEditor"
          contenteditable="true"
-         data-placeholder="開始寫作…"
-         oninput="updateWordCount();updateStatus();updatePlusBtn()"
-         onclick="this.focus();setTimeout(updatePlusBtn,0)"
-         onkeyup="setTimeout(updatePlusBtn,0)"
-         onfocus="setTimeout(updatePlusBtn,50)">
+         data-placeholder="開始寫作… 按 Enter 換行，點擊左側 ＋ 插入圖片或標題"
+         oninput="updateWordCount();updateStatus();updatePlusBtn()">
     </div>
   </div>
 
@@ -118,6 +143,7 @@
       <button class="publish-close" onclick="closePublishPanel()">×</button>
     </div>
     <div class="publish-body">
+      <!-- 发文模式 -->
       <div class="pub-field">
         <div class="pub-label">發文模式</div>
         <div class="mode-switch">
@@ -138,17 +164,21 @@
         </div>
       </div>
 
+      <!-- 笔名选择（署名模式才显示） -->
       <div class="pub-field" id="pennameField">
         <div class="pub-label">署名筆名</div>
-        <select class="pub-select" id="pennameSelect"></select>
+        <select class="pub-select" id="pennameSelect">
+        </select>
         <div style="font-size:12px;color:var(--ink4);margin-top:6px;font-family:var(--sans);">
           可在 <a href="settings.html" target="_blank" style="color:var(--ink);text-decoration:underline;">帳號設定</a> 中管理筆名
         </div>
       </div>
 
+      <!-- 分类 -->
       <div class="pub-field">
         <div class="pub-label">選擇分類 <span style="color:var(--accent);font-size:10px;">必選</span></div>
         <div class="category-grid">
+          <!-- 時事 -->
           <div class="cat-btn cat-group-label">時事</div>
           <div class="cat-btn" onclick="selectCat(this,'社會')">社會</div>
           <div class="cat-btn" onclick="selectCat(this,'財經')">財經</div>
@@ -158,6 +188,7 @@
           <div class="cat-btn" onclick="selectCat(this,'法律')">法律</div>
           <div class="cat-btn" onclick="selectCat(this,'教育')">教育</div>
           <div class="cat-btn" onclick="selectCat(this,'環境')">環境</div>
+          <!-- 文化 -->
           <div class="cat-btn cat-group-label">文化</div>
           <div class="cat-btn" onclick="selectCat(this,'歷史')">歷史</div>
           <div class="cat-btn" onclick="selectCat(this,'哲學')">哲學</div>
@@ -166,6 +197,7 @@
           <div class="cat-btn" onclick="selectCat(this,'音樂')">音樂</div>
           <div class="cat-btn" onclick="selectCat(this,'設計')">設計</div>
           <div class="cat-btn" onclick="selectCat(this,'宗教')">宗教</div>
+          <!-- 生活 -->
           <div class="cat-btn cat-group-label">生活</div>
           <div class="cat-btn" onclick="selectCat(this,'美食')">美食</div>
           <div class="cat-btn" onclick="selectCat(this,'旅遊')">旅遊</div>
@@ -176,22 +208,26 @@
           <div class="cat-btn" onclick="selectCat(this,'運動')">運動</div>
           <div class="cat-btn" onclick="selectCat(this,'婚戀')">婚戀</div>
           <div class="cat-btn" onclick="selectCat(this,'育兒')">育兒</div>
+          <!-- 海外 -->
           <div class="cat-btn cat-group-label">海外</div>
           <div class="cat-btn" onclick="selectCat(this,'移民')">移民</div>
           <div class="cat-btn" onclick="selectCat(this,'同城')">同城</div>
           <div class="cat-btn" onclick="selectCat(this,'留學')">留學</div>
           <div class="cat-btn" onclick="selectCat(this,'工作')">工作</div>
           <div class="cat-btn" onclick="selectCat(this,'文化衝擊')">文化衝擊</div>
+          <!-- 創作 -->
           <div class="cat-btn cat-group-label">創作</div>
           <div class="cat-btn" onclick="selectCat(this,'小說')">小說</div>
           <div class="cat-btn" onclick="selectCat(this,'散文')">散文</div>
           <div class="cat-btn" onclick="selectCat(this,'詩詞')">詩詞</div>
           <div class="cat-btn" onclick="selectCat(this,'隨筆')">隨筆</div>
           <div class="cat-btn" onclick="selectCat(this,'文學評論')">文學評論</div>
+          <!-- 煙火飄香 -->
           <div class="cat-btn fire" onclick="selectCat(this,'煙火飄香')">🔥 煙火飄香</div>
         </div>
       </div>
 
+      <!-- 标签 -->
       <div class="pub-field">
         <div class="pub-label">標籤 Tags <span style="color:var(--ink4);font-weight:400;text-transform:none;letter-spacing:0;">（最多5個）</span></div>
         <div class="tags-wrap" id="tagsWrap" onclick="document.getElementById('tagInput').focus()">
@@ -200,6 +236,7 @@
         <div class="tag-hint">按 Enter 新增標籤</div>
       </div>
 
+      <!-- 预览 -->
       <div class="pub-field">
         <div class="pub-label">發佈預覽</div>
         <div class="pub-summary">
@@ -218,7 +255,7 @@
 </div>
 
 <div class="toast" id="toast"></div>
-<input type="file" id="inlineImgInput" accept="image/*" onchange="insertInlineImage(event)" style="display:none;">
+
 
 <script src="js/write.js"></script>
 </body>

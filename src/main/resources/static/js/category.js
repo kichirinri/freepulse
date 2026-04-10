@@ -50,7 +50,7 @@ let allCatArticles = [];
 
     const config = CAT_CONFIG[currentCat] || { sub: ['全部'], desc: '', img: '' };
 
-    document.title = currentCat + ' · Scribe';
+    document.title = currentCat + ' · 熱讀';
     document.getElementById('catTitle').textContent = currentCat;
     document.getElementById('catHeaderImg').src = config.img;
     document.getElementById('catDesc').textContent = config.desc;

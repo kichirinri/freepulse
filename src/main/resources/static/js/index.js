@@ -1,5 +1,5 @@
 /* ================================================================
- *  WenHui JavaScript  v6
+ *  WenHui JavaScript  v7
  * ================================================================ */
 
 function goCategory(cat) {
@@ -112,12 +112,12 @@ function doLogin() {
         if (!user) {
             errEl.textContent = '此郵件尚未註冊，請先建立帳號';
             document.getElementById('loginEmail').classList.add('error');
-            btn.disabled = false; btn.textContent = '登入Scribe'; return;
+            btn.disabled = false; btn.textContent = '登入熱讀'; return;
         }
         if (user.pwd !== pwd) {
             errEl.textContent = '密碼錯誤，請重試';
             document.getElementById('loginPwd').classList.add('error');
-            btn.disabled = false; btn.textContent = '登入Scribe'; return;
+            btn.disabled = false; btn.textContent = '登入熱讀'; return;
         }
         onLoginSuccess(user);
     }, 600);
@@ -187,6 +187,46 @@ document.addEventListener('keydown', function(e) {
 });
 
 /* ================================================================
+ *  封面图池
+ * ================================================================ */
+const COVER_POOL = {
+    '時事': [
+        'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=300&q=70',
+        'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=300&q=70',
+    ],
+    '文化': [
+        'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=300&q=70',
+        'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&q=70',
+    ],
+    '生活': [
+        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&q=70',
+        'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=300&q=70',
+    ],
+    '海外': [
+        'https://images.unsplash.com/photo-1488085061387-422e29b40080?w=300&q=70',
+        'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=300&q=70',
+    ],
+    '創作': [
+        'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=300&q=70',
+        'https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?w=300&q=70',
+    ],
+    '樹洞': [
+        'https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=300&q=70',
+    ],
+    'default': [
+        'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=300&q=70',
+        'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=300&q=70',
+        'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&q=70',
+    ]
+};
+
+function getCoverImg(article) {
+    if (article.coverImage) return article.coverImage;
+    const pool = COVER_POOL[article.category] || COVER_POOL['default'];
+    return pool[article.id % pool.length];
+}
+
+/* ================================================================
  *  首页动态文章加载
  * ================================================================ */
 let allArticles = [];
@@ -197,7 +237,6 @@ let allArticles = [];
         .then(articles => {
             allArticles = articles;
             const sorted = [...articles].sort((a,b) => (b.likes||0)-(a.likes||0));
-            const colors = ['#4facfe,#00f2fe','#fa709a,#fee140','#a18cd1,#fbc2eb','#30cfd0,#667eea','#43e97b,#38f9d7'];
 
             renderFeed(articles);
 
@@ -215,8 +254,6 @@ let allArticles = [];
                     <div style="font-size:12px;color:#aaa;margin-top:8px;">${top.authorName} · ${dateStr} · 👍 ${top.likes||0}</div>
                 </div>`;
             }
-
-
 
             // 边栏：树洞最新3条
             const treehollEl = document.getElementById('sidebarTreeholl');
@@ -236,16 +273,13 @@ let allArticles = [];
                 }
             }
 
-            // 边栏：推荐作者（点赞数最高的前4位不重复作者）
+            // 边栏：推荐作者
             const authorsEl = document.getElementById('sidebarAuthors');
             if (authorsEl) {
                 const seen = new Set();
                 const topAuthors = [];
                 [...articles].sort((a,b) => (b.likes||0)-(a.likes||0)).forEach(a => {
-                    if (!seen.has(a.authorName)) {
-                        seen.add(a.authorName);
-                        topAuthors.push(a);
-                    }
+                    if (!seen.has(a.authorName)) { seen.add(a.authorName); topAuthors.push(a); }
                 });
                 const colors = ['#4facfe,#00f2fe','#fa709a,#fee140','#a18cd1,#fbc2eb','#43e97b,#38f9d7'];
                 authorsEl.innerHTML = topAuthors.slice(0, 4).map((a, i) => {
@@ -261,7 +295,7 @@ let allArticles = [];
                 }).join('');
             }
 
-            // 边栏：最近热读（点赞最多前5篇）
+            // 边栏：最近热读
             const hotEl = document.getElementById('sidebarHot');
             if (hotEl) {
                 const hotList = [...articles].sort((a,b) => (b.likes||0)-(a.likes||0)).slice(0, 5);
@@ -278,6 +312,9 @@ let allArticles = [];
         .catch(err => console.log('載入文章失敗', err));
 })();
 
+/* ================================================================
+ *  渲染文章列表（Medium风格带缩略图）
+ * ================================================================ */
 function renderFeed(articles) {
     const el = document.getElementById('latestList');
     if (!el) return;
@@ -287,31 +324,38 @@ function renderFeed(articles) {
         return;
     }
     const colors = ['#4facfe,#00f2fe','#fa709a,#fee140','#a18cd1,#fbc2eb','#30cfd0,#667eea','#43e97b,#38f9d7'];
+
     articles.slice(0, 20).forEach(a => {
-        const date = new Date(a.createdDate);
+        const date    = new Date(a.createdDate);
         const dateStr = (date.getMonth()+1) + '月' + date.getDate() + '日';
-        const mins = Math.max(1, Math.round((a.content||'').replace(/\s/g,'').length / 300));
-        const excerpt = (a.content||'').slice(0, 100);
-        const isFire = a.category === '煙火飄香';
+        const mins    = Math.max(1, Math.round((a.content||'').replace(/\s/g,'').length / 300));
+        const excerpt = (a.content||'').replace(/<[^>]+>/g,'').slice(0, 60);
         const initial = (a.authorName||'文')[0].toUpperCase();
-        const color = colors[a.id % colors.length];
+        const color   = colors[a.id % colors.length];
+        const cover   = getCoverImg(a);
+
         const div = document.createElement('div');
-        div.className = 'art-text';
-        div.style.cursor = 'pointer';
+        div.className = 'article-card';
         div.onclick = () => window.location.href = 'article.html?id=' + a.id;
         div.innerHTML = `
-            <div class="art-text-top">
-                <div class="art-text-avatar" style="background:linear-gradient(135deg,${color})">${initial}</div>
-                <span class="art-text-author">${a.authorName||'用戶'}</span>
-                <span class="art-text-pub">· ${a.category}</span>
-                <span class="art-text-loc" style="margin-left:auto;font-size:13px;color:var(--ink4);">${dateStr}</span>
+            <div class="article-card-body">
+                <div class="article-card-meta-top">
+                    <div class="article-card-avatar" style="background:linear-gradient(135deg,${color})">${initial}</div>
+                    <span class="article-card-author">${a.authorName || '用戶'}</span>
+                    <span style="font-size:12px;color:#aaa;">· In <strong style="color:#333;">${a.category}</strong></span>
+                </div>
+                <div class="article-card-title">${a.title}</div>
+                <div class="article-card-excerpt">${excerpt}…</div>
+                <div class="article-card-footer">
+                    <span class="article-card-date">${dateStr}</span>
+                    <span class="article-card-readtime">${mins} 分鐘閱讀</span>
+                    <div class="article-card-likes">👍 ${a.likes || 0}</div>
+                </div>
             </div>
-            <div class="art-title" style="font-family:var(--serif);font-size:20px;font-weight:700;line-height:1.35;color:var(--ink);margin-bottom:8px;">${a.title}</div>
-            <div style="font-size:15px;color:var(--ink3);line-height:1.65;margin-bottom:12px;">${excerpt}…</div>
-            <div class="art-text-footer">
-                <span class="art-text-cat ${isFire?'fire':''}">${a.category}</span>
-                <span class="art-text-date">${mins} 分鐘閱讀</span>
-                <div class="art-text-stats"><span class="art-text-stat">👍 ${a.likes||0}</span></div>
+            <div class="article-card-thumb">
+                <img src="${cover}" alt="" loading="lazy"
+                     onerror="this.parentElement.style.display='none'"
+                     style="width:100%;height:100%;object-fit:cover;display:block;">
             </div>`;
         el.appendChild(div);
     });
@@ -381,21 +425,17 @@ function doSearch() {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
 
-
 const colors = ['#4facfe,#00f2fe','#fa709a,#fee140','#a18cd1,#fbc2eb','#30cfd0,#667eea','#43e97b,#38f9d7'];
-
-const SEARCH_HISTORY_KEY = 'scribe_search_history';
+const SEARCH_HISTORY_KEY = '熱讀_search_history';
 
 function getSearchHistory() {
     return JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || '[]');
 }
-
 function saveSearchHistory(keyword) {
     let history = getSearchHistory();
     history = [keyword, ...history.filter(k => k !== keyword)].slice(0, 8);
     localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(history));
 }
-
 function showNavDropdown() {
     const input = document.getElementById('navSearchInput');
     if (input.value.trim()) { onNavInput(input.value); return; }
@@ -416,7 +456,6 @@ function showNavDropdown() {
         </div>`;
     dd.style.display = 'block';
 }
-
 function onNavInput(val) {
     toggleNavClear(val);
     const dd = document.getElementById('navSearchDropdown');
@@ -437,7 +476,6 @@ function onNavInput(val) {
     }
     dd.style.display = 'block';
 }
-
 function doNavSearch(keyword) {
     if (!keyword.trim()) return;
     saveSearchHistory(keyword.trim());
@@ -449,11 +487,9 @@ function doNavSearch(keyword) {
     );
     renderFeed(filtered.length ? filtered : allArticles);
 }
-
 function toggleNavClear(val) {
     document.getElementById('navSearchClear').style.display = val ? 'inline' : 'none';
 }
-
 function clearNavSearch() {
     const input = document.getElementById('navSearchInput');
     input.value = '';
@@ -462,20 +498,15 @@ function clearNavSearch() {
     renderFeed(allArticles);
     input.focus();
 }
-
 function pickHistory(keyword) {
     document.getElementById('navSearchInput').value = keyword;
     doNavSearch(keyword);
 }
-
 function clearSearchHistory() {
     localStorage.removeItem(SEARCH_HISTORY_KEY);
     document.getElementById('navSearchDropdown').style.display = 'none';
 }
 
-
-
-// 点击外部关闭下拉
 document.addEventListener('click', e => {
     if (!document.getElementById('navSearchWrap')?.contains(e.target)) {
         const dd = document.getElementById('navSearchDropdown');

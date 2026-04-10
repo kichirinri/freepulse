@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scribe Writing Go</title>
+    <title>熱讀</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preload" as="style"
           href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap"
@@ -16,7 +16,7 @@
 </head>
 <body>
 
-<a class="masthead-logo" href="#">Scribe <span>writing go</span></a>
+<!--<a class="masthead-logo" href="#">熱讀 <span>writing go</span></a>-->
 
 <!-- BANNER SLIDER -->
 <section class="banner-section">
@@ -54,7 +54,7 @@
 
 <!-- NAV BAR -->
 <nav class="nav-bar">
-    <div class="nav-logo-mini">Scribe</div>
+    <div class="nav-logo-mini">熱讀</div>
     <div class="nav-topics">
         <div class="nav-topic active" onclick="filterByTopic('熱門',this)">熱門</div>
         <div class="nav-topic" onclick="goCategory('時事')">時事</div>
@@ -70,10 +70,9 @@
                 <circle cx="11" cy="11" r="8"/>
                 <path d="m21 21-4.35-4.35"/>
             </svg>
-            <input class="nav-search-input" id="navSearchInput" type="text"
+            <input class="nav-search-input" id="navSearchInput" type="search"
                    placeholder="搜尋文章、作者…"
-                   autocomplete="new-password"
-                   autocorrect="off" spellcheck="false"
+                   autocomplete="off"
                    onfocus="showNavDropdown()"
                    oninput="onNavInput(this.value)"
                    onkeydown="if(event.key==='Enter')doNavSearch(this.value)">
@@ -93,15 +92,15 @@
 
 
 <!-- REGISTER BAND -->
-<div class="register-band">
-    <div>
-        <div class="register-band-title">愛表達 Scribe</div>
-        <div class="register-band-text"></div>
-    </div>
-    <div class="register-band-actions">
-        <button class="btn-reg-wh" onclick="openLoginModal()">免費註冊 / 登入</button>
-    </div>
-</div>
+<!--<div class="register-band">-->
+<!--    <div>-->
+<!--        <div class="register-band-title">愛表達 熱讀</div>-->
+<!--        <div class="register-band-text"></div>-->
+<!--    </div>-->
+<!--    <div class="register-band-actions">-->
+<!--        <button class="btn-reg-wh" onclick="openLoginModal()">免費註冊 / 登入</button>-->
+<!--    </div>-->
+<!--</div>-->
 
 <!-- MAIN PAGE -->
 <!-- MAIN PAGE -->
@@ -142,13 +141,13 @@
 <!-- FOOTER -->
 
 <div class="footer">
-    <div class="footer-logo">Scribe</div>
+    <div class="footer-logo">熱讀</div>
     <div class="footer-links">
         <span class="footer-link">服務條款</span>
         <span class="footer-link">隱私政策</span>
         <span class="footer-link">聯繫我們</span>
     </div>
-    <div class="footer-copy">© 2026  Scribe</div>
+    <div class="footer-copy">© 2026  熱讀</div>
 </div>
 
 <!-- ============================================================
@@ -174,7 +173,7 @@
 <div class="modal-overlay" id="loginModal" onclick="closeOnOverlay(event,'loginModal')">
     <div class="modal-box">
         <button class="modal-close" onclick="closeLoginModal()">×</button>
-        <div class="modal-logo">Scribe</div>
+        <div class="modal-logo">熱讀</div>
         <div class="modal-tagline">全球華人 · 共同的聲音之地</div>
         <div class="modal-tabs">
             <div class="modal-tab active" id="tabLogin" onclick="switchTab('login')">郵件登入</div>
@@ -184,7 +183,7 @@
             <div class="form-field"><label class="form-label">電子郵件</label><input class="form-input" id="loginEmail" type="email" placeholder="your@email.com"></div>
             <div class="form-field"><label class="form-label">密碼</label><input class="form-input" id="loginPwd" type="password" placeholder="••••••••"></div>
             <div class="form-error" id="loginError"></div>
-            <button class="btn-submit" id="btnLogin" onclick="doLogin()">登入Scribe</button>
+            <button class="btn-submit" id="btnLogin" onclick="doLogin()">登入熱讀</button>
             <div class="modal-footer-note">沒有帳號？<span style="color:var(--ink);font-weight:700;text-decoration:underline;cursor:pointer;" onclick="switchTab('register')">免費註冊</span></div>
             <div class="modal-footer-note" style="margin-top:4px;">忘記密碼？<span style="color:var(--ink);text-decoration:underline;cursor:pointer;" onclick="showForgotPwd()">重設密碼</span></div>
         </div>
@@ -211,18 +210,18 @@
     <div class="notice-box">
         <div class="notice-header">
             <div class="notice-header-top">
-                <span class="notice-header-logo">Scribe</span>
+                <span class="notice-header-logo">熱讀</span>
                 <span class="notice-header-tag">致每一位新成員</span>
             </div>
-            <div class="notice-header-title">歡迎來到Scribe<br>在這裡，你的聲音屬於你自己</div>
-            <div class="notice-header-sub">加入前，請用兩分鐘了解Scribe的核心理念</div>
+            <div class="notice-header-title">歡迎來到熱讀<br>在這裡，你的聲音屬於你自己</div>
+            <div class="notice-header-sub">加入前，請用兩分鐘了解熱讀的核心理念</div>
         </div>
         <div class="notice-body">
             <div class="notice-item">
                 <div class="notice-item-icon">👍</div>
                 <div class="notice-item-content">
                     <div class="notice-item-title">只有點讚，沒有評論</div>
-                    <div class="notice-item-desc">Scribe的所有文章只開放點讚功能，不設評論區。我們相信，每個人的思考與感悟應當保持獨立，不被他人的言論左右。</div>
+                    <div class="notice-item-desc">熱讀的所有文章只開放點讚功能，不設評論區。我們相信，每個人的思考與感悟應當保持獨立，不被他人的言論左右。</div>
                 </div>
             </div>
             <div class="notice-item">
@@ -236,17 +235,17 @@
                 <div class="notice-item-icon">🤝</div>
                 <div class="notice-item-content">
                     <div class="notice-item-title">世界公民，懂得尊重他人</div>
-                    <div class="notice-item-desc">Scribe匯聚了來自47個國家和地區的華人。請以世界公民的胸懷，尊重與你不同的聲音。人身攻擊將永久封禁帳號。</div>
+                    <div class="notice-item-desc">熱讀匯聚了來自47個國家和地區的華人。請以世界公民的胸懷，尊重與你不同的聲音。人身攻擊將永久封禁帳號。</div>
                 </div>
             </div>
         </div>
         <div class="notice-footer">
             <label class="notice-agree">
                 <input type="checkbox" id="noticeCheck" onchange="toggleNoticeBtn()">
-                <span class="notice-agree-text">我已閱讀並理解以上內容，承諾遵守Scribe社區規範，以負責任的態度在Scribe發聲。</span>
+                <span class="notice-agree-text">我已閱讀並理解以上內容，承諾遵守熱讀社區規範，以負責任的態度在熱讀發聲。</span>
             </label>
             <button class="btn-notice-confirm" id="btnNoticeConfirm" disabled onclick="confirmNotice()">
-                我明白了，開始探索Scribe →
+                我明白了，開始探索熱讀 →
             </button>
         </div>
     </div>

@@ -271,3 +271,10 @@ body.no-copy { -webkit-user-select:none; -moz-user-select:none; user-select:none
     .art-page-layout { grid-template-columns: 1fr; }
     .art-side-col { position:static; }
 }
+
+iframe {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border: none;
+    display: block;
+}

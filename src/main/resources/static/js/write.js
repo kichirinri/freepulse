@@ -17,12 +17,13 @@ function setMode(mode) {
     }
 }
 
-/* ── 草稿 ── */
 (function() {
     const d = JSON.parse(localStorage.getItem('wh_draft') || 'null');
-    if (!d) return;
+    if (!d || (!d.title && !d.bodyHTML && !d.body)) return;
+    // 额外检查内容是否真的有实质内容
     const hasContent = (d.title && d.title.trim()) ||
-        (d.bodyHTML && d.bodyHTML.replace(/<[^>]*>/g,'').trim());
+                       (d.bodyHTML && d.bodyHTML.replace(/<[^>]*>/g,'').trim()) ||
+                       (d.body && d.body.trim());
     if (!hasContent) return;
     const banner = document.getElementById('draftBanner');
     if (banner) banner.style.display = 'flex';
@@ -34,38 +35,55 @@ function loadDraftConfirm() {
     if (d.title) { const t = document.getElementById('titleInput'); t.value = d.title; autoResize(t); }
     if (d.bodyHTML) document.getElementById('bodyEditor').innerHTML = d.bodyHTML;
     else if (d.body) document.getElementById('bodyEditor').innerText = d.body;
-    if (d.cat) {
-        selectedCat = d.cat;
-        document.querySelectorAll('.cat-btn').forEach(b => {
-            if (b.textContent.trim().replace('🔥 ','') === d.cat) b.classList.add('selected');
-        });
-    }
+    if (d.cat) { selectedCat = d.cat; document.querySelectorAll('.cat-btn').forEach(b => { if (b.textContent.trim().replace('🔥 ','')===d.cat||b.textContent.trim()===d.cat) b.classList.add('selected'); }); }
     if (d.tags && d.tags.length) { tags = d.tags; renderTags(); }
     updateWordCount();
-    const banner = document.getElementById('draftBanner');
-    if (banner) banner.style.display = 'none';
+    document.getElementById('draftBanner').style.display = 'none';
     document.getElementById('draftDot').classList.add('saved');
     document.getElementById('statusText').textContent = '已載入草稿';
 }
 
 function discardDraft() {
     localStorage.removeItem('wh_draft');
-    const banner = document.getElementById('draftBanner');
-    if (banner) banner.style.display = 'none';
+    document.getElementById('draftBanner').style.display = 'none';
     document.getElementById('statusText').textContent = '尚未儲存';
 }
 
-/* ================================================================
-   + 按钮：鼠标跟踪
-   ================================================================ */
+/* ── + 按钮逻辑 ── */
+let plusBtnTop = 0;
 let inlineToolsOpen = false;
 
-function updatePlusBtn() {}
+function updatePlusBtn() {
+    const editor = document.getElementById('bodyEditor');
+    const plusBtn = document.getElementById('plusBtn');
+    const tools = document.getElementById('inlineTools');
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount) { plusBtn.classList.remove('visible'); return; }
+    const range = sel.getRangeAt(0);
+    let node = range.startContainer;
+    if (node.nodeType === 3) node = node.parentNode;
+    let block = node;
+    while (block && block !== editor && !['P','DIV','H1','H2','BLOCKQUOTE','LI'].includes(block.tagName)) {
+        block = block.parentNode;
+    }
+    if (!block || block === editor) { plusBtn.classList.remove('visible'); return; }
+    const text = block.innerText || block.textContent || '';
+    if (text.trim() !== '') { plusBtn.classList.remove('visible'); closeInlineTools(); return; }
+    const rect = block.getBoundingClientRect();
+    const editorRect = editor.closest('.editor-wrap').getBoundingClientRect();
+    plusBtnTop = rect.top - editorRect.top + (rect.height - 32) / 2;
+    plusBtn.style.top = plusBtnTop + 'px';
+    tools.style.top = plusBtnTop + 'px';
+    plusBtn.classList.add('visible');
+    if (inlineToolsOpen) tools.classList.add('show');
+}
 
 function toggleInlineTools() {
     inlineToolsOpen = !inlineToolsOpen;
-    document.getElementById('plusBtn').classList.toggle('open', inlineToolsOpen);
-    document.getElementById('inlineTools').classList.toggle('show', inlineToolsOpen);
+    const plusBtn = document.getElementById('plusBtn');
+    const tools = document.getElementById('inlineTools');
+    plusBtn.classList.toggle('open', inlineToolsOpen);
+    tools.classList.toggle('show', inlineToolsOpen);
 }
 
 function closeInlineTools() {
@@ -74,32 +92,8 @@ function closeInlineTools() {
     document.getElementById('inlineTools').classList.remove('show');
 }
 
-document.querySelector('.write-container').addEventListener('mousemove', e => {
-    const plusBtn = document.getElementById('plusBtn');
-    const tools = document.getElementById('inlineTools');
-    const wrap = document.getElementById('editorWrap');
-    const wrapRect = wrap.getBoundingClientRect();
-    if (e.clientY < wrapRect.top - 20 || e.clientY > wrapRect.bottom + 20) {
-        if (!inlineToolsOpen) plusBtn.classList.remove('visible');
-        return;
-    }
-    const top = e.clientY - wrapRect.top - 16;
-    plusBtn.style.top = Math.max(0, top) + 'px';
-    tools.style.top = Math.max(0, top) + 'px';
-    plusBtn.classList.add('visible');
-});
-
-document.querySelector('.write-container').addEventListener('mouseleave', () => {
-    if (!inlineToolsOpen) {
-        document.getElementById('plusBtn').classList.remove('visible');
-    }
-});
-
-document.addEventListener('click', e => {
-    if (!e.target.closest('#plusBtn') && !e.target.closest('#inlineTools')) {
-        closeInlineTools();
-    }
-});
+document.getElementById('bodyEditor').addEventListener('keyup', e => { setTimeout(updatePlusBtn, 0); });
+document.getElementById('bodyEditor').addEventListener('click', updatePlusBtn);
 
 /* ── 格式工具栏 ── */
 document.addEventListener('mouseup', () => {
@@ -110,46 +104,41 @@ document.addEventListener('mouseup', () => {
         const editor = document.getElementById('bodyEditor');
         if (!editor.contains(sel.anchorNode)) { tb.classList.remove('show'); return; }
         const range = sel.getRangeAt(0);
-        const rect = selectedImg.getBoundingClientRect();
-        tb.style.top = (rect.top + window.scrollY - 44) + 'px';
-        tb.style.left = rect.left + 'px';
+        const rect = range.getBoundingClientRect();
+        tb.style.top = (rect.top + window.scrollY - 46) + 'px';
+        tb.style.left = (rect.left + rect.width / 2) + 'px';
         tb.classList.add('show');
     }, 10);
 });
 document.addEventListener('mousedown', e => {
-    if (!e.target.closest('#formatToolbar')) {
-        document.getElementById('formatToolbar').classList.remove('show');
-    }
+    if (!e.target.closest('#formatToolbar')) document.getElementById('formatToolbar').classList.remove('show');
 });
 
+/* ── format ── */
 function fmt(cmd, val) {
     document.getElementById('bodyEditor').focus();
     document.execCommand(cmd, false, val || null);
     closeInlineTools();
-    updateWordCount();
-    updateStatus();
+    updateWordCount(); updateStatus();
 }
 
 function insertHR() {
     document.getElementById('bodyEditor').focus();
     document.execCommand('insertHTML', false, '<hr>');
-    closeInlineTools();
-    updateStatus();
+    closeInlineTools(); updateStatus();
 }
 
 /* ── 自动高度 ── */
-function autoResize(el) {
-    el.style.height = 'auto';
-    el.style.height = el.scrollHeight + 'px';
-}
+function autoResize(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
+window.addEventListener('load', () => autoResize(document.getElementById('titleInput')));
 
 /* ── 字数统计 ── */
 function updateWordCount() {
     const text = document.getElementById('bodyEditor').innerText || '';
-    document.getElementById('wordCount').textContent = text.replace(/\s/g, '').length + ' 字';
+    document.getElementById('wordCount').textContent = text.replace(/\s/g,'').length + ' 字';
 }
 
-/* ── 状态与自动保存 ── */
+/* ── 状态 ── */
 let saveTimer = null;
 function updateStatus() {
     document.getElementById('draftDot').classList.remove('saved');
@@ -163,117 +152,96 @@ function autoSave() {
     document.getElementById('statusText').textContent = '已自動儲存';
 }
 function getDraftData() {
-    return {
-        title: document.getElementById('titleInput').value,
-        bodyHTML: document.getElementById('bodyEditor').innerHTML,
-        cat: selectedCat,
-        tags,
-        savedAt: new Date().toISOString()
-    };
+    return { title: document.getElementById('titleInput').value, bodyHTML: document.getElementById('bodyEditor').innerHTML, cat: selectedCat, tags, savedAt: new Date().toISOString() };
 }
 function saveDraft() { autoSave(); showToast('草稿已儲存 ✓'); }
-
-/* ── 页面加载 ── */
+// 页面加载后立即触发一次+按钮检测
 window.addEventListener('load', () => {
-    autoResize(document.getElementById('titleInput'));
     document.getElementById('bodyEditor').addEventListener('keydown', e => {
         if (e.key === 'Tab') {
             e.preventDefault();
             document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
         }
     });
+    const editor = document.getElementById('bodyEditor');
+    if (!editor.textContent.trim()) {
+        const plusBtn = document.getElementById('plusBtn');
+        const tools = document.getElementById('inlineTools');
+        plusBtn.style.top = '4px';
+        tools.style.top = '4px';
+        plusBtn.classList.add('visible');
+    }
 });
 
-/* ================================================================
-   行内插图
-   ================================================================ */
-let savedRange = null;
 
+
+/* ── 封面图 ── */
+function handleCover(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => { document.getElementById('coverImg').src = ev.target.result; document.getElementById('coverPreview').classList.add('has-image'); };
+    reader.readAsDataURL(file);
+}
+function removeCover(e) {
+    e.stopPropagation();
+    document.getElementById('coverImg').src = '';
+    document.getElementById('coverPreview').classList.remove('has-image');
+    document.getElementById('coverInput').value = '';
+}
+
+/* ── 行内插图 ── */
+let savedRange = null;
 document.getElementById('bodyEditor').addEventListener('blur', () => {
     const sel = window.getSelection();
     if (sel && sel.rangeCount) savedRange = sel.getRangeAt(0).cloneRange();
 });
-
 function triggerInlineImg() {
-    const editor = document.getElementById('bodyEditor');
-    editor.focus();
     const sel = window.getSelection();
     if (sel && sel.rangeCount) savedRange = sel.getRangeAt(0).cloneRange();
     closeInlineTools();
-    setTimeout(() => document.getElementById('inlineImgInput').click(), 100);
+    document.getElementById('inlineImgInput').click();
 }
-
 function insertInlineImage(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+    const file = e.target.files[0]; if (!file) return;
     const reader = new FileReader();
     reader.onload = ev => {
         const editor = document.getElementById('bodyEditor');
         editor.focus();
-        if (savedRange) {
-            const sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(savedRange);
-        } else {
-            const range = document.createRange();
-            range.selectNodeContents(editor);
-            range.collapse(false);
-            const sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
-        document.execCommand('insertHTML', false,
-            `<img src="${ev.target.result}" style="width:100%;margin:24px 0;display:block;border-radius:2px;"><p><br></p>`
-        );
+        if (savedRange) { const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(savedRange); }
+        document.execCommand('insertHTML', false, `<img src="${ev.target.result}" style="width:100%;margin:24px 0;display:block;border-radius:2px;">`);
         document.getElementById('inlineImgInput').value = '';
         updateStatus();
     };
     reader.readAsDataURL(file);
 }
 
-/* ================================================================
-   图片点击工具条
-   ================================================================ */
+/* ── 图片点击工具条 ── */
 let selectedImg = null;
-
-document.addEventListener('click', e => {
-    const tb = document.getElementById('imgToolbar');
-
-    // 点击图片
-    if (e.target.tagName === 'IMG' && document.getElementById('bodyEditor').contains(e.target)) {
-        if (selectedImg && selectedImg !== e.target) selectedImg.classList.remove('selected');
+document.getElementById('bodyEditor').addEventListener('click', e => {
+    if (e.target.tagName === 'IMG') {
+        if (selectedImg) selectedImg.classList.remove('selected');
         selectedImg = e.target;
-        selectedImg.classList.add('selected');
-        const rect = selectedImg.getBoundingClientRect();
+        e.target.classList.add('selected');
+        const rect = e.target.getBoundingClientRect();
+        const tb = document.getElementById('imgToolbar');
         tb.style.top = (rect.top + window.scrollY - 44) + 'px';
-        tb.style.left = (rect.left + window.scrollX) + 'px';
+        tb.style.left = rect.left + 'px';
         tb.classList.add('show');
-        return;
     }
-
-    // 点击工具栏按钮
-    if (e.target.closest('#imgToolbar')) return;
-
-    // 点击其他地方，取消选中
-    if (selectedImg) { selectedImg.classList.remove('selected'); selectedImg = null; }
-    tb.classList.remove('show');
 });
-
-function setImgSize(w) {
-    if (selectedImg) { selectedImg.style.width = w; updateStatus(); }
-}
-function removeSelectedImg() {
-    if (selectedImg) {
-        selectedImg.remove();
+document.addEventListener('click', e => {
+    if (e.target.tagName !== 'IMG' && !e.target.closest('#imgToolbar')) {
+        if (selectedImg) selectedImg.classList.remove('selected');
         selectedImg = null;
         document.getElementById('imgToolbar').classList.remove('show');
-        updateStatus();
     }
+});
+function setImgSize(w) { if (selectedImg) { selectedImg.style.width = w; updateStatus(); } }
+function removeSelectedImg() {
+    if (selectedImg) { selectedImg.remove(); selectedImg = null; document.getElementById('imgToolbar').classList.remove('show'); updateStatus(); }
 }
 
-/* ================================================================
-   视频插入
-   ================================================================ */
+/* ── 视频插入 ── */
 function openVideoDialog() {
     closeInlineTools();
     const sel = window.getSelection();
@@ -284,13 +252,8 @@ function openVideoDialog() {
     document.body.style.overflow = 'hidden';
     setTimeout(() => document.getElementById('videoInput').focus(), 100);
 }
-function closeVideoDialog() {
-    document.getElementById('videoOverlay').classList.remove('open');
-    document.body.style.overflow = '';
-}
-function closeVideoOnOverlay(e) {
-    if (e.target.id === 'videoOverlay') closeVideoDialog();
-}
+function closeVideoDialog() { document.getElementById('videoOverlay').classList.remove('open'); document.body.style.overflow = ''; }
+function closeVideoOnOverlay(e) { if (e.target.id === 'videoOverlay') closeVideoDialog(); }
 
 function getEmbedUrl(url) {
     let m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
@@ -310,17 +273,12 @@ function confirmInsertVideo() {
     const errEl = document.getElementById('videoError');
     if (!url) { errEl.textContent = '請輸入視頻連結'; return; }
     const embedUrl = getEmbedUrl(url);
-    if (!embedUrl) { errEl.textContent = '無法識別此連結'; return; }
+    if (!embedUrl) { errEl.textContent = '無法識別此連結，請確認是 YouTube 或 Bilibili 的連結'; return; }
     const editor = document.getElementById('bodyEditor');
     editor.focus();
-    if (savedRange) {
-        const sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(savedRange);
-    }
-    document.execCommand('insertHTML', false,
-        `<div class="video-embed"><iframe src="${embedUrl}" allowfullscreen loading="lazy"></iframe></div><p><br></p>`
-    );
+    if (savedRange) { const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(savedRange); }
+    const html = `<div class="video-embed"><iframe src="${embedUrl}" allowfullscreen loading="lazy"></iframe></div>`;
+    document.execCommand('insertHTML', false, html);
     closeVideoDialog();
     updateStatus();
 }
@@ -329,41 +287,34 @@ function confirmInsertVideo() {
 let selectedCat = '';
 function selectCat(el, cat) {
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
-    el.classList.add('selected');
-    selectedCat = cat;
+    el.classList.add('selected'); selectedCat = cat;
 }
 
 /* ── Tags ── */
 let tags = [];
 const tagInput = document.getElementById('tagInput');
 tagInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        const v = this.value.trim();
-        if (v && tags.length < 5 && !tags.includes(v)) { tags.push(v); renderTags(); this.value = ''; }
-    }
-    if (e.key === 'Backspace' && !this.value && tags.length) { tags.pop(); renderTags(); }
+    if (e.key==='Enter') { e.preventDefault(); const v=this.value.trim(); if(v&&tags.length<5&&!tags.includes(v)){tags.push(v);renderTags();this.value='';} }
+    if (e.key==='Backspace'&&!this.value&&tags.length) { tags.pop(); renderTags(); }
 });
 function renderTags() {
-    document.getElementById('tagsWrap').querySelectorAll('.tag-pill').forEach(p => p.remove());
-    tags.forEach((tag, i) => {
-        const p = document.createElement('div');
-        p.className = 'tag-pill';
-        p.innerHTML = `<span>${tag}</span><button onclick="removeTag(${i})">×</button>`;
-        document.getElementById('tagsWrap').insertBefore(p, tagInput);
-    });
-    tagInput.placeholder = tags.length >= 5 ? '' : '輸入標籤後按 Enter';
+    document.getElementById('tagsWrap').querySelectorAll('.tag-pill').forEach(p=>p.remove());
+    tags.forEach((tag,i)=>{ const p=document.createElement('div'); p.className='tag-pill'; p.innerHTML=`<span>${tag}</span><button onclick="removeTag(${i})">×</button>`; document.getElementById('tagsWrap').insertBefore(p,tagInput); });
+    tagInput.placeholder = tags.length>=5?'':'輸入標籤後按 Enter';
 }
-function removeTag(i) { tags.splice(i, 1); renderTags(); }
+function removeTag(i) { tags.splice(i,1); renderTags(); }
 
 /* ── 发布 ── */
 function openPublishPanel() {
+    // 重置分类选中状态
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
     if (selectedCat) {
         document.querySelectorAll('.cat-btn').forEach(b => {
-            if (b.textContent.trim().replace('🔥 ', '') === selectedCat) b.classList.add('selected');
+            if (b.textContent.trim().replace('🔥 ','') === selectedCat) b.classList.add('selected');
         });
     }
+
+    // 初始化笔名下拉
     const user = JSON.parse(sessionStorage.getItem('wh_user') || '{}');
     const pennames = JSON.parse(localStorage.getItem('wh_pennames_' + user.email) || '[]');
     const select = document.getElementById('pennameSelect');
@@ -376,23 +327,19 @@ function openPublishPanel() {
             select.appendChild(opt);
         });
     }
+
     const title = document.getElementById('titleInput').value.trim();
-    const words = (document.getElementById('bodyEditor').innerText || '').replace(/\s/g, '').length;
-    document.getElementById('previewTitle').textContent = title || '（請輸入標題）';
-    document.getElementById('previewCat').textContent = selectedCat || '未選擇';
+    const words = (document.getElementById('bodyEditor').innerText||'').replace(/\s/g,'').length;
+    document.getElementById('previewTitle').textContent = title||'（請輸入標題）';
+    document.getElementById('previewCat').textContent = selectedCat||'未選擇';
     document.getElementById('previewWords').textContent = words;
-    document.getElementById('pubError').style.display = 'none';
+    document.getElementById('pubError').style.display='none';
     document.getElementById('publishPanel').classList.add('open');
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow='hidden';
 }
 
-function closePublishPanel() {
-    document.getElementById('publishPanel').classList.remove('open');
-    document.body.style.overflow = '';
-}
-function closeOnOverlay(e) {
-    if (e.target.id === 'publishPanel') closePublishPanel();
-}
+function closePublishPanel() { document.getElementById('publishPanel').classList.remove('open'); document.body.style.overflow=''; }
+function closeOnOverlay(e) { if(e.target.id==='publishPanel') closePublishPanel(); }
 
 function confirmPublish() {
     const title = document.getElementById('titleInput').value.trim();
@@ -400,18 +347,18 @@ function confirmPublish() {
     const bodyText = document.getElementById('bodyEditor').innerText.trim();
     const errEl = document.getElementById('pubError');
 
-    if (!title) { errEl.textContent = '請輸入文章標題'; errEl.style.display = 'block'; return; }
-    if (!bodyText || bodyText.length < 10) { errEl.textContent = '文章內容至少需要10個字'; errEl.style.display = 'block'; return; }
-    if (!selectedCat) { errEl.textContent = '請選擇文章分類'; errEl.style.display = 'block'; return; }
+    if (!title) { errEl.textContent='請輸入文章標題'; errEl.style.display='block'; return; }
+    if (!bodyText || bodyText.length < 10) { errEl.textContent='文章內容至少需要10個字'; errEl.style.display='block'; return; }
+    if (!selectedCat) { errEl.textContent='請選擇文章分類'; errEl.style.display='block'; return; }
 
     const user = JSON.parse(sessionStorage.getItem('wh_user') || '{}');
     const isAnon = publishMode === 'anon';
     const pennameEl = document.getElementById('pennameSelect');
 
     const article = {
-        title,
+        title: title,
         content: bodyText,
-        bodyHTML,
+        bodyHTML: bodyHTML,
         category: isAnon ? '樹洞' : selectedCat,
         tags: tags.join(','),
         authorName: isAnon ? '樹洞' : (pennameEl ? pennameEl.value : (user.name || '用戶')),
@@ -427,25 +374,20 @@ function confirmPublish() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(article)
     })
-        .then(res => res.json())
-        .then(() => {
-            localStorage.removeItem('wh_draft');
-            closePublishPanel();
-            showToast('文章已發佈！即將返回首頁…');
-            setTimeout(() => { window.location.href = 'index.html?refresh=' + Date.now(); }, 2000);
-        })
-        .catch(() => {
-            errEl.textContent = '發佈失敗，請重試';
-            errEl.style.display = 'block';
-            btn.disabled = false;
-            btn.textContent = '確認發佈 →';
-        });
+    .then(res => res.json())
+    .then(data => {
+        localStorage.removeItem('wh_draft');
+        closePublishPanel();
+        showToast('文章已發佈！即將返回首頁…');
+        setTimeout(() => { window.location.href = 'index.html?refresh=' + Date.now(); }, 2000);
+    })
+    .catch(err => {
+        errEl.textContent = '發佈失敗，請重試';
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = '確認發佈 →';
+    });
 }
 
 /* ── Toast ── */
-function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-}
+function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }

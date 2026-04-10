@@ -53,7 +53,7 @@ public class ArticleController {
 
         String wmHtml = watermark
                 ? "<div style='margin-top:40px;padding-top:16px;border-top:1px solid #ddd;font-size:10px;color:#aaa;'>© "
-                  + article.getAuthorName() + " · Scribe · " + location(article) + "</div>"
+                  + article.getAuthorName() + " · 熱讀 · " + location(article) + "</div>"
                 : "";
 
         String html = "<!DOCTYPE html><html><head><meta charset='UTF-8'/>" +
@@ -77,7 +77,7 @@ public class ArticleController {
         WriterProperties writerProps = new WriterProperties()
                 .setStandardEncryption(
                         null,                          // 用户密码（无需密码即可打开）
-                        "scribe2026".getBytes(),       // 所有者密码
+                        "熱讀2026".getBytes(),       // 所有者密码
                         EncryptionConstants.ALLOW_PRINTING,  // 只允许打印
                         EncryptionConstants.ENCRYPTION_AES_256
                 );
@@ -101,7 +101,7 @@ public class ArticleController {
                 gs.setFillOpacity(0.12f);
                 canvas.setExtGState(gs);
 
-                String wmText = "Scribe  " + article.getAuthorName() + "  版權所有";
+                String wmText = "熱讀  " + article.getAuthorName() + "  版權所有";
                 float angle = (float)(Math.PI / 6); // 30度
                 float cos = (float) Math.cos(angle);
                 float sin = (float) Math.sin(angle);

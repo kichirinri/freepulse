@@ -26,7 +26,7 @@ fetch('http://localhost:8080/api/articles/' + articleId)
 
 /* ── 渲染文章 ── */
 function renderArticle() {
-    document.title = article.title + ' · Scribe';
+    document.title = article.title + ' · 熱讀';
     if (article.coverImage) {
         const img = document.getElementById('artCover');
         img.src = article.coverImage; img.classList.add('show');
@@ -61,7 +61,7 @@ function renderArticle() {
     if (localStorage.getItem('liked_' + article.id)) document.getElementById('likeBtn').classList.add('liked');
     const url = location.href;
     document.getElementById('artCopyright').innerHTML =
-        '© ' + article.authorName + ' · Scribe<br>' +
+        '© ' + article.authorName + ' · 熱讀<br>' +
         '<span style="font-size:11px;word-break:break-all;">' + url + '</span>';
     document.getElementById('wmPreviewText').textContent = '© ' + article.authorName + ' · ' + url;
     if (isAuthor) document.getElementById('authorToolbar').classList.add('show');
@@ -332,7 +332,7 @@ function downloadImage() {
             y = 28;
             ctx.font = 'bold 18px serif';
             ctx.fillStyle = theme.logo;
-            ctx.fillText('Scribe', PADDING, y + 16);
+            ctx.fillText('熱讀', PADDING, y + 16);
 
             // 页码
             ctx.font = '12px sans-serif';
@@ -418,7 +418,7 @@ function downloadImage() {
                 // 最后一页显示完整版权
                 ctx.font = '12px sans-serif';
                 ctx.fillStyle = theme.sub;
-                ctx.fillText('© ' + (article.authorName || '用戶') + ' · Scribe', PADDING, footerY + 22);
+                ctx.fillText('© ' + (article.authorName || '用戶') + ' · 熱讀', PADDING, footerY + 22);
                 ctx.font = '11px sans-serif';
                 ctx.fillStyle = theme.border;
                 const shortUrl = location.href.length > 60 ? location.href.slice(0, 57) + '...' : location.href;
@@ -426,7 +426,7 @@ function downloadImage() {
             } else {
                 ctx.font = '12px sans-serif';
                 ctx.fillStyle = theme.sub;
-                ctx.fillText('Scribe · 全球華人寫作平台', PADDING, footerY + 22);
+                ctx.fillText('熱讀 · 全球華人寫作平台', PADDING, footerY + 22);
                 if (imgWmChoice === 'yes') {
                     ctx.font = '11px sans-serif';
                     ctx.fillStyle = theme.border;
@@ -436,7 +436,7 @@ function downloadImage() {
 
             // 下载
             const link = document.createElement('a');
-            link.download = 'scribe-' + article.id + '-p' + (idx + 1) + '-' + Date.now() + '.png';
+            link.download = '熱讀-' + article.id + '-p' + (idx + 1) + '-' + Date.now() + '.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
 
