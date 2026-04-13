@@ -90,8 +90,7 @@ function renderList(articles, isLiked = false) {
         const dateStr = date.getFullYear() + '年' + (date.getMonth()+1) + '月' + date.getDate() + '日';
         const words = (a.content || '').replace(/\s/g,'').length;
         const excerpt = (a.content || '').slice(0, 80);
-        const isFire = a.category === '煙火飄香';
-        const tags = a.tags ? a.tags.split(',').filter(t => t.trim()) : [];
+                const tags = a.tags ? a.tags.split(',').filter(t => t.trim()) : [];
 
         const actions = isLiked
             ? `<button class="btn-article-action" onclick="viewArticle(${a.id})">查看</button>`

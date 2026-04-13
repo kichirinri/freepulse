@@ -361,15 +361,22 @@ function savePennames(list) {
     localStorage.setItem('wh_pennames_' + currentUser.email, JSON.stringify(list));
 }
 
-function getPennameColor(i) {
+function getPennameColor(name) {
     const colors = [
         'linear-gradient(135deg,#fa709a,#fee140)',
         'linear-gradient(135deg,#4facfe,#00f2fe)',
         'linear-gradient(135deg,#a18cd1,#fbc2eb)',
         'linear-gradient(135deg,#30cfd0,#667eea)',
-        'linear-gradient(135deg,#f093fb,#f5576c)'
+        'linear-gradient(135deg,#f093fb,#f5576c)',
+        'linear-gradient(135deg,#43e97b,#38f9d7)',
+        'linear-gradient(135deg,#667eea,#764ba2)',
+        'linear-gradient(135deg,#f7971e,#ffd200)'
     ];
-    return colors[i % colors.length];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
 }
 
 function renderPennameList() {
@@ -408,7 +415,7 @@ function renderPennameList() {
         const item = document.createElement('div');
         item.className = 'penname-item';
         item.innerHTML = `
-            <div class="penname-avatar" style="background:${getPennameColor(i)}">${p.name[0].toUpperCase()}</div>
+            <div class="penname-avatar" style="background:${getPennameColor(p.name)}">${p.name[0].toUpperCase()}</div>
             <div class="penname-info">
                 <div class="penname-name">${p.name}</div>
                 <div class="penname-note">${p.note || '無備註'}</div>

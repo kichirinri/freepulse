@@ -27,6 +27,9 @@ public class Article {
     private int views;              // 瀏覽數
     private int likes;              // 按讚數
 
+
+    @Column(columnDefinition = "TEXT")
+    private String coverImage;      // 封面圖
     // ── Getters & Setters ──
 
     public Long getId() { return id; }
@@ -64,4 +67,7 @@ public class Article {
 
     public int getLikes() { return likes; }
     public void setLikes(int likes) { this.likes = likes; }
+
+    public String getCoverImage() { return coverImage; }
+    public void setCoverImage(String coverImage) { this.coverImage = coverImage; }
 }

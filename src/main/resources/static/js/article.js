@@ -27,13 +27,10 @@ fetch('http://localhost:8080/api/articles/' + articleId)
 /* ── 渲染文章 ── */
 function renderArticle() {
     document.title = article.title + ' · 熱讀';
-    if (article.coverImage) {
-        const img = document.getElementById('artCover');
-        img.src = article.coverImage; img.classList.add('show');
-    }
+
     const catEl = document.getElementById('artCat');
     catEl.textContent = article.category;
-    if (article.category === '煙火飄香') catEl.classList.add('fire');
+
 
     const tagsEl = document.getElementById('artTags');
     if (article.tags) {
@@ -64,7 +61,7 @@ function renderArticle() {
         '© ' + article.authorName + ' · 熱讀<br>' +
         '<span style="font-size:11px;word-break:break-all;">' + url + '</span>';
     document.getElementById('wmPreviewText').textContent = '© ' + article.authorName + ' · ' + url;
-    if (isAuthor) document.getElementById('authorToolbar').classList.add('show');
+    if (isAuthor) document.getElementById('btnManage').style.display = 'flex';
     if (!isAuthor) document.body.classList.add('no-copy');
     fetch('http://localhost:8080/api/articles/' + article.id + '/view', { method: 'POST' });
 }
@@ -502,3 +499,15 @@ function editArticle() {
     const id = params.get('id');
     if (id) window.location.href = 'write.html?editId=' + id;
 }
+
+function toggleManageMenu(e) {
+    e.stopPropagation();
+    const menu = document.getElementById('manageMenu');
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+
+document.addEventListener('click', e => {
+    if (!e.target.closest('.btn-manage') && !e.target.closest('.manage-menu')) {
+        document.getElementById('manageMenu').style.display = 'none';
+    }
+});

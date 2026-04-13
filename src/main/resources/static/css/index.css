@@ -456,3 +456,7 @@ button { cursor: pointer; font-family: var(--sans); }
     .article-card-title { font-size: 15px; }
     .footer { flex-direction: column; gap: 16px; text-align: center; }
 }
+
+.nav-topic.treeholl {
+    filter: sepia(1) saturate(10) hue-rotate(320deg);
+}

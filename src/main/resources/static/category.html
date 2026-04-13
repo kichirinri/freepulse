@@ -26,14 +26,17 @@
         <div class="nav-topic" onclick="goCategory('創作')">創作</div>
         <div class="nav-topic treeholl" onclick="window.location.href='treeholl.html'">🕳️ 樹洞</div>
     </div>
-    <div class="nav-right" id="navRight">
-        <div id="stateGuest" style="display:flex;align-items:center;gap:12px;">
-            <button class="nav-btn-fill" onclick="window.location.href='index.html'">發文</button>
-        </div>
-        <div id="stateUser" style="display:none;align-items:center;gap:12px;">
-            <button class="nav-btn-fill" onclick="window.location.href='write.html'">發文</button>
-            <div class="nav-divider"></div>
-            <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu()">文</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+        <button class="nav-btn-outline" onclick="window.location.href='index.html'">← 返回首頁</button>
+        <div class="nav-right" id="navRight">
+            <div id="stateGuest" style="display:flex;align-items:center;gap:12px;">
+                <button class="nav-btn-fill" onclick="window.location.href='index.html'">發文</button>
+            </div>
+            <div id="stateUser" style="display:none;align-items:center;gap:12px;">
+                <button class="nav-btn-fill" onclick="window.location.href='write.html'">發文</button>
+                <div class="nav-divider"></div>
+                <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu()">文</div>
+            </div>
         </div>
     </div>
 </nav>
@@ -43,7 +46,7 @@
     <img class="cat-header-img" id="catHeaderImg" src="" alt="">
     <div class="cat-header-overlay"></div>
     <div class="cat-header-inner">
-        <div class="cat-back" onclick="window.location.href='index.html'">← 返回首頁</div>
+
         <h1 class="cat-title" id="catTitle">分類</h1>
         <div class="cat-desc" id="catDesc"></div>
     </div>

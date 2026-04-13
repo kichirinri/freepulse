@@ -6,26 +6,26 @@ function goCategory(cat) {
     window.location.href = 'category.html?cat=' + encodeURIComponent(cat);
 }
 
-/* Banner Slider */
-let currentSlide = 0;
-let sliderTimer = null;
-
-function goSlide(n) {
-    const slides = document.querySelectorAll('.banner-slide');
-    const dots   = document.querySelectorAll('.banner-dot');
-    slides[currentSlide].classList.remove('active');
-    dots[currentSlide].classList.remove('active');
-    currentSlide = (n + slides.length) % slides.length;
-    slides[currentSlide].classList.add('active');
-    dots[currentSlide].classList.add('active');
-}
-function nextSlide() { goSlide(currentSlide + 1); resetTimer(); }
-function prevSlide() { goSlide(currentSlide - 1); resetTimer(); }
-function resetTimer() {
-    clearInterval(sliderTimer);
-    sliderTimer = setInterval(() => goSlide(currentSlide + 1), 5000);
-}
-resetTimer();
+// /* Banner Slider */
+// let currentSlide = 0;
+// let sliderTimer = null;
+//
+// function goSlide(n) {
+//     const slides = document.querySelectorAll('.banner-slide');
+//     const dots   = document.querySelectorAll('.banner-dot');
+//     slides[currentSlide].classList.remove('active');
+//     dots[currentSlide].classList.remove('active');
+//     currentSlide = (n + slides.length) % slides.length;
+//     slides[currentSlide].classList.add('active');
+//     dots[currentSlide].classList.add('active');
+// }
+// function nextSlide() { goSlide(currentSlide + 1); resetTimer(); }
+// function prevSlide() { goSlide(currentSlide - 1); resetTimer(); }
+// function resetTimer() {
+//     clearInterval(sliderTimer);
+//     sliderTimer = setInterval(() => goSlide(currentSlide + 1), 5000);
+// }
+// resetTimer();
 
 /* ================================================================
  *  用户数据库
