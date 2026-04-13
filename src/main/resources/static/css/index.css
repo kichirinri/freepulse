@@ -41,7 +41,17 @@ button { cursor: pointer; font-family: var(--sans); }
     height: 52px; padding: 0 40px; gap: 0;
     overflow: visible;
 }
-.nav-logo-mini { font-family: var(--serif); font-size: 20px; font-weight: 900; letter-spacing: 3px; color: var(--ink); flex-shrink: 0; margin-right: 24px; }
+.nav-logo-mini {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: var(--ink);
+    flex-shrink: 0;
+    margin-right: 24px;
+    border-bottom: 3px double var(--ink);
+    padding-bottom: 3px;
+}
 .nav-search {
     display: flex; align-items: center; gap: 8px;
     background: #f2f2f2; border-radius: 20px;
@@ -62,7 +72,7 @@ button { cursor: pointer; font-family: var(--sans); }
 .nav-search-input { border: none; outline: none; background: none; font-size: 14px; color: var(--ink); width: 100%; font-family: var(--sans); }
 .nav-search-input::placeholder { color: var(--ink4); }
 .nav-topics { display: flex; align-items: center; flex: 1; overflow: hidden; margin: 0 24px; }
-.nav-topic { padding: 0 12px; font-size: 14px; color: var(--ink2); white-space: nowrap; cursor: pointer; height: 52px; display: flex; align-items: center; border-bottom: 2px solid transparent; transition: all 0.15s; font-weight: 700; }
+.nav-topic { padding: 0 12px; font-size: 16px; color: var(--ink2); white-space: nowrap; cursor: pointer; height: 52px; display: flex; align-items: center; border-bottom: 2px solid transparent; transition: all 0.15s; font-weight: 700; }
 .nav-topic:hover { color: var(--ink); border-bottom-color: var(--ink); }
 .nav-topic.active { color: var(--ink); border-bottom-color: var(--ink); }
 .nav-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
@@ -236,7 +246,7 @@ button { cursor: pointer; font-family: var(--sans); }
 /* DIVIDER */
 .divider-label { display: flex; align-items: center; gap: 12px; margin: 8px 0 18px; }
 .divider-label::before, .divider-label::after { content:''; flex:1; border-top:1px solid var(--rule); }
-.divider-label-text { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 700; color: var(--ink3); white-space: nowrap; }
+.divider-label-text { font-size: 15px; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 700; color: var(--ink3); white-space: nowrap; }
 
 /* REGISTER BAND */
 .register-band { background: var(--bg2); color: var(--ink); border-bottom: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; padding: 12px 40px; }
@@ -340,7 +350,7 @@ button { cursor: pointer; font-family: var(--sans); }
 }
 
 .sidebar-block-title {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     letter-spacing: 1.5px;
     color: var(--ink3);
