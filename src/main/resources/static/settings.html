@@ -1,3 +1,177 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="zh-Hant">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>帳號設定 · 熱讀</title>-->
+<!--    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>-->
+<!--    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">-->
+<!--    <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"></noscript>-->
+<!--    <link rel="stylesheet" href="css/index.css?v=6">-->
+<!--    <style>-->
+
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="settings-bar">-->
+<!--    <a class="settings-bar-logo" href="index.html">熱讀</a>-->
+<!--    <button class="settings-bar-back" onclick="window.history.back()">-->
+<!--        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>-->
+<!--        返回-->
+<!--    </button>-->
+<!--</div>-->
+
+<!--<div class="no-login" id="noLogin">-->
+<!--    <div style="font-size:48px;margin-bottom:16px;">🔒</div>-->
+<!--    <div style="font-family:var(&#45;&#45;serif);font-size:24px;font-weight:700;margin-bottom:8px;">請先登入</div>-->
+<!--    <div style="font-size:14px;color:var(&#45;&#45;ink4);margin-bottom:24px;">登入後才能管理帳號設定</div>-->
+<!--    <button style="background:var(&#45;&#45;ink);color:white;border:none;padding:10px 24px;font-size:13px;font-weight:700;cursor:pointer;" onclick="window.location.href='index.html'">返回首頁登入</button>-->
+<!--</div>-->
+
+<!--<div class="settings-layout" id="mainLayout" style="display:none;">-->
+<!--    <div class="settings-nav">-->
+<!--        <div class="settings-nav-title">設定</div>-->
+<!--        <div class="settings-nav-item active" onclick="switchTab('Profile', this)">-->
+<!--            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>-->
+<!--            個人資料-->
+<!--        </div>-->
+<!--        <div class="settings-nav-item" onclick="switchTab('Penname', this)">-->
+<!--            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>-->
+<!--            筆名管理-->
+<!--        </div>-->
+<!--        <div class="settings-nav-item" onclick="switchTab('Password', this)">-->
+<!--            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>-->
+<!--            修改密碼-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="settings-content">-->
+
+<!--        &lt;!&ndash; 个人资料 &ndash;&gt;-->
+<!--        <div class="settings-section active" id="tabProfile">-->
+<!--            <div class="settings-section-title">個人資料</div>-->
+<!--            <div class="settings-section-sub">管理你的頭像與顯示名稱</div>-->
+<!--            <div class="avatar-section">-->
+<!--                <div class="avatar-preview" id="avatarPreview">-->
+<!--                    <span id="avatarInitial">文</span>-->
+<!--                    <img id="avatarImg" src="" alt="">-->
+<!--                </div>-->
+<!--                <div class="avatar-actions">-->
+<!--                    <div class="avatar-actions-title">頭像</div>-->
+<!--                    <div class="avatar-actions-sub">支援 JPG、PNG，最大 5MB</div>-->
+<!--                    <button class="btn-avatar-upload" onclick="document.getElementById('avatarInput').click()">上傳圖片</button>-->
+<!--                    <button class="btn-avatar-remove" id="btnAvatarRemove" onclick="removeAvatar()">移除頭像</button>-->
+<!--                </div>-->
+<!--                <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="openCropModal(event)">-->
+<!--            </div>-->
+<!--            <div class="settings-field">-->
+<!--                <label class="settings-label">暱稱（顯示名稱）</label>-->
+<!--                <input class="settings-input" id="inputName" type="text" placeholder="你的名字" maxlength="20">-->
+<!--                <div class="settings-hint">修改後，已發表文章的署名也會同步更新</div>-->
+<!--                <div class="settings-error" id="nameError"></div>-->
+<!--            </div>-->
+<!--            <div class="settings-field">-->
+<!--                <label class="settings-label">帳戶名稱（電子郵件）</label>-->
+<!--                <input class="settings-input" id="inputEmail" type="email" disabled>-->
+<!--                <div class="settings-hint">帳戶名稱無法修改</div>-->
+<!--            </div>-->
+<!--            <button class="btn-settings-save" onclick="saveProfile()">儲存變更</button>-->
+<!--            <div class="settings-success" id="profileSuccess"></div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; 筆名管理 &ndash;&gt;-->
+<!--        <div class="settings-section" id="tabPenname">-->
+<!--            <div class="settings-section-title">筆名管理</div>-->
+<!--            <div class="settings-section-sub">最多可建立 5 個筆名，發文時可選擇署名</div>-->
+<!--            <div class="penname-list" id="pennameList"></div>-->
+<!--            <div class="penname-add-form" id="pennameAddForm" style="display:none;">-->
+<!--                <div class="penname-add-title">新增筆名</div>-->
+<!--                <div class="penname-add-row">-->
+<!--                    <div>-->
+<!--                        <label class="settings-label">筆名</label>-->
+<!--                        <input class="settings-input" id="inputPenname" type="text" placeholder="例如：南風以南" maxlength="20">-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                        <label class="settings-label">備註（選填）</label>-->
+<!--                        <input class="settings-input" id="inputPennameNote" type="text" placeholder="例如：散文專用" maxlength="20">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="settings-error" id="pennameError"></div>-->
+<!--                <div style="display:flex;gap:10px;margin-top:4px;">-->
+<!--                    <button class="btn-penname-add" onclick="addPenname()">新增</button>-->
+<!--                    <button class="btn-penname-add-cancel" onclick="hidePennameForm()">取消</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <button class="btn-penname-new" id="btnPennameNew" onclick="showPennameForm()">-->
+<!--                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>-->
+<!--                新增筆名-->
+<!--            </button>-->
+<!--            <div class="penname-limit" id="pennameLimit"></div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; 修改密码 &ndash;&gt;-->
+<!--        <div class="settings-section" id="tabPassword">-->
+<!--            <div class="settings-section-title">修改密碼</div>-->
+<!--            <div class="settings-section-sub">為了安全，請先輸入目前密碼</div>-->
+<!--            <div class="settings-field">-->
+<!--                <label class="settings-label">目前密碼</label>-->
+<!--                <input class="settings-input" id="inputOldPwd" type="password" placeholder="輸入目前密碼">-->
+<!--            </div>-->
+<!--            <div class="settings-field">-->
+<!--                <label class="settings-label">新密碼</label>-->
+<!--                <input class="settings-input" id="inputNewPwd" type="password" placeholder="至少8位數">-->
+<!--            </div>-->
+<!--            <div class="settings-field">-->
+<!--                <label class="settings-label">確認新密碼</label>-->
+<!--                <input class="settings-input" id="inputConfirmPwd" type="password" placeholder="再次輸入新密碼">-->
+<!--            </div>-->
+<!--            <div class="settings-error" id="pwdError"></div>-->
+<!--            <div class="settings-success" id="pwdSuccess"></div>-->
+<!--            <button class="btn-settings-save" onclick="savePassword()">更新密碼</button>-->
+<!--        </div>-->
+
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; 裁剪弹窗 &ndash;&gt;-->
+<!--<div class="crop-overlay" id="cropOverlay">-->
+<!--    <div class="crop-box">-->
+<!--        <div class="crop-title">調整頭像</div>-->
+<!--        <div class="crop-sub">拖動圖片移動位置，滑動調整大小</div>-->
+<!--        <div class="crop-canvas-wrap">-->
+<!--            <canvas id="cropCanvas" width="400" height="320"></canvas>-->
+<!--            <svg class="crop-mask" viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">-->
+<!--                <defs>-->
+<!--                    <mask id="holeMask">-->
+<!--                        <rect width="400" height="320" fill="white"/>-->
+<!--                        <circle cx="200" cy="160" r="120" fill="black"/>-->
+<!--                    </mask>-->
+<!--                </defs>-->
+<!--                <rect width="400" height="320" fill="rgba(0,0,0,0.55)" mask="url(#holeMask)"/>-->
+<!--                <circle cx="200" cy="160" r="120" fill="none" stroke="white" stroke-width="2" opacity="0.8"/>-->
+<!--            </svg>-->
+<!--        </div>-->
+<!--        <div class="crop-controls">-->
+<!--            <label>縮放</label>-->
+<!--            <input type="range" class="crop-slider" id="cropScale" min="50" max="300" value="100">-->
+<!--        </div>-->
+<!--        <div class="crop-actions">-->
+<!--            <button class="btn-crop-cancel" onclick="closeCropModal()">取消</button>-->
+<!--            <button class="btn-crop-confirm" onclick="confirmCrop()">確認使用</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div class="toast" id="toast"></div>-->
+
+<!--<script src="js/settings.js"></script>-->
+
+<!--<script src="js/common.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -8,92 +182,11 @@
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
     <link rel="stylesheet" href="css/index.css?v=6">
-    <style>
-        .settings-bar { display:flex; align-items:center; justify-content:space-between; padding:16px 40px; border-bottom:1px solid var(--rule); background:white; position:sticky; top:0; z-index:100; }
-        .settings-bar-logo { font-family:var(--serif); font-size:22px; font-weight:900; letter-spacing:3px; color:var(--ink); text-decoration:none; }
-        .settings-bar-back { font-size:14px; color:var(--ink3); cursor:pointer; display:flex; align-items:center; gap:6px; background:none; border:none; font-family:var(--sans); }
-        .settings-bar-back:hover { color:var(--ink); }
-        .settings-layout { max-width:900px; margin:0 auto; padding:40px 40px 80px; display:grid; grid-template-columns:200px 1fr; gap:48px; }
-        .settings-nav { position:sticky; top:80px; height:fit-content; }
-        .settings-nav-title { font-size:11px; letter-spacing:2px; text-transform:uppercase; font-weight:700; color:var(--ink4); margin-bottom:12px; font-family:var(--sans); }
-        .settings-nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; font-size:14px; color:var(--ink2); cursor:pointer; transition:all 0.12s; font-family:var(--sans); border-left:2px solid transparent; margin-bottom:2px; }
-        .settings-nav-item:hover { background:var(--bg2); color:var(--ink); }
-        .settings-nav-item.active { color:var(--ink); border-left-color:var(--ink); background:var(--bg2); font-weight:700; }
-        .settings-section { display:none; }
-        .settings-section.active { display:block; }
-        .settings-section-title { font-family:var(--serif); font-size:26px; font-weight:700; color:var(--ink); margin-bottom:6px; }
-        .settings-section-sub { font-size:14px; color:var(--ink4); margin-bottom:32px; font-family:var(--sans); }
-        .avatar-section { display:flex; align-items:center; gap:28px; padding:24px; border:1px solid var(--rule); margin-bottom:28px; background:var(--bg2); }
-        .avatar-preview { width:88px; height:88px; border-radius:50%; background:linear-gradient(135deg,#667eea,#764ba2); color:white; display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-size:36px; font-weight:900; flex-shrink:0; overflow:hidden; }
-        .avatar-preview img { width:100%; height:100%; object-fit:cover; display:none; }
-        .avatar-preview img.show { display:block; }
-        .avatar-actions { display:flex; flex-direction:column; gap:8px; }
-        .avatar-actions-title { font-size:15px; font-weight:700; color:var(--ink); font-family:var(--sans); }
-        .avatar-actions-sub { font-size:12px; color:var(--ink4); font-family:var(--sans); }
-        .btn-avatar-upload { background:var(--ink); color:white; border:none; padding:8px 18px; font-size:13px; font-weight:700; cursor:pointer; font-family:var(--sans); border-radius:2px; width:fit-content; transition:background 0.15s; }
-        .btn-avatar-upload:hover { background:var(--ink2); }
-        .btn-avatar-remove { display:none; background:none; color:var(--accent); border:1px solid var(--accent); padding:7px 18px; font-size:13px; font-weight:700; cursor:pointer; font-family:var(--sans); border-radius:2px; width:fit-content; transition:all 0.15s; }
-        .btn-avatar-remove:hover { background:var(--accent); color:white; }
-        .btn-avatar-remove.show { display:block; }
-        .settings-field { margin-bottom:22px; }
-        .settings-label { font-size:12px; letter-spacing:1px; text-transform:uppercase; font-weight:700; color:var(--ink3); margin-bottom:8px; display:block; font-family:var(--sans); }
-        .settings-input { width:100%; border:1px solid var(--rule); padding:11px 14px; font-size:15px; font-family:var(--sans); color:var(--ink); outline:none; transition:border-color 0.15s; background:white; }
-        .settings-input:focus { border-color:var(--ink); }
-        .settings-input:disabled { background:var(--bg2); color:var(--ink4); cursor:not-allowed; }
-        .settings-hint { font-size:12px; color:var(--ink4); margin-top:6px; font-family:var(--sans); }
-        .settings-error { font-size:13px; color:var(--accent); margin-top:8px; font-family:var(--sans); min-height:18px; }
-        .settings-success { font-size:13px; color:#27ae60; margin-top:8px; font-family:var(--sans); min-height:18px; }
-        .btn-settings-save { background:var(--ink); color:white; border:none; padding:11px 28px; font-size:13px; font-weight:700; letter-spacing:1px; cursor:pointer; font-family:var(--sans); transition:background 0.15s; margin-top:8px; }
-        .btn-settings-save:hover { background:var(--ink2); }
-
-        /* 笔名管理 */
-        .penname-list { margin-bottom:16px; }
-        .penname-item { display:flex; align-items:center; gap:12px; padding:16px 20px; border:1px solid var(--rule); margin-bottom:8px; background:white; }
-        .penname-avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#667eea,#764ba2); color:white; display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-size:18px; font-weight:900; flex-shrink:0; }
-        .penname-info { flex:1; }
-        .penname-name { font-size:15px; font-weight:700; color:var(--ink); font-family:var(--sans); }
-        .penname-note { font-size:12px; color:var(--ink4); margin-top:2px; font-family:var(--sans); }
-        .penname-default-badge { font-size:11px; letter-spacing:1px; text-transform:uppercase; font-weight:700; color:#27ae60; border:1px solid #27ae60; padding:2px 8px; border-radius:2px; font-family:var(--sans); }
-        .btn-penname-delete { font-size:12px; color:var(--accent); background:none; border:1px solid var(--accent); padding:5px 12px; cursor:pointer; font-family:var(--sans); transition:all 0.15s; }
-        .btn-penname-delete:hover { background:var(--accent); color:white; }
-        .penname-add-form { border:1px dashed var(--rule); padding:20px; margin-bottom:16px; background:var(--bg2); }
-        .penname-add-title { font-size:14px; font-weight:700; color:var(--ink); margin-bottom:16px; font-family:var(--sans); }
-        .penname-add-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
-        .btn-penname-add { background:var(--ink); color:white; border:none; padding:9px 20px; font-size:13px; font-weight:700; cursor:pointer; font-family:var(--sans); transition:background 0.15s; }
-        .btn-penname-add:hover { background:var(--ink2); }
-        .btn-penname-add-cancel { background:none; color:var(--ink3); border:1px solid var(--rule); padding:9px 20px; font-size:13px; font-weight:700; cursor:pointer; font-family:var(--sans); transition:all 0.15s; }
-        .btn-penname-add-cancel:hover { border-color:var(--ink); color:var(--ink); }
-        .btn-penname-new { display:flex; align-items:center; gap:8px; background:none; border:1px solid var(--rule); padding:10px 18px; font-size:14px; color:var(--ink3); cursor:pointer; font-family:var(--sans); transition:all 0.15s; width:fit-content; }
-        .btn-penname-new:hover { border-color:var(--ink); color:var(--ink); }
-        .penname-limit { font-size:12px; color:var(--ink4); margin-top:12px; font-family:var(--sans); }
-
-        .no-login { display:none; text-align:center; padding:120px 40px; }
-        .no-login.show { display:block; }
-        .toast { position:fixed; bottom:32px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--ink); color:white; padding:12px 24px; font-size:14px; font-family:var(--sans); opacity:0; transition:all 0.3s; z-index:9999; white-space:nowrap; }
-        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
-        /* 裁剪弹窗 */
-        .crop-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center; }
-        .crop-overlay.open { display:flex; }
-        .crop-box { background:white; width:460px; max-width:95vw; border-top:3px solid var(--ink); padding:28px; }
-        .crop-title { font-family:var(--serif); font-size:20px; font-weight:700; color:var(--ink); margin-bottom:6px; }
-        .crop-sub { font-size:13px; color:var(--ink4); margin-bottom:16px; font-family:var(--sans); }
-        .crop-canvas-wrap { position:relative; width:400px; height:320px; background:#111; cursor:grab; border:1px solid var(--rule); margin-bottom:16px; overflow:hidden; }
-        .crop-canvas-wrap:active { cursor:grabbing; }
-        #cropCanvas { position:absolute; top:0; left:0; display:block; }
-        .crop-mask { position:absolute; top:0; left:0; width:400px; height:320px; pointer-events:none; }
-        .crop-controls { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
-        .crop-controls label { font-size:13px; color:var(--ink3); font-family:var(--sans); flex-shrink:0; }
-        .crop-slider { flex:1; accent-color:var(--ink); cursor:pointer; }
-        .crop-actions { display:flex; gap:10px; justify-content:flex-end; }
-        .btn-crop-cancel { background:none; border:1px solid var(--rule); padding:9px 20px; font-size:13px; font-weight:700; color:var(--ink3); cursor:pointer; font-family:var(--sans); transition:all 0.15s; }
-        .btn-crop-cancel:hover { border-color:var(--ink); color:var(--ink); }
-        .btn-crop-confirm { background:var(--ink); color:white; border:none; padding:9px 24px; font-size:13px; font-weight:700; cursor:pointer; font-family:var(--sans); transition:background 0.15s; }
-        .btn-crop-confirm:hover { background:var(--ink2); }
-    </style>
+    <link rel="stylesheet" href="css/settings.css">
 </head>
 <body>
 
+<!-- TOP BAR -->
 <div class="settings-bar">
     <a class="settings-bar-logo" href="index.html">熱讀</a>
     <button class="settings-bar-back" onclick="window.history.back()">
@@ -102,6 +195,7 @@
     </button>
 </div>
 
+<!-- 未登入提示 -->
 <div class="no-login" id="noLogin">
     <div style="font-size:48px;margin-bottom:16px;">🔒</div>
     <div style="font-family:var(--serif);font-size:24px;font-weight:700;margin-bottom:8px;">請先登入</div>
@@ -109,7 +203,10 @@
     <button style="background:var(--ink);color:white;border:none;padding:10px 24px;font-size:13px;font-weight:700;cursor:pointer;" onclick="window.location.href='index.html'">返回首頁登入</button>
 </div>
 
+<!-- 主版面 -->
 <div class="settings-layout" id="mainLayout" style="display:none;">
+
+    <!-- 左側導航 -->
     <div class="settings-nav">
         <div class="settings-nav-title">設定</div>
         <div class="settings-nav-item active" onclick="switchTab('Profile', this)">
@@ -126,9 +223,10 @@
         </div>
     </div>
 
+    <!-- 右側內容 -->
     <div class="settings-content">
 
-        <!-- 个人资料 -->
+        <!-- 個人資料 -->
         <div class="settings-section active" id="tabProfile">
             <div class="settings-section-title">個人資料</div>
             <div class="settings-section-sub">管理你的頭像與顯示名稱</div>
@@ -190,7 +288,7 @@
             <div class="penname-limit" id="pennameLimit"></div>
         </div>
 
-        <!-- 修改密码 -->
+        <!-- 修改密碼 -->
         <div class="settings-section" id="tabPassword">
             <div class="settings-section-title">修改密碼</div>
             <div class="settings-section-sub">為了安全，請先輸入目前密碼</div>
@@ -214,7 +312,7 @@
     </div>
 </div>
 
-<!-- 裁剪弹窗 -->
+<!-- 裁剪彈窗 -->
 <div class="crop-overlay" id="cropOverlay">
     <div class="crop-box">
         <div class="crop-title">調整頭像</div>
@@ -245,310 +343,7 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
-    /* ── 常量 ── */
-    const MAX_PENNAMES = 5;
-
-    /* ── 用户数据库 ── */
-    const DEFAULT_USERS = {
-        'kichirinri@gmail.com': { email: 'kichirinri@gmail.com', pwd: '123456', name: '闻道' }
-    };
-    const DB = {
-        users: Object.assign({}, DEFAULT_USERS, JSON.parse(localStorage.getItem('wh_users') || '{}')),
-        save() { localStorage.setItem('wh_users', JSON.stringify(this.users)); },
-        get(email) { return this.users[email.toLowerCase()] || null; },
-        update(email, data) { Object.assign(this.users[email.toLowerCase()], data); this.save(); }
-    };
-
-    const currentUser = JSON.parse(sessionStorage.getItem('wh_user') || 'null');
-    if (!currentUser) {
-        document.getElementById('noLogin').classList.add('show');
-    } else {
-        document.getElementById('mainLayout').style.display = 'grid';
-        initPage();
-    }
-
-    function initPage() {
-        document.getElementById('inputName').value = currentUser.name || '';
-        document.getElementById('inputEmail').value = currentUser.email || '';
-        const avatar = localStorage.getItem('wh_avatar_' + currentUser.email);
-        if (avatar) showAvatarImg(avatar);
-        else document.getElementById('avatarInitial').textContent = (currentUser.name || '文')[0].toUpperCase();
-        renderPennameList();
-    }
-
-    function switchTab(tab, el) {
-        document.querySelectorAll('.settings-nav-item').forEach(e => e.classList.remove('active'));
-        document.querySelectorAll('.settings-section').forEach(e => e.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('tab' + tab).classList.add('active');
-        if (tab === 'Penname') renderPennameList();
-    }
-
-    /* ================================================================
-       笔名管理
-    ================================================================ */
-    function getPennames() {
-        return JSON.parse(localStorage.getItem('wh_pennames_' + currentUser.email) || '[]');
-    }
-
-    function savePennames(list) {
-        localStorage.setItem('wh_pennames_' + currentUser.email, JSON.stringify(list));
-    }
-
-    function getPennameColor(i) {
-        const colors = [
-            'linear-gradient(135deg,#fa709a,#fee140)',
-            'linear-gradient(135deg,#4facfe,#00f2fe)',
-            'linear-gradient(135deg,#a18cd1,#fbc2eb)',
-            'linear-gradient(135deg,#30cfd0,#667eea)',
-            'linear-gradient(135deg,#f093fb,#f5576c)'
-        ];
-        return colors[i % colors.length];
-    }
-
-    function renderPennameList() {
-        const list = getPennames();
-        const container = document.getElementById('pennameList');
-        const limitEl = document.getElementById('pennameLimit');
-        const btnNew = document.getElementById('btnPennameNew');
-
-        limitEl.textContent = `已建立 ${list.length} / ${MAX_PENNAMES} 個筆名`;
-        btnNew.style.display = list.length >= MAX_PENNAMES ? 'none' : 'flex';
-
-        container.innerHTML = '';
-
-        // 预设笔名始终显示
-        const defaultItem = document.createElement('div');
-        defaultItem.className = 'penname-item';
-        defaultItem.innerHTML = `
-        <div class="penname-avatar">${(currentUser.name || '文')[0].toUpperCase()}</div>
-        <div class="penname-info">
-            <div class="penname-name">${currentUser.name || '用戶'}</div>
-            <div class="penname-note">帳號暱稱（預設）</div>
-        </div>
-        <span class="penname-default-badge">預設</span>
-    `;
-        container.appendChild(defaultItem);
-
-        if (!list.length) {
-            const emptyTip = document.createElement('div');
-            emptyTip.style.cssText = 'padding:20px;text-align:center;color:var(--ink4);font-size:13px;font-family:var(--sans);border:1px solid var(--rule-lt);margin-top:8px;';
-            emptyTip.textContent = '尚未建立其他筆名，點擊下方新增';
-            container.appendChild(emptyTip);
-            return;
-        }
-
-        list.forEach((p, i) => {
-            const item = document.createElement('div');
-            item.className = 'penname-item';
-            item.innerHTML = `
-            <div class="penname-avatar" style="background:${getPennameColor(i)}">${p.name[0].toUpperCase()}</div>
-            <div class="penname-info">
-                <div class="penname-name">${p.name}</div>
-                <div class="penname-note">${p.note || '無備註'}</div>
-            </div>
-            <div>
-                <button class="btn-penname-delete" onclick="deletePenname(${i})">刪除</button>
-            </div>
-        `;
-            container.appendChild(item);
-        });
-    }
-
-    function showPennameForm() {
-        document.getElementById('pennameAddForm').style.display = 'block';
-        document.getElementById('btnPennameNew').style.display = 'none';
-        document.getElementById('inputPenname').focus();
-    }
-
-    function hidePennameForm() {
-        document.getElementById('pennameAddForm').style.display = 'none';
-        document.getElementById('inputPenname').value = '';
-        document.getElementById('inputPennameNote').value = '';
-        document.getElementById('pennameError').textContent = '';
-        const list = getPennames();
-        if (list.length < MAX_PENNAMES) {
-            document.getElementById('btnPennameNew').style.display = 'flex';
-        }
-    }
-
-    function addPenname() {
-        const name = document.getElementById('inputPenname').value.trim();
-        const note = document.getElementById('inputPennameNote').value.trim();
-        const errEl = document.getElementById('pennameError');
-        errEl.textContent = '';
-
-        if (!name) { errEl.textContent = '請輸入筆名'; return; }
-        if (name.length > 20) { errEl.textContent = '筆名不能超過20個字'; return; }
-
-        const list = getPennames();
-        if (list.length >= MAX_PENNAMES) { errEl.textContent = '最多只能建立 5 個筆名'; return; }
-        if (list.some(p => p.name === name)) { errEl.textContent = '此筆名已存在'; return; }
-        if (name === currentUser.name) { errEl.textContent = '與帳號暱稱相同，無需新增'; return; }
-
-        list.push({ name, note });
-        savePennames(list);
-        hidePennameForm();
-        renderPennameList();
-        showToast('筆名已新增 ✓');
-    }
-
-    function deletePenname(i) {
-        const list = getPennames();
-        list.splice(i, 1);
-        savePennames(list);
-        renderPennameList();
-        showToast('筆名已刪除');
-    }
-
-    /* ================================================================
-       头像裁剪
-    ================================================================ */
-    const CW = 400, CH = 320, CX = 200, CY = 160, CR = 120;
-    let cropImg = new Image();
-    let cropX = 0, cropY = 0, cropScale = 1;
-    let isDragging = false, dragSX = 0, dragSY = 0, dragCX = 0, dragCY = 0;
-
-    function openCropModal(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        if (file.size > 5 * 1024 * 1024) { showToast('圖片大小不能超過 5MB'); return; }
-        const reader = new FileReader();
-        reader.onload = ev => {
-            cropImg = new Image();
-            cropImg.onload = () => {
-                const minScale = Math.max((CR * 2) / cropImg.width, (CR * 2) / cropImg.height) * 1.05;
-                cropScale = minScale;
-                cropX = CX - (cropImg.width * cropScale) / 2;
-                cropY = CY - (cropImg.height * cropScale) / 2;
-                document.getElementById('cropScale').value = Math.min(300, Math.round(cropScale * 100));
-                bindCropEvents();
-                drawCrop();
-                document.getElementById('cropOverlay').classList.add('open');
-                document.body.style.overflow = 'hidden';
-            };
-            cropImg.src = ev.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function bindCropEvents() {
-        const canvas = document.getElementById('cropCanvas');
-        canvas.onmousedown = e => { isDragging = true; dragSX = e.clientX; dragSY = e.clientY; dragCX = cropX; dragCY = cropY; };
-        document.onmousemove = e => { if (!isDragging) return; cropX = dragCX + (e.clientX - dragSX); cropY = dragCY + (e.clientY - dragSY); drawCrop(); };
-        document.onmouseup = () => { isDragging = false; };
-        canvas.ontouchstart = e => { isDragging = true; dragSX = e.touches[0].clientX; dragSY = e.touches[0].clientY; dragCX = cropX; dragCY = cropY; e.preventDefault(); };
-        canvas.ontouchmove = e => { if (!isDragging) return; cropX = dragCX + (e.touches[0].clientX - dragSX); cropY = dragCY + (e.touches[0].clientY - dragSY); drawCrop(); e.preventDefault(); };
-        canvas.ontouchend = () => { isDragging = false; };
-        document.getElementById('cropScale').oninput = function() {
-            const newScale = parseInt(this.value) / 100;
-            cropX = CX - (CX - cropX) * (newScale / cropScale);
-            cropY = CY - (CY - cropY) * (newScale / cropScale);
-            cropScale = newScale;
-            drawCrop();
-        };
-    }
-
-    function drawCrop() {
-        const ctx = document.getElementById('cropCanvas').getContext('2d');
-        ctx.clearRect(0, 0, CW, CH);
-        ctx.drawImage(cropImg, cropX, cropY, cropImg.width * cropScale, cropImg.height * cropScale);
-    }
-
-    function confirmCrop() {
-        const canvas = document.getElementById('cropCanvas');
-        const out = document.createElement('canvas');
-        out.width = out.height = CR * 2;
-        const octx = out.getContext('2d');
-        octx.beginPath();
-        octx.arc(CR, CR, CR, 0, Math.PI * 2);
-        octx.clip();
-        octx.drawImage(canvas, CX - CR, CY - CR, CR * 2, CR * 2, 0, 0, CR * 2, CR * 2);
-        const base64 = out.toDataURL('image/jpeg', 0.92);
-        localStorage.setItem('wh_avatar_' + currentUser.email, base64);
-        showAvatarImg(base64);
-        closeCropModal();
-        showToast('頭像已更新 ✓');
-    }
-
-    function closeCropModal() {
-        document.getElementById('cropOverlay').classList.remove('open');
-        document.body.style.overflow = '';
-        document.getElementById('avatarInput').value = '';
-        document.onmousemove = null;
-        document.onmouseup = null;
-    }
-
-    function showAvatarImg(src) {
-        const img = document.getElementById('avatarImg');
-        img.src = src; img.classList.add('show');
-        document.getElementById('avatarInitial').style.display = 'none';
-        document.getElementById('btnAvatarRemove').classList.add('show');
-    }
-
-    function removeAvatar() {
-        localStorage.removeItem('wh_avatar_' + currentUser.email);
-        const img = document.getElementById('avatarImg');
-        img.src = ''; img.classList.remove('show');
-        document.getElementById('avatarInitial').style.display = '';
-        document.getElementById('avatarInitial').textContent = (currentUser.name || '文')[0].toUpperCase();
-        document.getElementById('btnAvatarRemove').classList.remove('show');
-        document.getElementById('avatarInput').value = '';
-        showToast('已移除頭像');
-    }
-
-    /* ── 个人资料 ── */
-    function saveProfile() {
-        const name = document.getElementById('inputName').value.trim();
-        const errEl = document.getElementById('nameError');
-        const sucEl = document.getElementById('profileSuccess');
-        errEl.textContent = ''; sucEl.textContent = '';
-        if (!name) { errEl.textContent = '暱稱不能為空'; return; }
-        if (name.length > 20) { errEl.textContent = '暱稱不能超過20個字'; return; }
-        DB.update(currentUser.email, { name });
-        currentUser.name = name;
-        sessionStorage.setItem('wh_user', JSON.stringify(currentUser));
-        const hasAvatar = localStorage.getItem('wh_avatar_' + currentUser.email);
-        if (!hasAvatar) document.getElementById('avatarInitial').textContent = name[0].toUpperCase();
-        fetch('http://localhost:8080/api/users/updateName', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: currentUser.email, name })
-        }).catch(() => {});
-        sucEl.textContent = '已儲存 ✓';
-        showToast('個人資料已更新 ✓');
-        setTimeout(() => sucEl.textContent = '', 3000);
-    }
-
-    /* ── 修改密码 ── */
-    function savePassword() {
-        const oldPwd = document.getElementById('inputOldPwd').value;
-        const newPwd = document.getElementById('inputNewPwd').value;
-        const confirmPwd = document.getElementById('inputConfirmPwd').value;
-        const errEl = document.getElementById('pwdError');
-        const sucEl = document.getElementById('pwdSuccess');
-        errEl.textContent = ''; sucEl.textContent = '';
-        const user = DB.get(currentUser.email);
-        if (!user) { errEl.textContent = '用戶不存在'; return; }
-        if (user.pwd !== oldPwd) { errEl.textContent = '目前密碼錯誤'; return; }
-        if (newPwd.length < 8) { errEl.textContent = '新密碼至少需要8位'; return; }
-        if (newPwd !== confirmPwd) { errEl.textContent = '兩次密碼輸入不一致'; return; }
-        DB.update(currentUser.email, { pwd: newPwd });
-        ['inputOldPwd','inputNewPwd','inputConfirmPwd'].forEach(id => document.getElementById(id).value = '');
-        sucEl.textContent = '密碼已更新 ✓';
-        showToast('密碼已更新 ✓');
-        setTimeout(() => sucEl.textContent = '', 3000);
-    }
-
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
-    }
-</script>
-
+<script src="js/settings.js"></script>
 <script src="js/common.js"></script>
 </body>
 </html>
