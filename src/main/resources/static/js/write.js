@@ -47,6 +47,11 @@ function loadDraftConfirm() {
         });
     }
     if (d.tags && d.tags.length) { tags = d.tags; renderTags(); }
+    // 從樹洞進入自動切換匿名模式
+    if (new URLSearchParams(location.search).get('mode') === 'anon') {
+        setMode('anon');
+    }
+
     updateWordCount();
     const banner = document.getElementById('draftBanner');
     if (banner) banner.style.display = 'none';
@@ -265,6 +270,8 @@ window.addEventListener('load', () => {
                     tags = data.tags.split(',').filter(t => t.trim());
                     renderTags();
                 }
+
+
                 updateWordCount();
                 document.getElementById('statusText').textContent = '編輯模式';
                 startObserver(editor);

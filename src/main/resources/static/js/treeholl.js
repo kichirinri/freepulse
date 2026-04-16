@@ -3,7 +3,7 @@
  * ================================================================ */
 
 /* 登录状态 */
-const user = JSON.parse(sessionStorage.getItem('wh_user') || 'null');
+const user = JSON.parse(sessionStorage.getItem('wh_user') || localStorage.getItem('wh_user') || 'null');
 if (user) {
     document.getElementById('stateGuest').style.display = 'none';
     const su = document.getElementById('stateUser');
@@ -96,9 +96,9 @@ if (user) {
         });
 })();
 
-/* 弹窗 */
-function openWriteModal() {
+/* 弹窗 */function openWriteModal() {
     if (!user) {
+        alert('請先登入才能投入樹洞');
         window.location.href = 'index.html';
         return;
     }
@@ -113,6 +113,5 @@ function closeOnOverlay(e) {
     if (e.target.id === 'writeModal') closeWriteModal();
 }
 function goWrite() {
-    sessionStorage.setItem('wh_mode', 'anon');
-    window.location.href = 'write.html';
+    window.location.href = 'write.html?mode=anon';
 }
