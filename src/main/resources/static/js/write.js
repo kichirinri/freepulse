@@ -481,12 +481,18 @@ function removeTag(i) { tags.splice(i, 1); renderTags(); }
 
 /* ── 发布 ── */
 function openPublishPanel() {
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
-    if (selectedCat) {
-        document.querySelectorAll('.cat-btn').forEach(b => {
-            if (b.textContent.trim().replace('🔥 ', '') === selectedCat) b.classList.add('selected');
-        });
+    const isAnonMode = new URLSearchParams(location.search).get('mode') === 'anon';
+    if (isAnonMode) {
+        setMode('anon');
+    } else {
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+        if (selectedCat) {
+            document.querySelectorAll('.cat-btn').forEach(b => {
+                if (b.textContent.trim().replace('🔥 ', '') === selectedCat) b.classList.add('selected');
+            });
+        }
     }
+
     const user = JSON.parse(sessionStorage.getItem('wh_user') || localStorage.getItem('wh_user') || '{}');
     const pennames = JSON.parse(localStorage.getItem('wh_pennames_' + user.email) || '[]');
     const select = document.getElementById('pennameSelect');
